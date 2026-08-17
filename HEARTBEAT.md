@@ -683,13 +683,19 @@ never be misread. `make_chart.py` enforces this rather than trusting care: it re
 the scope ID from `runs/scope.json` and plots only runs whose spec carries that
 scope, reporting the rest as `N from earlier scopes excluded`.
 
-**Experiment #1 is the first valid run of the current scope** (operator decision,
-2026-08-16). Numbering happens *after* the scope filter and the validity filter, so
-the count starts at the corrected baseline rather than at the runs which only
-established that the harness was broken. A calibration wave that proved a stale
-binding or a sleeping laptop is not experiment 1; the first trustworthy measurement
-is. When a throughput or evaluator fix forces a new scope ID the counter restarts
-at 1 by construction — that is the intended behaviour, not something to work around.
+**Experiment #1 IS the baseline, and only candidates advance the counter** (operator
+decision, 2026-08-17). Every bank control sits at x = 1, where their vertical spread
+*is* the noise floor; each candidate takes the next integer in time order.
+
+Controls are re-measurements of one frozen baseline, not separate experiments, and the
+1200 s bank TTL forces a steady supply of them. Numbering each as an experiment made
+the axis mostly bookkeeping: **15 of the first 17 points were controls**, so
+"experiment 17" described a campaign that had tested two ideas. The axis should answer
+*how many ideas have been tested* — the question worth asking, and the one that makes a
+control-heavy fleet visible instead of flattering.
+
+When a throughput or evaluator fix forces a new scope ID the counter restarts by
+construction — intended, not something to work around.
 
 What the marks mean, and why they are drawn this way:
 
