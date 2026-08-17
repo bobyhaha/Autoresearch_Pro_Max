@@ -1,0 +1,29 @@
+{
+  "id": "hyp_learnable_rmsnorm_scale",
+  "belief_key": "belief_learnable_norm_scale_improves_prenorm_optimization",
+  "statement": "Adding a learnable per-channel scale vector to the two residual-stream RMSNorms lowers val_bpb in the frozen OPHIS v3b 300s scope.",
+  "rationale": "The baseline normalises the residual stream with a bare F.rms_norm and no learnable scale, so it sits on the degraded side of the ablation in arXiv 2605.26895 by construction. That work reports the scale vector adds no expressivity in Pre-Norm nets but improves optimization as a self-amplifying preconditioner on the following linear map. This is a MECHANISM, not a knob: it adds a component the model lacks entirely rather than retuning one it has. It is also the honest first candidate because the exploration budget refused a schedule knob on the grounds that its family has never cleared the gate -- correct, given control sigma 0.00443 against a 0.000426 gate.",
+  "scope": {"benchmark": "ophis-v3b-karpathy228791f-correctedbpb-pinned10-tokencache"},
+  "topics": ["topic_architecture_small_budget"],
+  "mechanism_ids": ["mech_scale_vector_preconditions_the_next_linear_map"],
+  "claim_ids": ["claim_prenorm_scale_vectors_improve_optimization"],
+  "prediction": {
+    "metric": "val_bpb",
+    "direction": "decrease",
+    "statement": "Candidate val_bpb is below its frozen same-GPU control by more than the gate, after accounting for any change in num_steps via the step law.",
+    "minimum_effect": 0.000426
+  },
+  "falsifiers": [
+    "The paired delta does not clear the gate once the step-count difference is accounted for.",
+    "num_steps falls enough that the added per-step cost outweighs the optimization gain -- a real outcome under a fixed-time budget, and the reason this is not a free win.",
+    "val_bpb rises, which would oppose the belief and is worth recording as an opposing claim."
+  ],
+  "intervention": {
+    "summary": "Add ScaledNorm (RMSNorm x learnable per-channel weight, initialised to ones) on the two residual-stream norms in Block.forward. Route the 1-D scale parameters to an AdamW group at scalar_lr*0.01, NOT to Muon, which orthogonalizes 2-D matrices. q/k norms are unchanged.",
+    "subsystem": "normalization",
+    "mutable_code_paths": ["runs/code/train.py"],
+    "diagnostics": ["num_steps", "training_seconds", "mfu_percent", "total_tokens_M"]
+  },
+  "competing_hypothesis_ids": ["hyp_warmdown_one_third"],
+  "proposed_by": "claude-opus-5-1m/ophis-v3b-2026-08-17"
+}

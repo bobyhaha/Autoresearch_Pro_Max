@@ -1,0 +1,43 @@
+{
+  "id": "mech_scale_vector_preconditions_the_next_linear_map",
+  "name": "A learnable norm scale preconditions the following linear map, improving optimization without adding expressivity",
+  "statement": "In a Pre-Norm block the normalised activations feed directly into a linear map. A learnable per-channel scale on the normalisation rescales the input basis of that map, which changes the conditioning of its gradient without changing the function class the block can represent. Better conditioning means more progress per optimizer step. Under a fixed 300s budget the gain must also survive the per-step cost of the extra parameters, so the net effect on val_bpb is the optimization gain minus whatever steps the added work destroys.",
+  "scope": {"benchmark": "ophis-v3b-karpathy228791f-correctedbpb-pinned10-tokencache"},
+  "nodes": [
+    {"id": "intervention", "label": "learnable per-channel scale on the two residual-stream RMSNorms"},
+    {"id": "mediator_cond", "label": "conditioning of the gradient of the following linear map"},
+    {"id": "mediator_steps", "label": "optimizer steps completed within the 300s budget"},
+    {"id": "outcome", "label": "validation bits per byte"}
+  ],
+  "edges": [
+    {"from": "intervention", "to": "mediator_cond", "relation": "improves",
+     "claim_ids": ["claim_prenorm_scale_vectors_improve_optimization"]},
+    {"from": "intervention", "to": "mediator_steps", "relation": "decreases",
+     "claim_ids": ["claim_time_budget_makes_steps_the_currency"]},
+    {"from": "mediator_cond", "to": "outcome", "relation": "causally improves",
+     "claim_ids": ["claim_prenorm_scale_vectors_improve_optimization"]},
+    {"from": "mediator_steps", "to": "outcome", "relation": "causally improves",
+     "claim_ids": ["claim_time_budget_makes_steps_the_currency"]}
+  ],
+  "source_claim_ids": ["claim_prenorm_scale_vectors_improve_optimization", "claim_time_budget_makes_steps_the_currency"],
+  "assumptions": [
+    {"statement": "An optimization benefit demonstrated on large models at unbounded horizon still exists at 50.33M parameters and ~600 steps. The cited work gives no effect size, so the magnitude here is unknown.",
+     "claim_ids": ["claim_prenorm_scale_vectors_improve_optimization"]},
+    {"statement": "The two mediators have opposite signs and are separable only through num_steps, which every arm reports.",
+     "claim_ids": ["claim_time_budget_makes_steps_the_currency"]}
+  ],
+  "alternatives": [
+    "The model already gets this preconditioning from resid_lambdas and x0_lambdas, which are learnable per-layer scalars, making the per-channel version redundant.",
+    "At 600 steps the run is too far from convergence for conditioning to matter, and only token exposure does.",
+    "Any delta is contention: control sigma is 0.00443 against a 0.000426 gate."
+  ],
+  "predictions": [
+    "val_bpb falls after adjusting for num_steps.",
+    "num_steps falls slightly, since the scale vectors add work; if num_steps is unchanged the added cost was negligible."
+  ],
+  "falsifiers": [
+    "val_bpb does not move beyond the control band once the step difference is accounted for.",
+    "num_steps falls enough to cancel the gain, which prices the mechanism rather than refuting it.",
+    "val_bpb rises, opposing the belief."
+  ]
+}
