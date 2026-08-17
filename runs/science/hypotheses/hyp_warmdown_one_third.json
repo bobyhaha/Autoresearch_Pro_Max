@@ -1,0 +1,29 @@
+{
+  "id": "hyp_warmdown_one_third",
+  "belief_key": "belief_warmdown_fraction_has_a_size_stable_optimum_near_one_third",
+  "statement": "Setting WARMDOWN_RATIO from 0.5 to 0.33 lowers val_bpb in the frozen OPHIS v3b 300s scope.",
+  "rationale": "A 720-run factorial grid over 15M-100M decoder LMs found the loss-optimal warmdown fraction is 33% at every (bit-width, size) cell, robust in a 625-run follow-up across optimizer, schedule shape and 9x training-length variation. The active baseline uses 0.5. Our model is 50.33M, inside that grid. This is a KNOB, chosen deliberately as the first experiment: it is a one-constant edit with a literature-predicted direction AND a specific predicted value, which makes it a genuine test of the claim rather than a search. The transfer is not free -- the cited grids fix an ITERATION count while our budget is 300 charged seconds and our step count varied 613-698 across identical controls -- so a null here is informative about whether iteration-horizon schedule results transfer to a wall-clock horizon at all.",
+  "scope": {"benchmark": "ophis-v3b-karpathy228791f-correctedbpb-pinned10-tokencache"},
+  "topics": ["topic_optimizer_short_horizon"],
+  "mechanism_ids": ["mech_warmdown_fraction_trades_exploration_for_convergence"],
+  "claim_ids": ["claim_optimal_warmdown_is_one_third_for_sub100m_decoders"],
+  "prediction": {
+    "metric": "val_bpb",
+    "direction": "decrease",
+    "statement": "Candidate val_bpb is below its frozen same-GPU control by more than the gate, with num_steps statistically unchanged since the schedule shape does not alter per-step cost.",
+    "minimum_effect": 0.000426
+  },
+  "falsifiers": [
+    "The paired delta does not clear the gate.",
+    "val_bpb rises, indicating 0.5 was already better for a wall-clock horizon than the iteration-horizon literature predicts.",
+    "num_steps changes materially, which would mean the edit altered throughput rather than the schedule and the comparison is confounded."
+  ],
+  "intervention": {
+    "summary": "In train.py set WARMDOWN_RATIO = 0.33 (from 0.5). One constant; no other change.",
+    "subsystem": "optimizer_schedule",
+    "mutable_code_paths": ["runs/code/train.py"],
+    "diagnostics": ["num_steps", "training_seconds", "mfu_percent", "total_tokens_M"]
+  },
+  "competing_hypothesis_ids": ["hyp_learnable_rmsnorm_scale"],
+  "proposed_by": "claude-opus-5-1m/ophis-v3b-2026-08-17"
+}

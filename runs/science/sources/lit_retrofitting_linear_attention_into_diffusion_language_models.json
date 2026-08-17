@@ -1,0 +1,37 @@
+{
+  "abstract": "Diffusion language models (dLLMs) offer a promising alternative to autoregressive models by accelerating inference through parallel decoding. Recent dLLMs commonly use blockwise semi-autoregressive decoding, generating blocks autoregressively while denoising tokens within each active block in parallel. However, despite KV caching, each denoising step still attends to all previous blocks, repeatedly incurring prefix-attention cost. Motivated by this bottleneck, we ask whether dLLM inference can be further accelerated by linearizing attention over previous blocks. We introduce block-hybrid attention, which retains exact softmax attention within the active denoising block while applying linear attention over previous blocks. We show that this hybrid attention can be retrofitted into a pretrained dLLM with minimal post-training: LLaDA-Hybrid replaces 6 of the 20 attention layers in LLaDA~2.1, a 16B open-source dLLM, largely following LoLCAT (Zhang et al, 2024). The conversion takes only approximately 60 hours while preserving benchmark performance: 72.0% vs. 75.6% on HumanEval, 63.0% vs. 57.7% on MBPP+, and 86.7% vs. 88.3% on CMATH. With a Triton implementation, LLaDA-Hybrid achieves up to $1.7\\times$ higher decoding throughput and supports more concurrent requests before exhausting memory, showing that pretrained dLLMs can be efficiently linearized for faster inference. Our code is available at: https://github.com/Diuven/LLaDA-Hybrid.",
+  "authors": [
+    "Jinha Kim",
+    "Younghun Roh",
+    "Jaeyeon Kim"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_retrofitting_linear_attention_into_diffusion_language_models",
+  "identifiers": {
+    "arxiv": "2608.06628v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"language model\" AND abs:\"training\" AND abs:\"throughput\"",
+    "retrieved_at": "2026-08-17T05:48:20Z"
+  },
+  "title": "Retrofitting Linear Attention into Diffusion Language Models",
+  "topics": [
+    "topic_throughput_efficiency"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2608.06628v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2608_06628_v1",
+  "year": 2026
+}

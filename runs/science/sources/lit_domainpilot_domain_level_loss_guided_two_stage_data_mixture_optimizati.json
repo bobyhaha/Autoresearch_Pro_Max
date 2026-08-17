@@ -1,0 +1,35 @@
+{
+  "abstract": "The training efficacy of large language models (LLMs) is fundamentally constrained by the quality and composition of training data. Existing dynamic data scheduling methods face critical limitations in industrial-scale pretraining and supervised fine-tuning (SFT): data selection incurs prohibitive O(N) costs on terabyte-scale corpora, mixture optimization schemes introduce severe I/O bottlenecks or require training auxiliary reference models, and sample-level reweighting strategies rely on loss signals that conflate noise, difficulty, and novelty. We present DomainPilot, a domain-level loss-guided two-stage data mixture optimization framework. DomainPilot introduces token-level domain loss monitoring to capture per-domain learning dynamics during training without halting the data pipeline. Building on these signals, we propose a Scaling Law guided coarse optimization stage that fits domain-specific convergence curves and derives a principled prior for mixture adjustment. A subsequent Mixing Law guided fine optimization stage refines the mixture by modeling cross-domain interaction effects through controlled sweep experiments. The entire mechanism is realized via a patch-based architecture that injects domain-aware loss computation into existing training frameworks (e.g., MindSpeed/Megatron-LM) with only ~30 lines of framework-specific adapter code. We validate DomainPilot on the Qwen3-1.7B model during SFT. Compared to the original data mixture, our optimized mixture achieves improvements of +2% on MMLU-Redux, +1.8% on AIME24, +3.8% on LiveCodeBench v5, and +3.6% on BFCL v3, without increasing total data volume or training cost. These results demonstrate that domain-level training signals provide an effective, lightweight alternative to expensive data selection or auxiliary model training for mixture optimization.",
+  "authors": [
+    "He Zhang"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_domainpilot_domain_level_loss_guided_two_stage_data_mixture_optimizati",
+  "identifiers": {
+    "arxiv": "2607.22769v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"optimizer\" AND abs:\"large language model\" AND abs:\"pretraining\"",
+    "retrieved_at": "2026-08-17T05:48:36Z"
+  },
+  "title": "DomainPilot: Domain-Level Loss-Guided Two-Stage Data Mixture Optimization for Efficient Language Model Fine-Tuning",
+  "topics": [
+    "topic_optimizer_short_horizon"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2607.22769v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2607_22769_v1",
+  "year": 2026
+}

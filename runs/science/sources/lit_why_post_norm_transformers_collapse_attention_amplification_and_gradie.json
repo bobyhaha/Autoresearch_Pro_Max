@@ -1,0 +1,38 @@
+{
+  "abstract": "Deep decoder-only Transformers often replace the original Post-Norm architecture with Pre-Norm variants because Post-Norm training is highly sensitive to warmup and learning rate under conventional initialization schemes. Although prior work has identified rank collapse and gradient vanishing as related symptoms, it remains poorly understood how causal attention creates high-similarity representations and why training dynamics fail to repair them. We give a two-stage analysis of Post-Norm rank collapse using token similarity as a scalar state variable. First, at initialization, causal attention acts approximately as a prefix-averaging operator that increases token similarity across depth, while the SwiGLU branch contributes only a smaller damping effect. Second, once training enters a high-similarity regime, growth of pre-normalization residual norms makes the RMSNorm backward factor contractive; under mild conditions, gradients to earlier layers decay geometrically. As a complementary result, we characterize the properties of a collapsed network: its best predictor is frequency distribution with relatively high loss floor, and gradients in collapsed layers vanish at frequency distribution. Experiments on 48-layer decoder-only Transformers trained on C4 dataset match the predicted initialization-time similarity growth and collapse-time gradient contraction, and show that collapsed runs stay near the predicted frequency loss. Together, these results distinguish the forward similarity amplification and backward repair incapacity in Post-Norm collapse, while also characterizing the behavior of collapsed networks.",
+  "authors": [
+    "Xingjian Wang",
+    "Qingyu Han",
+    "Xiaodong Luo",
+    "Yin Zhang"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_why_post_norm_transformers_collapse_attention_amplification_and_gradie",
+  "identifiers": {
+    "arxiv": "2608.09417v2"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"normalization\" AND abs:\"transformer\" AND abs:\"training\"",
+    "retrieved_at": "2026-08-17T05:48:47Z"
+  },
+  "title": "Why Post-Norm Transformers Collapse: Attention Amplification and Gradient Repair Failure",
+  "topics": [
+    "topic_architecture_small_budget"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2608.09417v2"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2608_09417_v2",
+  "year": 2026
+}

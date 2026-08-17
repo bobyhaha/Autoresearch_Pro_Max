@@ -1,0 +1,36 @@
+{
+  "abstract": "The whole-brain connectome of a fruit fly comprises over 130K neurons connected with a probability of merely 0.02%, yet achieves an average shortest path of only 4.4 hops. Despite being highly structured at the circuit level, the network's long-range connections are broadly distributed across brain regions, functioning as stochastic shortcuts that enable efficient global communication. Inspired by this observation, we propose Stochastic Attention (SA), a drop-in enhancement for sliding-window attention (SWA) that applies a random permutation to the token sequence before windowed attention and restores the original order afterward. This transforms the fixed local window into a stochastic global one within the same $O(nw)$ per-layer budget. Through depth, independently sampled permutations yield exponentially growing receptive fields, achieving full sequence coverage in $O(\\log_w n)$ layers versus $O(n/w)$ for SWA. We validate SA in two settings: pre-training language models from scratch, where a gated SA + SWA combination achieves the best average zero-shot accuracy, and training-free inference on Qwen3-8B and Qwen3-30B-A3B, where SA consistently outperforms SWA and matches or exceeds Mixture of Block Attention at comparable compute budgets. These results suggest that connectome-inspired stochastic routing is a practical primitive for improving the expressivity of efficient attention, complementary to existing linear and sparse approaches.",
+  "authors": [
+    "Zehao Jin",
+    "Yanan Sui"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_stochastic_attention_connectome_inspired_randomized_routing_for_expres",
+  "identifiers": {
+    "arxiv": "2604.00754v2"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.CL AND abs:\"sliding window attention\" AND abs:\"transformer\"",
+    "retrieved_at": "2026-08-17T05:48:43Z"
+  },
+  "title": "Stochastic Attention: Connectome-Inspired Randomized Routing for Expressive Linear-Time Attention",
+  "topics": [
+    "topic_architecture_small_budget"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2604.00754v2"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2604_00754_v2",
+  "year": 2026
+}

@@ -1,0 +1,35 @@
+{
+  "id": "mech_warmdown_fraction_trades_exploration_for_convergence",
+  "name": "The warmdown fraction trades high-LR exploration against low-LR convergence",
+  "statement": "A learning-rate schedule spends its budget between a high-rate phase that explores and a decayed phase that converges. The warmdown fraction sets that split. Too little warmdown ends training before the iterate settles; too much spends the budget at rates too low to make progress. A 720-run grid over 15M-100M decoders locates that optimum at 33% and finds it stable across size, precision, optimizer and schedule shape, which is what makes it transferable rather than a per-configuration tuning artifact.",
+  "scope": {"benchmark": "ophis-v3b-karpathy228791f-correctedbpb-pinned10-tokencache"},
+  "nodes": [
+    {"id": "intervention", "label": "WARMDOWN_RATIO 0.5 -> 0.33"},
+    {"id": "mediator", "label": "fraction of the budget spent at decayed learning rate"},
+    {"id": "outcome", "label": "validation bits per byte"}
+  ],
+  "edges": [
+    {"from": "intervention", "to": "mediator", "relation": "decreases",
+     "claim_ids": ["claim_optimal_warmdown_is_one_third_for_sub100m_decoders"]},
+    {"from": "mediator", "to": "outcome", "relation": "causally improves",
+     "claim_ids": ["claim_optimal_warmdown_is_one_third_for_sub100m_decoders"]}
+  ],
+  "source_claim_ids": ["claim_optimal_warmdown_is_one_third_for_sub100m_decoders"],
+  "assumptions": [
+    {"statement": "An optimum located over a fixed ITERATION horizon transfers to a fixed WALL-CLOCK horizon, where the step count is not known in advance. Our schedule is time-parameterised (progress = training_time / TIME_BUDGET), which makes this plausible; it is the weakest link in the chain and the falsifier targets it.",
+     "claim_ids": ["claim_optimal_warmdown_is_one_third_for_sub100m_decoders"]}
+  ],
+  "alternatives": [
+    "The cited optimum is specific to quantisation-aware training and does not describe bf16 training.",
+    "At 300s our runs are so far from convergence that schedule shape is dominated by raw token exposure and the optimum is flat.",
+    "Any delta observed is contention, not schedule: control sigma is 0.00556 against a 0.000426 gate."
+  ],
+  "predictions": [
+    "val_bpb falls while num_steps is unchanged, since schedule shape does not alter per-step cost.",
+    "If num_steps moves, the comparison is confounded and the result is void."
+  ],
+  "falsifiers": [
+    "val_bpb rises or does not move beyond the control band.",
+    "num_steps changes materially, indicating a throughput change rather than a schedule change."
+  ]
+}

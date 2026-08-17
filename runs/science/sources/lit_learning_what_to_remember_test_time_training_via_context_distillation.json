@@ -1,0 +1,41 @@
+{
+  "abstract": "Effective long-context modeling is not merely about retaining more of the past, but about preserving the information that may prove relevant later. Test-time training (TTT) is an appealing approach that performs online parameter updates for long-context modeling, yet existing TTT methods only optimize either reconstruction or online adaptation objectives without considering the future utility of retained information. In this work, we propose \\textbf{T}est-\\textbf{T}ime \\textbf{C}ontext \\textbf{D}istillation (TTCD), a TTT framework that introduces a self-supervised objective for allocating limited memory capacity for future use. Specifically, TTCD uses a long-window teacher to supervise the fast weights of a short-window student, where the hidden-state discrepancy between them offers a dense, self-supervised signal guiding the model to memorize the contextual information crucial for future token predictions. We focus on an in-place variant: In-Place TTCD (IP-TTCD), which uses the existing MLP parameters as the fast weights. Experiments on long-context language modeling tasks show IP-TTCD consistently outperforms DeltaNet, Gated DeltaNet, sliding-window attention, and TTT when pre-trained from scratch. Furthermore, IP-TTCD allows pre-trained transformer models to adapt their parameters during inference through continual pre-training, gaining long-context capabilities with only a lightweight architectural augmentation. Our results position TTCD as a step toward architectural continual learning.",
+  "authors": [
+    "Zixuan Wang",
+    "Xingyu Dang",
+    "Rui-Jie Zhu",
+    "Zixin Wen",
+    "Hengyu Fu",
+    "Wenhao Chai",
+    "Jason D. Lee"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_learning_what_to_remember_test_time_training_via_context_distillation",
+  "identifiers": {
+    "arxiv": "2608.01672v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.CL AND abs:\"sliding window attention\" AND abs:\"transformer\"",
+    "retrieved_at": "2026-08-17T05:48:43Z"
+  },
+  "title": "Learning What to Remember: Test-Time Training via Context Distillation",
+  "topics": [
+    "topic_architecture_small_budget"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2608.01672v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2608_01672_v1",
+  "year": 2026
+}

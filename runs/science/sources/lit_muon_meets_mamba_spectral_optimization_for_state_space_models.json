@@ -1,0 +1,38 @@
+{
+  "abstract": "Muon is a recent optimizer that orthogonalizes the update to each weight matrix with a Newton-Schulz iteration, which performs steepest descent under the spectral norm. Almost all the evidence for it comes from Transformer models, and its behavior on state-space models is largely unreported. We compare Muon with AdamW on Mamba-2 130M under a controlled protocol that varies only which weight groups are trained with Muon. The benefit is localized. Muon on the output projection alone beats Muon on the input projection or on both. The advantage is mainly one of token efficiency. It holds on two corpora and two token budgets, and persists when training continues well past the compute-optimal point. Conditioning does not explain the gain. Muon lowers the condition number of whichever projection it trains, but the better-conditioned input projection is not the one that helps.",
+  "authors": [
+    "Arslan Battalov",
+    "Karim Kramin",
+    "Alexander Markotenko",
+    "Sofia Sinitsina"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_muon_meets_mamba_spectral_optimization_for_state_space_models",
+  "identifiers": {
+    "arxiv": "2608.03941v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"compute-optimal\" AND abs:\"training\"",
+    "retrieved_at": "2026-08-17T05:48:59Z"
+  },
+  "title": "Muon Meets Mamba: Spectral Optimization for State Space Models",
+  "topics": [
+    "topic_token_exposure_exchange_rate"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2608.03941v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2608_03941_v1",
+  "year": 2026
+}

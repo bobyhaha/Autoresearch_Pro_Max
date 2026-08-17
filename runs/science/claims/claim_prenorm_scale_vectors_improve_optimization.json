@@ -1,0 +1,48 @@
+{
+  "id": "claim_prenorm_scale_vectors_improve_optimization",
+  "belief_key": "belief_learnable_norm_scale_improves_prenorm_optimization",
+  "statement": "In Pre-Norm transformers the learnable scale vector of a normalization layer does not increase expressivity, but it improves optimization through a self-amplifying preconditioning effect on the following linear map; removing scale vectors substantially degrades pre-training despite their negligible parameter count.",
+  "claim_type": "mechanistic",
+  "origin": "literature",
+  "stance": "supports",
+  "scope": {
+    "model": "Pre-Norm decoder-only large language models with learnable-scale normalization layers",
+    "budget": "language-model pre-training; the cited work does not state a fixed wall-clock budget"
+  },
+  "source_ids": [
+    "lit_negligible_in_size_significant_in_effect_on_scale_vectors_in_large_lan"
+  ],
+  "evidence_ids": [],
+  "derived_from_claim_ids": [],
+  "topics": [
+    "topic_architecture_small_budget"
+  ],
+  "locators": [
+    {
+      "source_id": "lit_negligible_in_size_significant_in_effect_on_scale_vectors_in_large_lan",
+      "location": "abstract, arXiv 2605.26895v1, retrieved verbatim from the arXiv Atom API",
+      "excerpt": "we show empirically that although scale vectors constitute only a negligible fraction of model parameters, removing them substantially degrades LLM pre-training. Our theory further shows that, in Pre-Norm architectures, scale vectors do not increase expressivity; instead, they improve optimization through a self-amplifying preconditioning effect on subsequent linear mappings."
+    }
+  ],
+  "evidence": {
+    "study_design": "ablation",
+    "artifact_status": "unknown",
+    "reproduction_status": "not_attempted",
+    "directness": "direct",
+    "scope_match": "partial",
+    "risk_of_bias": "medium",
+    "metrics": [
+      {
+        "name": "pretraining_loss_when_scale_vectors_removed",
+        "result": "Reported as substantial degradation; the abstract gives no effect size. The campaign's baseline calls F.rms_norm(x, (x.size(-1),)) with NO learnable weight, so it sits on the degraded side of this ablation by construction."
+      }
+    ],
+    "content_depth": "abstract_only"
+  },
+  "assessment": {
+    "assessor": "claude-opus-5-1m/ophis-v3b-2026-08-17",
+    "assessed_at": "2026-08-17T06:00:00Z",
+    "rationale": "This is the most directly actionable literature finding for the active baseline, because the baseline lacks the component entirely rather than mis-tuning it: train.py's norm() is a bare F.rms_norm with no learnable scale, and the architecture is Pre-Norm (x = x + attn(norm(x))), which is exactly the regime the claim addresses. Directness is direct -- the paper ablates the scale vector itself. Scope match is only PARTIAL and the gap is the important part: the cited work studies large models without a stated wall-clock constraint, while this campaign runs 50.33M parameters under 300 charged seconds. Adding scale vectors adds parameters and a small amount of per-step work, so under a fixed-time budget it must pay for the steps it costs -- an optimization benefit demonstrated at scale and at unbounded horizon does not automatically survive that trade. The abstract also reports no effect size, so nothing here predicts a magnitude against our 0.000426 gate. Risk of bias medium: abstract only, single group, no artifact examined. Treat as a well-motivated mechanism to test, not as a result to assume.",
+    "confidence_policy_version": "confidence-v1"
+  }
+}

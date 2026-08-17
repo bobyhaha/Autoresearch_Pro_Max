@@ -1,0 +1,52 @@
+{
+  "abstract": "Vision foundation models are bottlenecked by the quadratic cost of self-attention, which limits usable resolution and increases the cost of large-scale pretraining. Subquadratic alternatives such as linear attention and state-space models reduce this cost, but often serialize images into 1D token streams and weaken the 2D spatial structure important for vision. Generalized Spatial Propagation Networks (GSPN) instead propagate context directly on the 2D grid through line-scan recurrences, achieving near-linear complexity without positional embeddings, but have seen little use as foundation-scale encoders. We present C-GSPN, a foundation-scale vision encoder based on 2D spatial propagation. C-GSPN makes the operator practical through three improvements: (1) a fast GSPN CUDA kernel that fuses per-step launches into a single warp-specialized implementation with shared-memory tiling, coalesced access, and a compact multi-channel propagation, reaching over 90% of peak memory bandwidth and running up to 40--52x faster than the original GSPN implementation; (2) a compressed latent-space propagation block with fused normalization, which turns kernel-level speed into block- and model-level efficiency; and (3) a two-stage cross-operator distillation recipe that trains the new architecture from an attention teacher without the cost of from-scratch foundation-scale training. Distilled with 600M image-text pairs, C-GSPN matches an isomorphic ViT baseline with 15% fewer parameters, improves ADE20K segmentation by +2.1%, transfers to high resolution with a fraction of the data needed from scratch, and delivers a 4x end-to-end block speedup at 2K with single-pass, tiling-free inference.",
+  "authors": [
+    "Yitong Jiang",
+    "Hongjun Wang",
+    "Collin McCarthy",
+    "Hanrong Ye",
+    "David Wehr",
+    "Xinhao Li",
+    "Qi Dou",
+    "Tianfan Xue",
+    "Ka Chun Cheung",
+    "Simon See",
+    "Wonmin Byeon",
+    "Ke Chen",
+    "Kai Han",
+    "Jinwei Gu",
+    "Hongxu Yin",
+    "Pavlo Molchanov",
+    "Jan Kautz",
+    "Sifei Liu"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_scaling_parallel_sequence_models_to_foundation_scale_vision_encoders",
+  "identifiers": {
+    "arxiv": "2606.00746v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"attention\" AND abs:\"memory bandwidth\" AND abs:\"efficient\"",
+    "retrieved_at": "2026-08-17T05:48:32Z"
+  },
+  "title": "Scaling Parallel Sequence Models to Foundation-Scale Vision Encoders",
+  "topics": [
+    "topic_kernel_efficiency"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2606.00746v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2606_00746_v1",
+  "year": 2026
+}

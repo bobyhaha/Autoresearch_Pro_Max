@@ -1,0 +1,37 @@
+{
+  "abstract": "Preprocessing invariance is an appealing goal for spectral foundation models: a frozen model should remain useful when laboratories preprocess spectra differently. It is usually measured by training a classifier under one preprocessing pipeline and testing it under another, with preserved accuracy read as evidence of learning. We revisit that reading, using a Raman foundation model as a case study. Such models normalize their inputs before any learned parameter is applied. If that normalization maps two differently preprocessed spectra to the same vector, the encoder receives identical inputs, so the invariance cannot be attributed to learning. For a normalization that uses each spectrum's own statistics, this happens exactly when one spectrum is a positive multiple of the other plus a constant. Several standard preprocessing operations take that form. The encoder should therefore be measured against the normalization alone, which has no learned parameters. On six Raman evaluation datasets, the model does not measurably outperform its own normalization. It improves on raw spectra, but so does the normalization alone. Training does improve the encoder over random initialization, and a controlled experiment shows that it learns to ignore a transformation only when that transformation reaches it. A numerical test settles which transformations a given normalization removes. Across released systems in five modalities, most normalizations already remove transformations of that form, and several of those systems claim that invariance as learned. Replicating the comparison on two of them shows no gain either.",
+  "authors": [
+    "Dongjun Wei",
+    "Hongyi Wu",
+    "Yinuo Zou"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_attributing_preprocessing_invariance_in_spectral_foundation_models",
+  "identifiers": {
+    "arxiv": "2608.14227v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"normalization\" AND abs:\"transformer\" AND abs:\"training\"",
+    "retrieved_at": "2026-08-17T05:48:47Z"
+  },
+  "title": "Attributing Preprocessing Invariance in Spectral Foundation Models",
+  "topics": [
+    "topic_architecture_small_budget"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2608.14227v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2608_14227_v1",
+  "year": 2026
+}

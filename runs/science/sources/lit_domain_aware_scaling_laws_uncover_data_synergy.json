@@ -1,0 +1,37 @@
+{
+  "abstract": "Machine learning progress is often attributed to scaling model size and dataset volume, yet the composition of data can be just as consequential. Empirical findings repeatedly show that combining datasets from different domains yields nontrivial interactions. For instance, adding code improves mathematical reasoning, while certain mixtures introduce interference that reduces model performance. We refer to these effects collectively as data synergy, where the contribution of multiple domains exceeds or falls short of the sum of their isolated contributions. In this work, we formalize and quantify data synergy in language model pretraining. Leveraging observational variation across open-weight LLMs with diverse pretraining mixtures, we estimate both direct domain-to-benchmark synergy (how one domain contributes to performance on another) and a second-order domain-domain synergy (capabilities that require co-occurrence of multiple domains). Our framework improves predictive accuracy over domain-agnostic scaling laws and recovers stable synergy estimates. We validate these estimates by training models on predicted optimal and predicted anti-optimal mixtures and confirm that our synergy estimates correctly predict performance rankings.",
+  "authors": [
+    "Kimia Hamidieh",
+    "Lester Mackey",
+    "David Alvarez-Melis"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_domain_aware_scaling_laws_uncover_data_synergy",
+  "identifiers": {
+    "arxiv": "2607.11052v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"scaling law\" AND abs:\"language model\"",
+    "retrieved_at": "2026-08-17T05:48:55Z"
+  },
+  "title": "Domain-Aware Scaling Laws Uncover Data Synergy",
+  "topics": [
+    "topic_token_exposure_exchange_rate"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2607.11052v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2607_11052_v1",
+  "year": 2026
+}

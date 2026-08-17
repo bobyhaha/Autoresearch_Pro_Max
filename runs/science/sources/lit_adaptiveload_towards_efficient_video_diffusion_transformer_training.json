@@ -1,0 +1,43 @@
+{
+  "abstract": "In video generation models, particularly world models, training large-scale video diffusion Transformers (such as DiT and MMDiT) poses significant computational challenges due to the extreme variance in sequence lengths within mixed-mode datasets. Existing bucket-based data loading strategies typically rely on \"equal token length\" constraints. This approach fails to account for the quadratic complexity of self-attention mechanisms, leading to severe load imbalance and underutilization of GPU resources. This paper proposes \\textit{AdaptiveLoad}, an integrated optimization framework consisting of two core components: (1) A dual-constraint adaptive load balancing system, which eliminates long-sequence bottlenecks by simultaneously limiting memory consumption and computational load ($B \\times S^p \\le M_{\\text{comp}}$); (2) A fused LayerNorm-Modulate CUDA kernel, which utilizes a D-tile coalesced reduction strategy to increase throughput and alleviate memory pressure. Experimental results on the Wan 2.1 world model demonstrate that our method reduces the computational imbalance rate from 39\\% to 18.9\\%, improves peak VRAM utilization efficiency by 22.7\\%, and achieves an overall training throughput increase of 27.2\\%.",
+  "authors": [
+    "Yucheng Guo",
+    "Yongjian Guo",
+    "Zhong Guan",
+    "Haoran Sun",
+    "Wen Huang",
+    "Wanting Xu",
+    "Jing Long",
+    "Shuai Di",
+    "Junwu Xiong"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_adaptiveload_towards_efficient_video_diffusion_transformer_training",
+  "identifiers": {
+    "arxiv": "2605.17923v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"data loading\" AND abs:\"GPU\"",
+    "retrieved_at": "2026-08-17T05:48:24Z"
+  },
+  "title": "AdaptiveLoad: Towards Efficient Video Diffusion Transformer Training",
+  "topics": [
+    "topic_throughput_efficiency"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2605.17923v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2605_17923_v1",
+  "year": 2026
+}

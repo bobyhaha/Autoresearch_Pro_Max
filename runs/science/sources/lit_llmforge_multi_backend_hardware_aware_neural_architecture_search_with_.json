@@ -1,0 +1,41 @@
+{
+  "abstract": "Sub-billion-parameter Transformer language models are increasingly deployed on edge devices, where the privacy, latency, and operating-cost advantages of on-device inference are constrained by tight memory-bandwidth, energy, and thermal budgets that make architectural choice and accelerator-specific cost central to efficient inference. We present LLMForge, a hardware-aware neural architecture search (NAS) framework whose three composable contributions together make edge-LM architecture search hardware-conditioned, since different substrates impose different hardware cost bottlenecks. Infinite-Head Attention (IHA) decouples the number of query heads, KV groups, and per-head query/key and value dimensions, expanding the feasible per-layer attention configuration space by approximately 400x over grouped-query attention within our search-space ranges. Forge-Former, an encoder-based surrogate for ranking architectural candidates, outperforms MLP and random-forest baselines. Forge-DSE, an NSGA-II-based design-space-exploration engine, pairs Forge-Former with a multi-backend hardware cost model spanning GPUs, systolic accelerators, and ring-dataflow edge accelerators. Across four different hardware substrates, the searches converge to visibly different architectures whose shapes track each substrate's cost bottleneck. On the multi-chip ring substrate, our co-search returns three 300M-scale deployment-aware variants on the Pareto front. Each is re-trained on FineWeb-Edu-10BT under matched recipe against SmolLM2-360M and Qwen-0.5B architecture baselines. The accurate variant has the lowest validation loss 2.798 and competitive benchmark performance with fewer parameters, the energy-optimized variant lowers energy per token by 40%, and the latency-optimized variant lowers TTFT and TPOT by 43%.",
+  "authors": [
+    "Xinting Jiang",
+    "Junyi Luo",
+    "Ruichen Qi",
+    "Kauna Lei",
+    "Ben Laurie",
+    "Gregory Kielian",
+    "Mehdi Saligane"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_llmforge_multi_backend_hardware_aware_neural_architecture_search_with_",
+  "identifiers": {
+    "arxiv": "2605.17653v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"attention\" AND abs:\"memory bandwidth\" AND abs:\"efficient\"",
+    "retrieved_at": "2026-08-17T05:48:32Z"
+  },
+  "title": "LLMForge: Multi-Backend Hardware-Aware Neural Architecture Search with Infinite-Head Attention for Edge Language Models",
+  "topics": [
+    "topic_kernel_efficiency"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2605.17653v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2605_17653_v1",
+  "year": 2026
+}

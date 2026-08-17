@@ -1,0 +1,39 @@
+{
+  "abstract": "Web data curation has been widely studied for decoder Large Language Model (LLM) pretraining. Encoders for dense-terminology domains such as medicine, by contrast, are pretrained on small, manually-curated corpora that limit scalability and writing style diversity, a bottleneck even more severe in non-English clinical settings. Whether web-scale data curation also benefits encoder Masked Language Modeling (MLM) in a dense-terminology domain remains an open question. To address this, we introduce two complementary levers. Medical-term density filtering selects documents rich in medical terms. Signal-amplifying rephrasing uses an LLM to rewrite documents into denser variants with broader entity contexts. We instantiate the recipe on French medical NLP. The medical-term density filter outperforms the widely-used educational quality filter on downstream medical tasks, and the two complement each other. Signal-amplifying rephrasing alone improves on raw web data, and mixing it with filtered web data produces the largest gain. The recipe yields FineMed, a French medical pretraining corpus, and DoctoBERT, a state-of-the-art French medical encoder family evaluated on both the public benchmark DrBenchmark and a proprietary clinical Named Entity Recognition (NER) task.",
+  "authors": [
+    "Bofeng Huang",
+    "Jacques Sun",
+    "Diane Bouchacourt",
+    "Nicolas Barascud",
+    "Fajwel Fogel"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_where_does_the_signal_live_a_web_data_recipe_for_medical_encoder_pretr",
+  "identifiers": {
+    "arxiv": "2606.22079v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.CL AND abs:\"data curation\" AND abs:\"pretraining\"",
+    "retrieved_at": "2026-08-17T05:49:02Z"
+  },
+  "title": "Where Does the Signal Live? A Web Data Recipe for Medical Encoder Pretraining",
+  "topics": [
+    "topic_data_quality"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2606.22079v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2606_22079_v1",
+  "year": 2026
+}

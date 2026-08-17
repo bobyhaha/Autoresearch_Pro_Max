@@ -1,0 +1,38 @@
+{
+  "abstract": "Deep reinforcement learning (RL) agents achieve strong performance by optimizing scalar reward functions. However, once deployed, the policies of these RL agents are often rigid and costly to adapt to new performance criteria. For instance, an agent trained to maximize expected cumulative reward may not accommodate previously unknown stakeholder preferences. Existing approaches to achieve fairness, a type of preference, in RL typically assume that such preferences are known a priori and require complete retraining of the policy under a fairness-oriented metric. Inspired by inference-time alignment in large language models, we investigate the problem of steering a pretrained RL policy toward welfare-based fairness objectives at inference time without updating the base policy's parameters. We formalize inference-time fairness alignment as a policy shaping problem and propose a multiplicative policy shaping framework that adjusts action probabilities using action-dependent welfare scores, thus requiring no modification to the base policy. Our framework is general and compatible with any deep RL agent. Through extensive experiments across multiple domains, we demonstrate that inference-time policy shaping substantially improves welfare-based fairness objectives while preserving core task performance.",
+  "authors": [
+    "Umer Siddique",
+    "Peilang Li",
+    "Conor Wallace",
+    "Yongcan Cao"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_inference_time_policy_alignment_for_fair_reinforcement_learning",
+  "identifiers": {
+    "arxiv": "2608.00175v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"optimizer\" AND abs:\"large language model\" AND abs:\"pretraining\"",
+    "retrieved_at": "2026-08-17T05:48:36Z"
+  },
+  "title": "Inference-Time Policy Alignment for Fair Reinforcement Learning",
+  "topics": [
+    "topic_optimizer_short_horizon"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2608.00175v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2608_00175_v1",
+  "year": 2026
+}

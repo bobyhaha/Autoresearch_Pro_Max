@@ -1,0 +1,41 @@
+{
+  "abstract": "On-policy rollout methods such as GRPO are central to post-training of large language models, yet they frequently suffer from training instabilities, cross-task capability degradation, and response-length inflation. Although prior work has characterized the subspace geometry of aggregate updates, the stepwise variation of this geometry and its relationship to model performance remain unclear. We introduce Principal-Subspace Overlap, a dimension-corrected measure of individual rollout updates relative to the dominant singular subspaces of pretrained weights. Despite low average overlap, transient spikes often precede performance degradation. To address this, we propose GCPO (Geometrically Constrained Policy Optimization), which applies hard bilateral orthogonal projections to constrain updates to the complementary subspaces, preventing such excursions by construction. Across mathematical reasoning, code generation, and tool-use tasks on Qwen3-8B and GLM4-9B, GCPO consistently outperforms GRPO and recent variants, including DAPO and GSPO, improving over the base models and the strongest baseline by up to 27.69 and 2.37 points, respectively. Furthermore, GCPO preserves general capabilities, eliminates response-length inflation, and stabilizes policy entropy. Our findings provide a new diagnostic lens and a principled design perspective for stable reinforcement learning post-training.",
+  "authors": [
+    "Kai Yang",
+    "Jingwei Xu",
+    "Wanyu Wang",
+    "Kai-Yuan Guo",
+    "Zhenbo Yu",
+    "Yi Wang",
+    "Yu Qiao"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_gcpo_diagnosing_and_constraining_subspace_geometry_in_rollout_rl_for_l",
+  "identifiers": {
+    "arxiv": "2608.11674v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"optimizer\" AND abs:\"large language model\" AND abs:\"pretraining\"",
+    "retrieved_at": "2026-08-17T05:48:36Z"
+  },
+  "title": "GCPO: Diagnosing and Constraining Subspace Geometry in Rollout RL for LLMs",
+  "topics": [
+    "topic_optimizer_short_horizon"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2608.11674v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2608_11674_v1",
+  "year": 2026
+}

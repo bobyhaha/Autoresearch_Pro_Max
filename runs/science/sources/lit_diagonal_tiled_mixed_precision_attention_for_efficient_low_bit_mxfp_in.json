@@ -1,0 +1,37 @@
+{
+  "abstract": "Transformer-based large language models (LLMs) have demonstrated remarkable performance across a wide range of real-world tasks, but their inference cost remains prohibitively high due to the quadratic complexity of attention and the memory bandwidth limitations of high-precision operations. In this work, we present a low-bit mixed-precision attention kernel using the microscaling floating-point (MXFP) data format, utilizing the computing capability on next-generation GPU architectures. Our Diagonal-Tiled Mixed-Precision Attention (DMA) incorporates two kinds of low-bit computation at the tiling-level, and is a delicate fused kernel implemented using Triton, exploiting hardware-level parallelism and memory efficiency to enable fast and efficient inference without compromising model performance. Extensive empirical evaluations on NVIDIA B200 GPUs show that our kernel maintains generation quality with negligible degradation, and meanwhile achieves significant speedup by kernel fusion. We release our code at https://github.com/yifu-ding/MP-Sparse-Attn.",
+  "authors": [
+    "Yifu Ding",
+    "Xinhao Zhang",
+    "Jinyang Guo"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_diagonal_tiled_mixed_precision_attention_for_efficient_low_bit_mxfp_in",
+  "identifiers": {
+    "arxiv": "2604.03950v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"kernel fusion\" AND abs:\"GPU\"",
+    "retrieved_at": "2026-08-17T05:48:28Z"
+  },
+  "title": "Diagonal-Tiled Mixed-Precision Attention for Efficient Low-Bit MXFP Inference",
+  "topics": [
+    "topic_kernel_efficiency"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2604.03950v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2604_03950_v1",
+  "year": 2026
+}

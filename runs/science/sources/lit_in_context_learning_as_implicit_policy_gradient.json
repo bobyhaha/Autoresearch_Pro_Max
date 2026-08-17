@@ -1,0 +1,36 @@
+{
+  "abstract": "Recent work has shown that large language models (LLMs) can iteratively improve their outputs by incorporating generated samples and their corresponding evaluation scores as in-context examples. Despite these empirical findings, the theoretical foundations underlying this phenomenon remain poorly understood. In this paper, we show that score-conditioned In-Context Learning (ICL) admits a structural correspondence to policy gradient optimization. We first provide a constructive proof that self-attention mechanisms can implement reward-weighted aggregation analogous to the REINFORCE algorithm under specific weight matrix configurations, and discuss the relationship between this construction and the behavior of pretrained transformers. The correspondence is directional in hidden-state space and holds exactly only under the stated simplifying conditions; we quantify its strength empirically. Within our simplified hidden-state model, we furthermore derive an exact upper bound on the distribution shift induced by a bounded attention update, yielding a trust-region-like analogy to KL-constrained policy optimization. We validate our theory through extensive experiments across multiple LLMs, demonstrating that LLMs effectively utilize score information to shift output distributions toward high-scoring exemplars, and that attention weights exhibit a strong correlation with example scores.",
+  "authors": [
+    "Masahiro Kaneko",
+    "Timothy Baldwin"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_in_context_learning_as_implicit_policy_gradient",
+  "identifiers": {
+    "arxiv": "2607.23153v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"optimizer\" AND abs:\"large language model\" AND abs:\"pretraining\"",
+    "retrieved_at": "2026-08-17T05:48:36Z"
+  },
+  "title": "In-Context Learning as Implicit Policy Gradient",
+  "topics": [
+    "topic_optimizer_short_horizon"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2607.23153v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2607_23153_v1",
+  "year": 2026
+}

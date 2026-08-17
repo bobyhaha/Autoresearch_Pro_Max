@@ -1,0 +1,43 @@
+{
+  "abstract": "This paper introduces Arabic-DeepSeek-R1, an application-driven open-source Arabic LLM that leverages a sparse MoE backbone to address the digital equity gap for under-represented languages, and establishes a new SOTA across the entire Open Arabic LLM Leaderboard (OALL). Our four-phase CoT distillation scheme integrates Arabic-specific linguistic verification and regional ethical norms into a 372M-token, contamination-controlled 80/20 Arabic-English training mixture. Arabic-DeepSeek-R1 achieves the highest average score across the seven-benchmark OALL suite while establishing SOTA or near-SOTA, including dominant results on grammar-focused MadinahQA (surpassing both GPT-5.1 and the OALL leader by substantial margins), safety-oriented AraTrust, multi-ability AlGhafa, and retrieval-augmented ALRAGE. Our results indicate that the combination of sparse MoE architecture, culturally-informed CoT distillation with explicit Arabic linguistic checks, and strategic bilingual data curation enables an open-source adapted model to systematically outperform the proprietary frontier system GPT-5.1 on the majority of benchmarks evaluating comprehensive language-specific tasks: the first such demonstration for Arabic LLMs. These findings indicate that much of Arabic's performance deficit in current LLM ecosystems stems from under-specialization rather than architectural limitations, and that parameter-efficient adaptation of open reasoning models can yield breakthrough SOTA performance without industrial-scale pretraining costs. Arabic-DeepSeek-R1 establishes a validated and replicable framework for sovereign and domain-specific language technologies, demonstrating that strategic, culturally-grounded adaptation of sparse MoE backbones offers a viable and cost-effective pathway to achieving record-breaking performance across standardized benchmarks for low-resource languages.",
+  "authors": [
+    "Navan Preet Singh",
+    "Anurag Garikipati",
+    "Ahmed Abulkhair",
+    "Jyani Akshay Jagdishbhai",
+    "Atul Yaduvanshi",
+    "Amarendra Chaudhary",
+    "Madalina Ciobanu",
+    "Qingqing Mao",
+    "Ritankar Das"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_state_of_the_art_arabic_language_modeling_with_sparse_moe_fine_tuning_",
+  "identifiers": {
+    "arxiv": "2604.06421v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.CL AND abs:\"data curation\" AND abs:\"pretraining\"",
+    "retrieved_at": "2026-08-17T05:49:02Z"
+  },
+  "title": "State-of-the-Art Arabic Language Modeling with Sparse MoE Fine-Tuning and Chain-of-Thought Distillation",
+  "topics": [
+    "topic_data_quality"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2604.06421v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2604_06421_v1",
+  "year": 2026
+}

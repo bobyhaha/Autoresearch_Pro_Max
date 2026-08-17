@@ -1,0 +1,39 @@
+{
+  "abstract": "Large Language Model (LLM) deployment is increasingly shifting to cost-efficient accelerators like Google's Tensor Processing Units (TPUs), prioritizing both performance and total cost of ownership (TCO). However, existing LLM inference kernels and serving systems remain largely GPU-centric, and there is no well-established approach for efficiently mapping LLM workloads onto TPU architectures--particularly under the dynamic and ragged execution patterns common in modern serving. In this paper, we present Ragged Paged Attention (RPA), a high-performance and flexible attention kernel for TPUs, implemented using Pallas and Mosaic. RPA addresses these challenges through three key techniques: (1) fine-grained tiling to enable efficient dynamic slicing over ragged memory, (2) a custom software pipeline that fuses KV cache updates with attention computation, and (3) a distribution-aware compilation strategy that generates specialized kernels for decode, prefill, and mixed workloads. Evaluated on Llama 3 8B on TPU7x, RPA achieves up to 86% memory bandwidth utilization (MBU) in decode and 73% model FLOPs utilization (MFU) in prefill. Integrated as the primary TPU backend in vLLM and SGLang, RPA provides a production-grade foundation for efficient TPU inference and offers practical insights into kernel design.",
+  "authors": [
+    "Jevin Jiang",
+    "Ying Chen",
+    "Blake A. Hechtman",
+    "Fenghui Zhang",
+    "Yarong Mu"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_ragged_paged_attention_a_high_performance_and_flexible_llm_inference_k",
+  "identifiers": {
+    "arxiv": "2604.15464v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"attention\" AND abs:\"memory bandwidth\" AND abs:\"efficient\"",
+    "retrieved_at": "2026-08-17T05:48:32Z"
+  },
+  "title": "Ragged Paged Attention: A High-Performance and Flexible LLM Inference Kernel for TPU",
+  "topics": [
+    "topic_kernel_efficiency"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2604.15464v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2604_15464_v1",
+  "year": 2026
+}

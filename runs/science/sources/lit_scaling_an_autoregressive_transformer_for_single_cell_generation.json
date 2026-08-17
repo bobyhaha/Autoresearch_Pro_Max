@@ -1,0 +1,37 @@
+{
+  "abstract": "We study a self-supervised generation task for single-cell gene expression vectors: given a set of vectors from a cell type, we aim to generate additional gene expression vectors of that cell type. For this task we characterize both the biological fidelity of the generated gene expression vectors and the scaling behavior of the pretraining loss. The model is a causal transformer paired with a learned quantized VAE tokenizer, trained with a cross-entropy loss. To evaluate the model, we condition it on held-out gene expression vectors of a cell type and generate vectors of gene expression, comparing the resulting distribution over gene expression vectors to the ground truth distribution of that cell type. We study the scaling properties of the proposed architecture by varying the number of trained parameters and the amount of training data. To our knowledge, we find the first jointly-fit two-exponent scaling law and compute-optimal frontier for a single-cell foundation model. Finally, we discuss how this pretrained model could be finetuned for perturbation response prediction.",
+  "authors": [
+    "Aleksandr Sharipov",
+    "Yusif Mukhtarov",
+    "Igor Molybog"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_scaling_an_autoregressive_transformer_for_single_cell_generation",
+  "identifiers": {
+    "arxiv": "2608.02961v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"compute-optimal\" AND abs:\"training\"",
+    "retrieved_at": "2026-08-17T05:48:59Z"
+  },
+  "title": "Scaling an Autoregressive Transformer for Single-Cell Generation",
+  "topics": [
+    "topic_token_exposure_exchange_rate"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2608.02961v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2608_02961_v1",
+  "year": 2026
+}

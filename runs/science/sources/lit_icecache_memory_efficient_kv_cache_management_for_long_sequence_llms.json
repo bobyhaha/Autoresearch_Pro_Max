@@ -1,0 +1,38 @@
+{
+  "abstract": "Key-Value (KV) cache plays a crucial role in accelerating inference in large language models (LLMs) by storing intermediate attention states and avoiding redundant computation during autoregressive generation. However, its memory footprint scales linearly with sequence length, often leading to severe memory bottlenecks on resource-constrained hardware. Prior work has explored offloading KV cache to the CPU while retaining only a subset on the GPU, but these approaches often rely on imprecise token selection and suffer performance degradation in long-generation tasks such as chain-of-thought reasoning. In this paper, we propose a novel KV cache management strategy, IceCache, which integrates semantic token clustering with PagedAttention. By organizing semantically related tokens into contiguous memory regions managed by a hierarchical, dynamically updatable data structure, our method enables more efficient token selection and better utilization of memory bandwidth during CPU-GPU transfers. Experimental results on LongBench show that, with a 256-token budget, IceCache maintains 99% of the original accuracy achieved by the full KV cache model. Moreover, compared to other offloading-based methods, IceCache attains competitive or even superior latency and accuracy while using only 25% of the KV cache token budget, demonstrating its effectiveness in long-sequence scenarios. The code is available on our project website at https://yuzhenmao.github.io/IceCache/.",
+  "authors": [
+    "Yuzhen Mao",
+    "Qitong Wang",
+    "Martin Ester",
+    "Ke Li"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_icecache_memory_efficient_kv_cache_management_for_long_sequence_llms",
+  "identifiers": {
+    "arxiv": "2604.10539v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"attention\" AND abs:\"memory bandwidth\" AND abs:\"efficient\"",
+    "retrieved_at": "2026-08-17T05:48:32Z"
+  },
+  "title": "IceCache: Memory-efficient KV-cache Management for Long-Sequence LLMs",
+  "topics": [
+    "topic_kernel_efficiency"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2604.10539v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2604_10539_v1",
+  "year": 2026
+}

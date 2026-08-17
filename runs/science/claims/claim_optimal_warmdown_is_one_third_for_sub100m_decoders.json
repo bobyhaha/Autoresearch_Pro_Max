@@ -1,0 +1,48 @@
+{
+  "id": "claim_optimal_warmdown_is_one_third_for_sub100m_decoders",
+  "belief_key": "belief_warmdown_fraction_has_a_size_stable_optimum_near_one_third",
+  "statement": "For decoder-only language models below 100M parameters, the loss-optimal learning-rate warmdown fraction is approximately 33% of the training run, and this optimum is stable across model size, precision, optimizer and schedule shape.",
+  "claim_type": "empirical",
+  "origin": "literature",
+  "stance": "supports",
+  "scope": {
+    "model": "decoder-only language models, 3M-350M parameters",
+    "budget": "from-initialisation training; the cited grids vary training length up to 9x"
+  },
+  "source_ids": [
+    "lit_mapping_the_schedule_x_bit_width_boundary_in_sub_100m_quantisation_awa"
+  ],
+  "evidence_ids": [],
+  "derived_from_claim_ids": [],
+  "topics": [
+    "topic_optimizer_short_horizon"
+  ],
+  "locators": [
+    {
+      "source_id": "lit_mapping_the_schedule_x_bit_width_boundary_in_sub_100m_quantisation_awa",
+      "location": "abstract, arXiv 2605.25966v1, retrieved verbatim from the arXiv Atom API",
+      "excerpt": "A 720-run factorial grid (Phase 2) over bit-width x warmdown fraction x LR magnitude x model size x seed (FP16/INT8/INT6, 15M-100M, 5 seeds) finds the optimal warmdown is 33% at every (bit-width, size) cell. ... A 625-run follow-up (Phase 5) probes the null along five axes: optimiser (AdamW), schedule shape (cosine), training length (up to 9x more iterations), an extended size sweep (5M-350M), and an INT4 sweep from 3M to 100M. The null is robust under all three setup changes."
+    }
+  ],
+  "evidence": {
+    "study_design": "ablation",
+    "artifact_status": "unknown",
+    "reproduction_status": "not_attempted",
+    "directness": "direct",
+    "scope_match": "close",
+    "risk_of_bias": "medium",
+    "metrics": [
+      {
+        "name": "optimal_warmdown_fraction",
+        "result": "33%, invariant across bit-width and size in a 720-run grid, and robust in a 625-run follow-up varying optimizer, schedule shape and training length. The campaign's active baseline uses WARMDOWN_RATIO = 0.5."
+      }
+    ],
+    "content_depth": "abstract_only"
+  },
+  "assessment": {
+    "assessor": "claude-opus-5-1m/ophis-v3b-2026-08-17",
+    "assessed_at": "2026-08-17T06:00:00Z",
+    "rationale": "Directness is direct: the paper varies warmdown fraction explicitly and reports an optimum, and our model at 50.33M sits inside its 15M-100M primary grid, so this is a within-range read rather than an extrapolation. Scope match is close rather than exact for two reasons that matter. First, the paper's frame is quantisation-aware training and its headline question is whether bit-width changes the optimum; the 33% figure is the shared optimum it reports across cells including FP16, which is our regime, but it was not a study designed around FP16/bf16 alone. Second, and more importantly, the paper's budget is a fixed ITERATION count while ours is a fixed 300 charged SECONDS, so our step count is not known in advance and varied 613-698 across three identical controls. A warmdown fraction defined over an unknown horizon is not the same quantity the paper optimised. Our schedule is time-parameterised (progress = training_time / TIME_BUDGET), which makes the transfer plausible but not automatic. Risk of bias medium: abstract only, no artifact inspected, single group. This is strong enough to justify one cheap knob test and not strong enough to adopt without measuring.",
+    "confidence_policy_version": "confidence-v1"
+  }
+}

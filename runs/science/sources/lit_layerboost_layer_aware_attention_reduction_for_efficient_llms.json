@@ -1,0 +1,40 @@
+{
+  "abstract": "Transformers are mostly relying on softmax attention, which introduces quadratic complexity with respect to sequence length and remains a major bottleneck for efficient inference. Prior work on linear or hybrid attention typically replaces softmax attention uniformly across all layers, often leading to significant performance degradation or requiring extensive retraining to recover model quality. This work proposes LayerBoost, a layer-aware attention reduction method that selectively modifies the attention mechanism based on the sensitivity of individual transformer layers. It first performs a systematic sensitivity analysis on a pretrained model to identify layers that are critical for maintaining performance. Guided by this analysis, three distinct strategies can be applied: retaining standard softmax attention in highly sensitive layers, replacing it with linear sliding window attention in moderately sensitive layers, and removing attention entirely in layers that exhibit low sensitivity. To recover performance after these architectural modifications, we introduce a lightweight distillation-based healing phase requiring only 10M additional training tokens. LayerBoost reduces inference latency and improves throughput by up to 68% at high concurrency, while maintaining competitive model quality. It matches base model performance on several benchmarks, exhibits only minor degradations on others, and significantly outperforms state-of-the-art attention linearization methods. These efficiency gains make our method particularly well-suited for high-concurrency serving and hardware-constrained deployment scenarios, where inference cost and memory footprint are critical bottlenecks.",
+  "authors": [
+    "Mohamed Ali Souibgui",
+    "Jan Fostier",
+    "Rodrigo Abad\u00eda-Heredia",
+    "Bohdan Denysenko",
+    "Christian Marschke",
+    "Igor Peric"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_layerboost_layer_aware_attention_reduction_for_efficient_llms",
+  "identifiers": {
+    "arxiv": "2604.22050v2"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.CL AND abs:\"sliding window attention\" AND abs:\"transformer\"",
+    "retrieved_at": "2026-08-17T05:48:43Z"
+  },
+  "title": "LayerBoost: Layer-Aware Attention Reduction for Efficient LLMs",
+  "topics": [
+    "topic_architecture_small_budget"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2604.22050v2"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2604_22050_v2",
+  "year": 2026
+}

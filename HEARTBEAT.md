@@ -179,6 +179,63 @@ Target for the opening block: **enough sources that the mechanism space is
 covered, not enough to justify one candidate.** A reading pass that produces no
 claim the campaign did not already believe was not a reading pass.
 
+### 3.0 Rate: at least 30 papers per hour, analysed for mechanism
+
+**Read no fewer than 30 papers per hour while the GPUs run.** Reading is CPU-free and
+overlaps with training, so anything less is leaving the cheap half of the campaign on
+the floor. Bias hard toward **2025–2026**: this benchmark's levers are current
+research, and a 2019 result about a 10× larger model at unbounded horizon transfers
+badly to 50M parameters under 300 seconds.
+
+```bash
+uv run python tools/read_arxiv.py --plan --from-year 2025 --limit 30
+```
+
+**Retrieved is not read, and the count is the least interesting number.** Two traps,
+both hit for real on 2026-08-17:
+
+1. **The metadata provider served corrupted abstracts.** Correct titles, authors,
+   years and DOIs — with the abstract of a *different paper* attached. "Scaling Laws
+   for Neural Language Models" (2001.08361) came back describing a
+   "transport-validity theory for agentic AI interventions". A claim extracted from
+   that text would carry a real DOI and real authors on a fabricated statement:
+   provenance that looks impeccable and is worthless. **Content comes from the
+   publisher** — `tools/read_arxiv.py` reads the arXiv Atom API directly. Discovery
+   may come from anywhere; content may not.
+2. **Bulk retrieval buys quantity, not relevance.** Of 71 papers pulled in one pass,
+   roughly 13 were on-topic and the rest included sea-ice classification and audio
+   synthesis. 30/hour is a floor on *reading*, not a licence to register 30 rows.
+
+**Analyse for mechanism, not for result.** For each paper that survives the relevance
+filter, answer these before writing anything down:
+
+- **What is the causal story?** Not "X improved loss by Y" but *through what
+  mediator*. A result without a mediator cannot be transferred, only cargo-culted.
+- **Does the mediator exist in OUR frame?** 50.33M parameters, 300 charged seconds,
+  bf16, Pre-Norm RMSNorm without a learnable scale, ReLU² MLP, SSSL sliding window,
+  MuonAdamW, and a step count that is *not known in advance* and varied 613–698
+  across three identical controls. A mediator that runs through batch size at 7B, or
+  through an iteration horizon fixed in advance, is not present here.
+- **What would it cost us?** Under a fixed-time budget, any change that adds per-step
+  work must pay for the steps it destroys. An optimization win at unbounded horizon
+  can be a loss at 300 seconds.
+- **What is the cheapest falsifier?** Write it before the experiment, and prefer the
+  one that indicts the *mediator* rather than the metric.
+
+**Read for the gap, not the confirmation.** The most valuable finding so far came
+from noticing a component our baseline *lacks entirely* — `norm()` is a bare
+`F.rms_norm` with no learnable scale, in a Pre-Norm net, which is exactly the
+ablation arXiv 2605.26895 reports as substantially degrading pre-training. Look for
+what the paper assumes that we do not have.
+
+**Know why your confidence is capped.** `confidence-v1` weights reproduction at more
+than three times venue, and content depth scores `fulltext_snapshot` 0.95 against
+`abstract_only` 0.55. Two abstract-only claims from arXiv preprints scored 0.71
+(`moderate`) — the ceiling for abstract-only, single-source evidence, no matter how
+good the paper is. **To move a belief past ~0.75 you must read the full text**, and
+`RESEARCH_TASKS.json` will keep emitting `read_fulltext_and_extract_claims` at
+priority 85 until you do. Deep analysis is what raises confidence; volume is not.
+
 ### 3.1 Break every paper into claims and mechanisms — the protocol chain
 
 `docs/SCIENTIFIC_METHOD.md` defines the chain, and every arrow is an immutable
@@ -279,8 +336,10 @@ uv run autoresearch --root .autoresearch bank | \
 3  DISPATCH   analyst + critic + scout agents, concurrently, while the GPUs run
 4  CLASSIFY   every landed candidate: MECHANISM / KNOB / THROUGHPUT, and whether
               it beat its own frozen same-GPU control or merely a different one
-5  READ       literature pass concurrent with the GPUs; new sources -> claims ->
-              mechanisms (3.1). Never in series with GPU time.
+5  READ       >=30 papers/hour concurrent with the GPUs, 2025-2026 biased, content
+              from the publisher not the metadata provider; analyse each for its
+              MEDIATOR and whether that mediator exists in our frame (3.0), then
+              new sources -> claims -> mechanisms (3.1). Never in series with GPU time.
 6  REFINE     conclude landed hypotheses, rebuild `science`, work RESEARCH_TASKS.json,
               update or retire the beliefs the results moved (3.2)
 7  STAGE      refill the queue to >= 4 jobs under the exploration budget

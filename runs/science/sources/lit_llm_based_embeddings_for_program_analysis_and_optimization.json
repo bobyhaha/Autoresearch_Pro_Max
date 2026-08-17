@@ -1,0 +1,36 @@
+{
+  "abstract": "Recent advances have highlighted the potential of machine learning, particularly Large Language Models (LLMs), for analyzing and optimizing programs. We present the first application of program embeddings from LLMCompiler---an LLM massively pretrained on intermediate representation (IR) code---to representative program analysis and optimization tasks. We generate program embeddings directly from source and IR code using a simple approach: split programs into chunks, independently embed each chunk with pretrained LLMs, and then aggregate the chunk embeddings into a single program embedding. Our experiments show that combining source and IR code embeddings achieves an error rate of 1.54\\% in algorithm classification, a 12\\% improvement over the current state-of-the-art, and a competitive accuracy on heterogeneous device mapping. These findings suggest that training a performance-aware LLM for embedding IR code might yield state-of-the-art results in code optimization tasks.",
+  "authors": [
+    "Calvin Higgins",
+    "Marco Alvarez"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_llm_based_embeddings_for_program_analysis_and_optimization",
+  "identifiers": {
+    "arxiv": "2608.07894v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"optimizer\" AND abs:\"large language model\" AND abs:\"pretraining\"",
+    "retrieved_at": "2026-08-17T05:48:36Z"
+  },
+  "title": "LLM-Based Embeddings for Program Analysis and Optimization",
+  "topics": [
+    "topic_optimizer_short_horizon"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2608.07894v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2608_07894_v1",
+  "year": 2026
+}

@@ -1,0 +1,44 @@
+{
+  "abstract": "Graph neural networks (GNNs) are widely used for learning on graph datasets derived from various real-world scenarios. Learning from extremely large graphs requires distributed training, and mini-batching with sampling is a popular approach for parallelizing GNN training. Existing distributed mini-batch approaches have significant performance bottlenecks due to expensive sampling methods and limited scaling when using data parallelism. In this work, we present ScaleGNN, a 4D parallel framework for scalable mini-batch GNN training that combines communication-free distributed sampling, 3D parallel matrix multiplication (PMM), and data parallelism. ScaleGNN introduces a uniform vertex sampling algorithm, enabling each process (GPU device) to construct its local mini-batch, i.e., subgraph partitions without any inter-process communication. 3D PMM enables scaling mini-batch training to much larger GPU counts than vanilla data parallelism with significantly lower communication overheads. We also present additional optimizations to overlap sampling with training, reduce communication overhead by sending data in lower precision, kernel fusion, and communication-computation overlap. We evaluate ScaleGNN on five graph datasets and demonstrate strong scaling up to 2048 GPUs on Perlmutter, 2048 GCDs on Frontier, and 1024 GPUs on Tuolumne. On Perlmutter, ScaleGNN achieves 3.5x end-to-end training speedup over the SOTA baseline on ogbn-products.",
+  "authors": [
+    "Cunyang Wei",
+    "Siddharth Singh",
+    "Aishwarya Sarkar",
+    "Daniel Nichols",
+    "Tisha Patel",
+    "Aditya K. Ranjan",
+    "Sayan Ghosh",
+    "Ali Jannesari",
+    "Nathan R. Tallent",
+    "Abhinav Bhatele"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_communication_free_sampling_and_4d_hybrid_parallelism_for_scalable_min",
+  "identifiers": {
+    "arxiv": "2604.02651v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"kernel fusion\" AND abs:\"GPU\"",
+    "retrieved_at": "2026-08-17T05:48:28Z"
+  },
+  "title": "Communication-free Sampling and 4D Hybrid Parallelism for Scalable Mini-batch GNN Training",
+  "topics": [
+    "topic_kernel_efficiency"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2604.02651v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2604_02651_v1",
+  "year": 2026
+}

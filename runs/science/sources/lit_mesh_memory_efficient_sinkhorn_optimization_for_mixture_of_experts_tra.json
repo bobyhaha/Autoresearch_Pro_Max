@@ -1,0 +1,35 @@
+{
+  "abstract": "Memory-efficient matrix optimizers such as Sinkhorn gradient descent remove most AdamW optimizer state for dense Transformer matrices, but direct application to Mixture-of-Experts (MoE) training is unreliable. We study this failure in a controlled 110M-parameter nanowhale DeepSeek-style MoE pretraining setting. A SAGE/Sinkhorn hybrid reduces optimizer state from 0.883GB to 0.331GB but degrades evaluation loss to 3.8265, far above the AdamW baselines observed in the same setup (3.58--3.64 across the seeds we study). We show that routed MoE expert matrices are the dominant failure point: their gradients are conditional, temporally varying, and poorly served by stateless Sinkhorn normalization. We propose MESH, a hidden-momentum Sinkhorn update for MoE experts. MESH restores a temporal first-moment signal through the gradient-buffer lifecycle, without storing the expert first moment as optimizer state. MESH is an optional block-preconditioned variant that adds a coarse neuron/block inverse-RMS multiplier. Across ablations, temporal smoothing before matrix normalization is the primary causal ingredient; block/neuron preconditioning can improve the memory-quality frontier, but is not established as universally necessary. In two additional seeds, MESH and MESH-B reduce optimizer-state memory by 62.5\\% and peak PyTorch CUDA allocation by about 12.6\\% relative to AdamW, with a modest evaluation-loss gap. Full-state diagnostic variants recover AdamW-like performance in ablations, supporting the conclusion that MoE experts need temporal smoothing, but not necessarily full coordinate-wise AdamW state.",
+  "authors": [
+    "Masato Fujitake"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_mesh_memory_efficient_sinkhorn_optimization_for_mixture_of_experts_tra",
+  "identifiers": {
+    "arxiv": "2608.04407v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"normalization\" AND abs:\"transformer\" AND abs:\"training\"",
+    "retrieved_at": "2026-08-17T05:48:47Z"
+  },
+  "title": "MESH: Memory-Efficient Sinkhorn Optimization for Mixture-of-Experts Training",
+  "topics": [
+    "topic_architecture_small_budget"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2608.04407v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2608_04407_v1",
+  "year": 2026
+}

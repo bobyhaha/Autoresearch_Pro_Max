@@ -1,0 +1,41 @@
+{
+  "abstract": "One might imagine that architectural variations within the dense transformer paradigm have a limited effect on accuracy. However, we demonstrate that this is not the case in the long context setting. Specifically, we show that a set of four minor architectural decisions --- all made by at least one of the Olmo, Llama, and Qwen dense model families --- have a compoundingly negative effect on long context extensibility. Any one of these choices alone has a minor impact on long context performance, but combining three or more can drop the performance downstream by up to 47%. Furthermore, these differences are not detectable from short-context loss or validation datasets. We show that much of the variation in long context ability across model families is driven by these architectural features and detectable from applying context extension early in pretraining. We demonstrate this with controlled ablations that hold data, tokenizer, and extension recipe fixed while varying normalization, GQA, pretraining context length, and sliding window attention. After over 170,000 GPU hours of training, we release the resulting set of models as OlmPool, a set of 26 comparable 7B models with checkpoints before and after long-context extension. This pool includes several architectures that outperform the Llama 3 architecture on long context extensibility. In an analysis of our ablation models, we identify patterns in attention sink behavior and attention distributions across context that are attributable to specific architectural differences.",
+  "authors": [
+    "Amanda Bertsch",
+    "Luca Soldaini",
+    "Matthew R. Gormley",
+    "Graham Neubig",
+    "Hannaneh Hajishirzi",
+    "Kyle Lo",
+    "Dirk Groeneveld"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_cracks_in_the_foundation_seemingly_minor_architectural_choices_impact_",
+  "identifiers": {
+    "arxiv": "2608.10296v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.CL AND abs:\"sliding window attention\" AND abs:\"transformer\"",
+    "retrieved_at": "2026-08-17T05:48:43Z"
+  },
+  "title": "Cracks in the Foundation: Seemingly Minor Architectural Choices Impact Long Context Extension",
+  "topics": [
+    "topic_architecture_small_budget"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2608.10296v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2608_10296_v1",
+  "year": 2026
+}

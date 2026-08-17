@@ -1,0 +1,35 @@
+{
+  "abstract": "Transformer-based language models rely on self-attention, whose computation is permutation-equivariant and therefore lacks an intrinsic mechanism for representing token order. Existing architectures address this limitation by explicitly incorporating positional information through learned positional embeddings or hand-crafted positional encodings, such as rotary positional encoding (RoPE), treating positional information as an architecturally acquired capability rather than an inherent property of the model. Motivated by the pursuit of positional-encoding-free architectures, this work explores a language model architecture that integrates causal state-space equations to implicitly encode positional information before attention computation. Specifically, each model block applies a causal state-space equation before self-attention, allowing recurrent state dynamics to encode sequential information into token representations. Consequently, subsequent attention layers operate on position-aware representations without requiring explicit positional encodings while retaining the expressive modeling capacity of self-attention. We present \\textsc{ZetaGPT}, a compact hybrid language model designed for research, rapid prototyping, algorithm verification, and educational applications. In addition to the proposed architecture, \\textsc{ZetaGPT} provides a fully open-source, end-to-end training pipeline encompassing dataset construction, tokenizer training, pretraining, supervised fine-tuning, reinforcement learning from human feedback (RLHF), and chain-of-thought (CoT) reasoning via pure reinforcement learning. To the best of our knowledge, \\textsc{ZetaGPT} is the first open-source small language model without explicit positional encoding and establishes a compact, reproducible reference implementation for the development and empirical study of positional-encoding-free language models.",
+  "authors": [
+    "R\u00f3is\u00edn Luo"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_zetagpt_a_reference_implementation_of_positional_encoding_free_state_s",
+  "identifiers": {
+    "arxiv": "2608.09432v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.CL AND abs:\"small language model\" AND abs:\"architecture\"",
+    "retrieved_at": "2026-08-17T05:48:51Z"
+  },
+  "title": "ZetaGPT: A Reference Implementation of Positional--Encoding--Free State--Space--Attention Language Models",
+  "topics": [
+    "topic_architecture_small_budget"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2608.09432v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2608_09432_v1",
+  "year": 2026
+}

@@ -1,0 +1,35 @@
+{
+  "abstract": "Domain adaptation of small language models (SLMs) has emerged as a practical strategy for deploying capable NLP systems in resource-constrained, high-stakes environments including healthcare, legal services, and financial analysis. While performance gains from parameter-efficient fine-tuning are well characterised, the corresponding impact on trustworthiness (factual calibration and adversarial robustness) remains poorly understood. This paper presents the first systematic cross-domain, cross-architecture empirical study quantifying the trustworthiness cost of domain adaptation across three SLM architectures (TinyLlama 1B, Gemma-2 2B, Llama 3.2 1B), three domains (healthcare, legal, finance), two training-data conditions (benign and adversarially perturbed), and four fine-tuning strategies (baseline LoRA, Safety-DPO, Dark Experience Replay, and Task Arithmetic LoRA, TA-LoRA). Trustworthiness is evaluated through TruthfulQA MC2 (factual calibration) and HarmBench ASR (adversarial robustness) across all 216 experimental configurations with three random seeds. Three principal findings emerge. First, baseline QLoRA domain adaptation produces minimal TruthfulQA MC2 change across all model-domain combinations (mean |Delta TQA| < 0.02). Second, adversarially perturbed training data consistently improves domain adaptation quality (Delta loss approximately -0.040) without worsening trustworthiness benchmarks. Third, none of the three safety-preserving strategies reduced adversarial harm susceptibility: Safety-DPO was effectively neutral (mean Delta ASR < 0.001), while Dark ER and TA-LoRA increased mean HarmBench ASR by +0.171 and +0.155 respectively in safety-aligned models (Gemma-2 2B, Llama 3.2 1B), with individual configurations exceeding +0.45. These results challenge the assumption that replay-based and arithmetic-merge strategies transfer alignment to domain-adapted SLMs.",
+  "authors": [
+    "Ramesh B. Paramkusham"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_trustworthiness_costs_of_domain_adaptation_in_small_language_models_a_",
+  "identifiers": {
+    "arxiv": "2608.00042v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.CL AND abs:\"small language model\" AND abs:\"architecture\"",
+    "retrieved_at": "2026-08-17T05:48:51Z"
+  },
+  "title": "Trustworthiness Costs of Domain Adaptation in Small Language Models:A Cross-Architecture Empirical Study",
+  "topics": [
+    "topic_architecture_small_budget"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2608.00042v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2608_00042_v1",
+  "year": 2026
+}

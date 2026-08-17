@@ -1,0 +1,39 @@
+{
+  "abstract": "Network alignment identifies node correspondences across different networks and is a fundamental primitive in many data science applications, including social network analysis, fraud detection, and knowledge graph integration. However, state-of-the-art network alignment methods often achieve high accuracy by repeatedly constructing and updating dense matrices, sacrificing scalability in the process. To address this scalability limitation without compromising alignment accuracy, we present FastAlign, a scalable, sparsity-aware framework for optimal transport-based network alignment. Rather than introducing a new alignment model, FastAlign preserves the original OT formulation and reinterprets its computation as a set of recurring mixed sparse-dense operations. FastAlign combines sparsity-aware graph computation with domain-specific kernel fusion, including a custom SpMM kernel. Our results show that FastAlign achieves alignment quality comparable to state-of-the-art OT-based methods while substantially reducing end-to-end runtime up to 3.89x-9.45x on CPU and 2.24x-32.54x on GPU.",
+  "authors": [
+    "Elaheh Hassani",
+    "Durga Mandarapu",
+    "Qi Yu",
+    "Hanghang Tong",
+    "Ariful Azad"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_scalable_optimal_transport_algorithm_for_network_alignment",
+  "identifiers": {
+    "arxiv": "2607.11952v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"kernel fusion\" AND abs:\"GPU\"",
+    "retrieved_at": "2026-08-17T05:48:28Z"
+  },
+  "title": "Scalable Optimal Transport Algorithm for Network Alignment",
+  "topics": [
+    "topic_kernel_efficiency"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2607.11952v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2607_11952_v1",
+  "year": 2026
+}

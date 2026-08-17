@@ -1,0 +1,39 @@
+{
+  "abstract": "The exponential growth in data has intensified the demand for computational power to train large-scale deep learning models. However, the rapid growth in model size and complexity raises concerns about equal and fair access to computational resources, particularly under increasing energy and infrastructure constraints. GPUs have emerged as essential for accelerating such workloads. This study benchmarks four deep learning models (Conv6, VGG16, ResNet18, CycleGAN) using TensorFlow and PyTorch on Intel Xeon CPUs and NVIDIA Tesla T4 GPUs. Our experiments demonstrate that, on average, GPU training achieves speedups ranging from 11x to 246x depending on model complexity, with lightweight models (Conv6) showing the highest acceleration (246x), mid-sized models (VGG16, ResNet18) achieving 51-116x speedups, and complex generative models (CycleGAN) reaching 11x improvements compared to CPU training. Additionally, in our PyTorch vs. TensorFlow comparison, we observed that TensorFlow's kernel-fusion optimizations reduce inference latency by approximately 15%. We also analyze GPU memory usage trends and projecting requirements through 2025 using polynomial regression. Our findings highlight that while GPUs are essential for sustaining AI's growth, democratized and shared access to GPU resources is critical for enabling research innovation across institutions with limited computational budgets.",
+  "authors": [
+    "Lisan Al Amin",
+    "Md Ismail Hossain",
+    "Rupak Kumar Das",
+    "Mahbubul Islam",
+    "Abdulaziz Tabbakh"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_democratizing_ai_a_comparative_study_in_deep_learning_efficiency_and_f",
+  "identifiers": {
+    "arxiv": "2603.20920v2"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"kernel fusion\" AND abs:\"GPU\"",
+    "retrieved_at": "2026-08-17T05:48:28Z"
+  },
+  "title": "Democratizing AI: A Comparative Study in Deep Learning Efficiency and Future Trends in Computational Processing",
+  "topics": [
+    "topic_kernel_efficiency"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2603.20920v2"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2603_20920_v2",
+  "year": 2026
+}

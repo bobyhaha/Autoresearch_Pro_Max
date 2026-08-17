@@ -1,0 +1,37 @@
+{
+  "abstract": "Modern deep learning typically keeps the batch size static throughout training, thus overlooking the joint effect of learning rate and batch size on the training dynamics. In this paper, we study the deep learning dynamics through the lens of convex optimization and derive a joint characterization of loss in terms of both schedules, applicable to general optimizers and model architectures. This characterization yields a closed-form optimal batch size schedule for any prescribed learning rate schedule, and further leads to joint scaling laws that consistently outperform static batch size baselines, highlighting the significance of dynamic batch size schedule in large language model training.",
+  "authors": [
+    "Jiaxiang Li",
+    "Zhiqi Bu",
+    "Shiyun Xu"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_towards_joint_scaling_laws_with_optimal_batch_size_schedules",
+  "identifiers": {
+    "arxiv": "2607.27731v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"scaling law\" AND abs:\"language model\"",
+    "retrieved_at": "2026-08-17T05:48:08Z"
+  },
+  "title": "Towards joint scaling laws with optimal batch size schedules",
+  "topics": [
+    "topic_token_exposure_exchange_rate"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2607.27731v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2607_27731_v1",
+  "year": 2026
+}

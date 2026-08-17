@@ -1,0 +1,35 @@
+{
+  "abstract": "Compact AI systems make local language-model experimentation increasingly accessible, yet practical evidence for multi-node training on desktop-class accelerators remains limited. This report presents a proof-of-concept deployment of distributed NanoChat pretraining across two NVIDIA DGX Spark systems, each with a GB10 Grace Blackwell system-on-chip and 128 GB of unified memory, administered remotely over a Tailscale mesh VPN and connected for training by a dedicated 200 Gb/s QSFP56 direct fiber link. PyTorch torchrun, DDP, and NCCL were configured with one process per node, a depth-20 NanoChat model, a local batch size of 32 per node, and a 2,048-token context, giving a global batch of 131,072 tokens per step. The run sustained a step time of about 69.4 s (about 1,890 tokens/s), processing about 653 million tokens over four days. We document link configuration, container setup, interface binding, a step-zero evaluation bug that triggered NCCL timeouts, checkpointing, and troubleshooting lessons, as a reproducibility reference for small labs. We also built a cybersecurity fine-tuning dataset from 77 CISA advisories (338 training, 37 validation conversations) and ran a 17-question held-out evaluation comparing a baseline SFT checkpoint against a CTI-augmented checkpoint with an Ollama-hosted LLM judge. CTI-specific categories improved while general-knowledge categories regressed, for a small overall change from 2.06 to 2.29 on a 0-10 scale. The same cluster supports a 400-level AI course (CS 426) and a query engine for CompTIA Security+ POGIL activities in CBS 255, showing modest local infrastructure can serve both research and teaching. The study establishes feasibility rather than a scaling-efficiency claim, since single-node throughput used for comparison was estimated, not measured under matched conditions. Runbook and scripts are available (see Code Availability).",
+  "authors": [
+    "Vasanth Iyer"
+  ],
+  "citation_count": 0,
+  "content": {
+    "source": "arxiv_atom_api_verbatim",
+    "status": "abstract_only"
+  },
+  "id": "lit_dual_node_nvidia_dgx_spark_over_tailscale_a_remote_access_testbed_for_",
+  "identifiers": {
+    "arxiv": "2608.07226v1"
+  },
+  "publication_type": "preprint",
+  "retrieval": {
+    "provider": "arxiv_atom_api",
+    "query": "cat:cs.LG AND abs:\"language model\" AND abs:\"training\" AND abs:\"throughput\"",
+    "retrieved_at": "2026-08-17T05:48:20Z"
+  },
+  "title": "Dual-Node NVIDIA DGX Spark over Tailscale: A Remote-Access Testbed for Distributed LLM Training and Cyber-Threat-Intelligence Fine-Tuning",
+  "topics": [
+    "topic_throughput_efficiency"
+  ],
+  "urls": [
+    "https://arxiv.org/abs/2608.07226v1"
+  ],
+  "venue": {
+    "name": "arXiv",
+    "peer_reviewed": "unknown",
+    "tier": "preprint"
+  },
+  "work_key": "work_arxiv_2608_07226_v1",
+  "year": 2026
+}
