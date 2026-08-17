@@ -146,6 +146,25 @@ def our_training_processes() -> int | None:
         return None
 
 
+def free_gpus() -> list[str]:
+    """Our GPUs with no compute process on them. Empty list also means unreachable."""
+    code, out = run([*SSH,
+        "nvidia-smi --query-gpu=index,memory.used --format=csv,noheader"], 90)
+    if code != 0:
+        return []
+    free = []
+    for line in out.splitlines():
+        cells = [c.strip() for c in line.split(",")]
+        if len(cells) < 2 or cells[0] not in ("0", "3", "4", "7"):
+            continue
+        try:
+            if float(cells[1].split()[0]) < 512:
+                free.append(cells[0])
+        except ValueError:
+            continue
+    return free
+
+
 def ensure_pool(dry_run: bool) -> bool:
     code, _ = run(["pgrep", "-f", POOL_PATTERN], 20)
     if code == 0:
@@ -221,13 +240,21 @@ def check(dry_run: bool) -> int:
         write_state(state)
         return 0
 
-    # No training processes. If work is queued, the pool is mid-launch or waiting on a
-    # tenant-held GPU; that resolves itself and staging more would only pile up.
-    if busy > 0:
-        log(f"claimed but not executing: running={queue['running']} depth={queue['depth']} "
-            f"— resource-wait or setup, not staging")
+    # No training processes. Queue depth alone is NOT sufficient reason to sit still:
+    # jobs are pinned to a specific GPU, so a queue full of work for a tenant-held card
+    # leaves free cards idle while `running` looks healthy. Observed 2026-08-17: six
+    # jobs all pinned to gpu0 (foreign-held) while gpu3/4/7 sat free, and this branch
+    # declined to stage for 15 minutes. Only decline if the queue has work AND we have
+    # no free GPU to put it on.
+    free = free_gpus()
+    if busy > 0 and not free:
+        log(f"claimed but not executing: running={queue['running']} depth={queue['depth']}, "
+            f"no free GPU — resource-wait or setup, not staging")
         write_state(state)
         return 0
+    if busy > 0 and free:
+        log(f"IDLE CAPACITY: {len(free)} free GPU(s) {free} while {busy} job(s) are pinned "
+            f"elsewhere — staging a wave to cover them")
 
     # Nothing running and nothing queued: the expensive state. Stage controls.
     if state["consecutive_stages"] >= MAX_CONSECUTIVE_STAGES:
