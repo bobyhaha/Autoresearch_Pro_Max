@@ -188,10 +188,21 @@ def check_remote(rep: Report) -> None:
             rep.add(False, f"{parts[0] if parts else '?'} workdir readable", line[:80])
             continue
         gpu, t, p, b = parts
-        ok = (t == local["train.py"] and p == local["prepare.py"]
-              and b == local["baseline_provenance.json"])
-        rep.add(ok, f"{gpu} workdir byte-matches local tree",
-                "" if ok else f"train {t[:8]} prepare {p[:8]} prov {b[:8]}")
+        # prepare.py and baseline_provenance.json are NEVER mutable: prepare.py's digest
+        # IS the scope evaluator and provenance is the seal, so a mismatch there means a
+        # run would be measured against a metric nobody declared. Those stay FAIL.
+        #
+        # train.py is the declared mutable path. A candidate arm materialises its own
+        # train.py into the workdir by design, so a mismatch there while candidates are
+        # in flight is expected, not a fault -- failing on it would train a reader to
+        # ignore this whole report. Surfaced as a warning with the digest so it can be
+        # checked against the sealed candidate manifest.
+        sealed_ok = (p == local["prepare.py"] and b == local["baseline_provenance.json"])
+        rep.add(sealed_ok, f"{gpu} sealed bindings match (prepare.py, provenance)",
+                "" if sealed_ok else f"prepare {p[:8]} prov {b[:8]}")
+        if t != local["train.py"]:
+            rep.add(None, f"{gpu} train.py differs from baseline",
+                    f"{t[:12]} — expected while a candidate arm is running on this GPU")
 
 
 def check_corpus_and_cache(rep: Report) -> None:
