@@ -299,6 +299,59 @@ and the updated ledger is what generates the next claims and mechanisms:
 Old beliefs get **refined or retired, never quietly kept.** A belief that has
 survived three contradicting results is a bug in the ledger, not a strong belief.
 
+### 3.2b Every result gets YOUR mechanistic explanation, and that is where the next
+### hypotheses come from
+
+A landed number is not a finding until someone says *why* it happened. The literature
+supplies mechanisms for things other people measured; **our results need mechanisms we
+author ourselves**, because nobody else has run this frame.
+
+For every landed result — wins, nulls, and especially the surprises:
+
+1. **Write the causal story before reading anyone else's.** What mediator moved?
+   `num_steps`, MFU, gradient noise, receptive field, optimizer conditioning, memory
+   traffic? Name it, and name the *sign* it should have had.
+2. **Check the mediator against its own diagnostics.** Every spec carries
+   `num_steps`, `training_seconds`, `mfu_percent`, `total_tokens_M` for exactly this.
+   A story that predicts more steps and got none is refuted regardless of `val_bpb`.
+   This is the cheapest way to catch a "win" that arrived through the wrong door.
+3. **Explain the nulls too, and prefer the common cause.** Several nulls with one
+   shared explanation is a stronger finding than one win — a predecessor's real
+   result was that its whole family sat inside the noise band, which is a fact about
+   the frame, not about the candidates.
+4. **Register it.** `mechanism` for the causal graph, with every edge citing claims
+   and every assumption written down. If it contradicts a registered belief, say so:
+   an `opposes` claim against something we previously supported is among the most
+   valuable records this campaign can produce.
+
+**Then use the mechanism to generate hypotheses — that is what mechanisms are for.**
+A mechanism is a generator, not a summary. From one causal graph, derive:
+
+- **the confirmatory test** — the cheapest intervention that moves the mediator and
+  nothing else;
+- **the discriminating test** — the one that separates your explanation from the best
+  rival, which matters more than the confirmatory one and is usually skipped;
+- **the exploratory extensions** — *if this mediator is real, what else does it
+  imply?* Push it somewhere the literature has not been. This is where the 6 in the
+  6:4 comes from (§7.1): exploration is not random candidates, it is mechanisms taken
+  seriously enough to have consequences.
+
+**Good exploratory hypotheses come from taking your own mediator literally.** If the
+story is "removed FLOPs return as steps", ask what *else* is redundant. If it is "the
+GPU is gap-bound not kernel-bound", ask what else runs while it waits. If it is
+"scale vectors precondition the next linear map", ask which other unparameterised
+operation in this net is doing the same job badly. The generative move is always:
+*take the mediator seriously, then find the next place it applies.*
+
+Two discipline notes, both learned expensively here:
+
+- **Do not explain noise.** With control σ at 0.00556 against a 0.000426 gate, most
+  deltas are ties. Building a mechanism on an unordered tie manufactures a belief out
+  of contention, and it will be withdrawn later at cost. Check the band first.
+- **An implementation failure is not evidence about the mechanism.** When the CUDA
+  graph candidate segfaulted, the gap mediator was untested, not refuted. Record it
+  as an implementation null and say which it was.
+
 ## 3.3 Every 10 experiments — Fable writes the paper
 
 **On each 10-landed-experiment boundary** (not hourly, not batched at the end),
@@ -335,7 +388,10 @@ uv run autoresearch --root .autoresearch bank | \
 2  BANK       uv run autoresearch --root .autoresearch bank && ... status && ... doctor
 3  DISPATCH   analyst + critic + scout agents, concurrently, while the GPUs run
 4  CLASSIFY   every landed candidate: MECHANISM / KNOB / THROUGHPUT, and whether
-              it beat its own frozen same-GPU control or merely a different one
+              it beat its own frozen same-GPU control or merely a different one.
+              Then write YOUR OWN mechanistic explanation of the result, check it
+              against its diagnostics, and derive the confirmatory, discriminating
+              and exploratory hypotheses it implies (3.2b)
 5  READ       >=30 papers/hour concurrent with the GPUs, 2025-2026 biased, content
               from the publisher not the metadata provider; analyse each for its
               MEDIATOR and whether that mediator exists in our frame (3.0), then
