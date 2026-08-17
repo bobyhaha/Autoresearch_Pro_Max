@@ -488,7 +488,18 @@ Two discipline notes, both learned expensively here:
 
 **On each 10-landed-experiment boundary** (not hourly, not batched at the end),
 Fable performs a standing analysis-and-critique pass over the campaign so far and
-writes it to `AI_papers/`, using `templates/paper_template.md`. It reads the
+writes it to **`papers/`** — one file per report, named
+`YYYY-MM-DD_short-title-in-words.md`.
+
+**Write it for a person, not for a parser.** These are the artefact a human reads to
+understand what happened, so: a title that states the finding rather than the topic,
+a short version at the top that someone can stop after, prose that carries the
+argument with tables used only where they beat sentences, and units and comparisons
+spelled out. No unexplained jargon, no bare identifiers where a phrase would do, and
+the caveat next to the number rather than in a footnote. If a reader cannot tell from
+the report which claims are solid and which are leads, it has failed regardless of
+how much it contains. `templates/paper_template.md` is available for the record-keeping
+fields; it is not a substitute for readable writing. It reads the
 immutable records and the derived views — not this session's narration of them —
 and reports:
 
