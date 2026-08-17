@@ -133,6 +133,35 @@ Equivalently, a cron-scheduled agent at `*/10 * * * *` running the same command.
 **A session with neither armed is a session that will go idle** — that is the
 failure this whole file exists to prevent, and it has already happened twice.
 
+**(c) `tools/gpu_guard.py` — the one that actually guarantees GPU work.** (a) restarts
+a dead pool but will not queue anything; (b) needs an agent to be listening. Between
+them sat the failure that has now happened **three** times: queue drains, every GPU
+goes to 0%, and nothing happens until someone notices. The third time was this
+session — a loop was cancelled during a reset and never re-armed, and the fleet idled
+two hours.
+
+```bash
+pgrep -f 'tools/gpu_guard.py' || nohup uv run python tools/gpu_guard.py \
+  --interval-seconds 600 > runs/gpu_guard.out 2>&1 &
+uv run python tools/gpu_guard.py --once --dry-run   # say what it would do
+```
+
+Every 10 minutes it restarts a dead pool, then: our training processes alive → log and
+exit; nothing running but work queued → resource-wait or setup, leave it alone; nothing
+running and **nothing queued** → **stage a calibration wave**.
+
+**It stages calibration controls ONLY, never a candidate.** That is the entire safety
+argument, and it is why this does not violate "adding a candidate to the queue is a
+scientific decision". A candidate encodes a hypothesis and choosing one is research; a
+control re-measures a baseline already sealed into the scope. Re-measuring pays twice —
+it keeps the fleet warm, and every replicate tightens the noise floor that currently
+blocks reading any candidate at all (σ 0.00556 against a 0.000426 gate).
+
+It escalates rather than persisting when staging cannot be the answer: a paused health
+circuit, an unreadable store, an unreachable host, or `MAX_CONSECUTIVE_STAGES` waves
+with no new landed result — because burning GPU on controls that never land is keeping
+the fleet warm for show. Writes `runs/gpu_guard.log` and `runs/GPU_GUARD_STATE.json`.
+
 ## 2. Analysis and critique run in parallel with the GPUs, never in series
 
 GPU time is the scarce resource; analysis is nearly free. Nothing in the analysis
