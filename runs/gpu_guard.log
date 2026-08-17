@@ -8,3 +8,12 @@
 2026-08-17T06:57:16+00:00 ok procs=1 running=5 depth=1
 2026-08-17T07:06:52+00:00 ok procs=1 running=5 depth=1
 2026-08-17T07:07:09+00:00 ok procs=1 running=5 depth=1
+2026-08-17T07:17:09+00:00 ok procs=1 running=7 depth=0
+2026-08-17T07:27:09+00:00 ok procs=1 running=6 depth=1
+2026-08-17T07:27:19+00:00 ok procs=1 running=6 depth=1
+2026-08-17T07:27:37+00:00 ok procs=1 running=0 depth=0
+2026-08-17T07:27:43+00:00 ok procs=1 running=0 depth=0
+2026-08-17T07:27:51+00:00 ok procs=1 running=0 depth=0
+2026-08-17T07:28:41+00:00 TOPPING UP: 1 running but only 0 job(s) queued against capacity 4 (free=['3', '4', '7']) — staging so the fleet does not drain
+2026-08-17T07:28:41+00:00 STAGED calibration wave guard_0817_072841 on GPUs [3, 4, 7] (free=['3', '4', '7'])
+2026-08-17T07:28:42+00:00 ok procs=1 running=0 depth=3

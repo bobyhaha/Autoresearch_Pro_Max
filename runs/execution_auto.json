@@ -1,0 +1,164 @@
+{
+  "code_bindings": [
+    {
+      "source": "code/provenance.json",
+      "execution_path": "baseline_provenance.json"
+    },
+    {
+      "source": "code/launch.sh",
+      "execution_path": "launch.sh"
+    },
+    {
+      "source": "code/prepare.py",
+      "execution_path": "prepare.py"
+    },
+    {
+      "source": "code/pyproject.toml",
+      "execution_path": "pyproject.toml"
+    },
+    {
+      "source": "code/train.py",
+      "execution_path": "train.py"
+    },
+    {
+      "source": "code/uv.lock",
+      "execution_path": "uv.lock"
+    }
+  ],
+  "data_bindings": [
+    {
+      "source": "data_manifest.json",
+      "execution_path": "data_manifest.json"
+    }
+  ],
+  "resources": [
+    {
+      "id": "h200_gpu3",
+      "hardware_class": "nvidia-h200-141gb-sxm_driver-580.95.05_torch-2.9.1+cu128_triton-3.5.1_kernels-0.12.1",
+      "host_id": "${OPHIS_HOST_ID}",
+      "backend": "ssh",
+      "ssh_argv": [
+        "ssh",
+        "-o",
+        "ControlMaster=auto",
+        "-o",
+        "ControlPath=~/.ssh/cm/%r@%h:%p",
+        "-o",
+        "ControlPersist=600",
+        "-i",
+        "${OPHIS_SSH_KEY}",
+        "-o",
+        "IdentitiesOnly=yes",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ServerAliveInterval=15",
+        "-o",
+        "ServerAliveCountMax=8",
+        "-o",
+        "ConnectTimeout=20",
+        "-p",
+        "${OPHIS_SSH_PORT}",
+        "${OPHIS_SSH_TARGET}"
+      ],
+      "workdir": "${OPHIS_REMOTE_ROOT}/gpu3",
+      "python": ".venv/bin/python",
+      "gpus": [
+        3
+      ],
+      "max_concurrent_jobs": 3,
+      "reservation": {
+        "mode": "shared"
+      },
+      "max_idle_memory_mb": 512,
+      "max_idle_utilization_percent": 10
+    },
+    {
+      "id": "h200_gpu4",
+      "hardware_class": "nvidia-h200-141gb-sxm_driver-580.95.05_torch-2.9.1+cu128_triton-3.5.1_kernels-0.12.1",
+      "host_id": "${OPHIS_HOST_ID}",
+      "backend": "ssh",
+      "ssh_argv": [
+        "ssh",
+        "-o",
+        "ControlMaster=auto",
+        "-o",
+        "ControlPath=~/.ssh/cm/%r@%h:%p",
+        "-o",
+        "ControlPersist=600",
+        "-i",
+        "${OPHIS_SSH_KEY}",
+        "-o",
+        "IdentitiesOnly=yes",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ServerAliveInterval=15",
+        "-o",
+        "ServerAliveCountMax=8",
+        "-o",
+        "ConnectTimeout=20",
+        "-p",
+        "${OPHIS_SSH_PORT}",
+        "${OPHIS_SSH_TARGET}"
+      ],
+      "workdir": "${OPHIS_REMOTE_ROOT}/gpu4",
+      "python": ".venv/bin/python",
+      "gpus": [
+        4
+      ],
+      "max_concurrent_jobs": 3,
+      "reservation": {
+        "mode": "shared"
+      },
+      "max_idle_memory_mb": 512,
+      "max_idle_utilization_percent": 10
+    },
+    {
+      "id": "h200_gpu7",
+      "hardware_class": "nvidia-h200-141gb-sxm_driver-580.95.05_torch-2.9.1+cu128_triton-3.5.1_kernels-0.12.1",
+      "host_id": "${OPHIS_HOST_ID}",
+      "backend": "ssh",
+      "ssh_argv": [
+        "ssh",
+        "-o",
+        "ControlMaster=auto",
+        "-o",
+        "ControlPath=~/.ssh/cm/%r@%h:%p",
+        "-o",
+        "ControlPersist=600",
+        "-i",
+        "${OPHIS_SSH_KEY}",
+        "-o",
+        "IdentitiesOnly=yes",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "ServerAliveInterval=15",
+        "-o",
+        "ServerAliveCountMax=8",
+        "-o",
+        "ConnectTimeout=20",
+        "-p",
+        "${OPHIS_SSH_PORT}",
+        "${OPHIS_SSH_TARGET}"
+      ],
+      "workdir": "${OPHIS_REMOTE_ROOT}/gpu7",
+      "python": ".venv/bin/python",
+      "gpus": [
+        7
+      ],
+      "max_concurrent_jobs": 3,
+      "reservation": {
+        "mode": "shared"
+      },
+      "max_idle_memory_mb": 512,
+      "max_idle_utilization_percent": 10
+    }
+  ],
+  "runtime": {
+    "timeout_seconds_per_arm": 1200,
+    "telemetry_interval_seconds": 10,
+    "resource_wait_seconds": 900
+  }
+}

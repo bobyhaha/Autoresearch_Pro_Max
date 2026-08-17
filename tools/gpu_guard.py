@@ -184,20 +184,44 @@ def ensure_pool(dry_run: bool) -> bool:
     return True
 
 
-def stage_controls(dry_run: bool) -> bool:
+def execution_for(free: list[str]) -> str:
+    """Write an execution config containing only the GPUs that are actually free.
+
+    Jobs are GPU-pinned, so staging a control for a card a foreign tenant holds
+    creates a claim that can never run. Observed 2026-08-17: three `custom_molprop.py`
+    processes from another user sat on gpu0 for over four hours, and every calibration
+    wave added one more permanently stuck gpu0 claim -- seven of them, while gpu3/4/7
+    ran fine. The queue read `running=7` the whole time, which looks healthy and is not.
+
+    So the fleet is chosen from measurement, not from a fixed file. Four GPUs are ours
+    on paper; the number usable right now is whatever nvidia-smi says.
+    """
+    base = json.loads((REPO / "runs" / "execution_fleet4.json").read_text())
+    keep = [r for r in base.get("resources", []) if str(r.get("gpus", [None])[0]) in free]
+    if not keep:
+        return "runs/execution_fleet4.json"
+    base["resources"] = keep
+    for r in base["resources"]:
+        r["max_concurrent_jobs"] = len(keep)
+    out = REPO / "runs" / "execution_auto.json"
+    out.write_text(json.dumps(base, indent=2) + "\n")
+    return "runs/execution_auto.json"
+
+
+def stage_controls(free: list[str], dry_run: bool) -> bool:
     """Stage one calibration control per declared GPU. Controls only, by design."""
     label = f"guard_{datetime.now(timezone.utc).strftime('%m%d_%H%M%S')}"
     argv = [
         "uv", "run", "autoresearch", "--root", ".autoresearch", "calibrate",
         "karpathy_228791f", label,
         "--scope", "runs/scope.json",
-        "--execution", "runs/execution_fleet4.json",
+        "--execution", execution_for(free),
         "--mutable-code-path", "train.py",
         "--seed", "42",
         "--argv", "/bin/bash", "launch.sh",
     ]
     if dry_run:
-        log(f"WOULD stage calibration wave {label}")
+        log(f"WOULD stage calibration wave {label} on free GPUs {free}")
         return True
     code, out = run(argv, 300)
     if code != 0:
@@ -208,7 +232,7 @@ def stage_controls(dry_run: bool) -> bool:
         gpus = [s["gpu"] for s in staged.get("staged", staged.get("controls", []))]
     except (ValueError, KeyError):
         gpus = ["?"]
-    log(f"STAGED calibration wave {label} on GPUs {gpus}")
+    log(f"STAGED calibration wave {label} on GPUs {gpus} (free={free})")
     return True
 
 
@@ -234,9 +258,25 @@ def check(dry_run: bool) -> int:
         return 4
 
     busy = queue["running"] + queue["pending"] + queue["depth"]
-    if procs > 0:
+    free = free_gpus()
+    # Work executing is not the same as work QUEUED. If the queue is empty, the fleet
+    # goes idle the moment the current arms finish, and nothing notices until the next
+    # tick -- ten minutes of four idle H200s, repeatedly, across a 24h run. Keep the
+    # queue at least as deep as the capacity that will shortly be free.
+    queued = queue["running"] + queue["pending"] + queue["depth"]
+    capacity = max(len(free) + procs, 1)
+    if procs > 0 and queued >= capacity:
         log(f"ok procs={procs} running={queue['running']} depth={queue['depth']}"
             f"{' (pool restarted)' if restarted else ''}")
+        write_state(state)
+        return 0
+    if procs > 0 and queued < capacity:
+        log(f"TOPPING UP: {procs} running but only {queued} job(s) queued against "
+            f"capacity {capacity} (free={free}) — staging so the fleet does not drain")
+        can_stage = (state["consecutive_stages"] < MAX_CONSECUTIVE_STAGES
+                     and not queue["paused"])
+        if can_stage and stage_controls(free, dry_run):
+            state["consecutive_stages"] = state.get("consecutive_stages", 0) + 1
         write_state(state)
         return 0
 
@@ -246,7 +286,6 @@ def check(dry_run: bool) -> int:
     # jobs all pinned to gpu0 (foreign-held) while gpu3/4/7 sat free, and this branch
     # declined to stage for 15 minutes. Only decline if the queue has work AND we have
     # no free GPU to put it on.
-    free = free_gpus()
     if busy > 0 and not free:
         log(f"claimed but not executing: running={queue['running']} depth={queue['depth']}, "
             f"no free GPU — resource-wait or setup, not staging")
@@ -268,7 +307,7 @@ def check(dry_run: bool) -> int:
         return 3
 
     log("IDLE GPUS, EMPTY QUEUE — staging calibration controls (never candidates)")
-    if stage_controls(dry_run):
+    if stage_controls(free, dry_run):
         state["consecutive_stages"] = state.get("consecutive_stages", 0) + 1
     write_state(state)
     return 0

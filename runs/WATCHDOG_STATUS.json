@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-08-17T07:04:01+00:00",
+  "checked_at": "2026-08-17T07:24:05+00:00",
   "pool_pids": [
     97976,
     97978
@@ -7,9 +7,9 @@
   "queue": {
     "states": {
       "blocked": 0,
-      "complete": 20,
+      "complete": 23,
       "pending": 0,
-      "running": 6,
+      "running": 7,
       "waiting": 0
     },
     "depth": 0,
@@ -25,11 +25,11 @@
       "h200_gpu4",
       "h200_gpu7"
     ],
-    "load1": "278.46",
+    "load1": "254.80",
     "reachable": true
   },
   "alerts": [],
   "action": "",
-  "chart": "chart=ok (14 plotted, 14 valid, 3 invalid excluded, 3 from earlier scopes excluded, best measured 1.017555 (exploratory, not SOTA))",
+  "chart": "chart=ok (17 plotted, 17 valid, 3 invalid excluded, 3 from earlier scopes excluded, best measured 1.017555 (exploratory, not SOTA))",
   "ok": true
 }
