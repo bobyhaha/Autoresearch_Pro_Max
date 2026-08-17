@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+import json
 import math
 import statistics
 from collections.abc import Mapping
 from typing import Any
 
 from .protocol import EVIDENCE_POLICY_VERSION
-from .records import RecordError, canonical_json, make_record
+from .records import canonical_json, make_record, utc_now
 from .store import Store
 
 POLICY_VERSION = "evidence-v1"
@@ -78,8 +79,58 @@ class EvidenceEngine:
             existing = self.store.get("evidence_decision", evidence_id)
             if existing["payload"] == payload:
                 return existing
-            raise RecordError(f"evidence id collision: {evidence_id}")
+            # The same result judged twice under the same policy can legitimately
+            # produce a different payload, because the verdict is not a pure
+            # function of the result: `_step_baselines()` is a median over the
+            # campaign's own history, so a re-judgement months or minutes later
+            # sees a different baseline. That is a deliberate design choice, not a
+            # defect in the judge.
+            #
+            # What IS a defect is raising here. This ran inside the resident worker
+            # pool, so one re-judged v2b result killed all eight workers and left
+            # four H200s idle until the next manual check -- the single most
+            # expensive failure this campaign has. An EvidenceDecision is an
+            # immutable authority, so the first judgement stands and the second is
+            # discarded; the alternative (overwriting) would silently rewrite the
+            # record a bank score was already computed from.
+            #
+            # The divergence is still surfaced rather than swallowed: it is written
+            # beside the store so a heartbeat can see that a re-judgement disagreed
+            # and decide whether the baseline drift is itself the finding.
+            self._record_rejudgement_divergence(evidence_id, existing["payload"], payload)
+            return existing
         return self.store.put(make_record("evidence_decision", evidence_id, payload))
+
+    def _record_rejudgement_divergence(
+        self, evidence_id: str, kept: dict, discarded: dict
+    ) -> None:
+        """Append a divergence note beside the store; never raise from here.
+
+        This is diagnostics, not a record: it must not be able to fail a run. A
+        heartbeat reads it to answer "did any decision change if we re-judged it",
+        which is the honest way to notice that the step-baseline drift has moved
+        the validity boundary under us.
+        """
+
+        try:
+            note = {
+                "at": utc_now(),
+                "evidence_id": evidence_id,
+                "result_id": kept.get("result_id"),
+                "kept_verdict": kept.get("measurement_verdict"),
+                "discarded_verdict": discarded.get("measurement_verdict"),
+                "kept_reasons": kept.get("reasons"),
+                "discarded_reasons": discarded.get("reasons"),
+            }
+            path = self.store.root / "operational" / "rejudgement_divergence.jsonl"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            with path.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(note, sort_keys=True) + "\n")
+        except Exception as exc:  # noqa: BLE001 - diagnostics must never break judging
+            # Deliberately swallowed: losing a diagnostic note is survivable, while
+            # raising here would reintroduce the pool-killing failure this method
+            # exists to prevent. Print so it is at least visible in the pool log.
+            print(f"rejudgement divergence note failed: {type(exc).__name__}: {exc}", flush=True)
 
     def _step_baselines(self) -> dict[str, float]:
         """Median step count per exact argv and physical GPU placement.
