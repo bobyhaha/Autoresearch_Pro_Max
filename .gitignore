@@ -1,0 +1,21 @@
+.autoresearch/
+.demo/
+.pytest_cache/
+.ruff_cache/
+.venv/
+__pycache__/
+*.py[cod]
+tmp/
+runs/code/.venv/
+runs/data_manifest.json
+
+# Profiling artifacts and large captures
+*.nsys-rep
+*.qdstrm
+runs/worker_pool*.log
+runs/watchdog.log
+runs/watchdog.out
+runs/wake.log
+
+# Deployment secrets
+.env

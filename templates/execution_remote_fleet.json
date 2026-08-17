@@ -1,0 +1,173 @@
+{
+  "code_bindings": [
+    {
+      "source": "../runs/code/train.py",
+      "execution_path": "train.py"
+    },
+    {
+      "source": "../runs/code/prepare.py",
+      "execution_path": "prepare.py"
+    },
+    {
+      "source": "../runs/code/pyproject.toml",
+      "execution_path": "pyproject.toml"
+    },
+    {
+      "source": "../runs/code/uv.lock",
+      "execution_path": "uv.lock"
+    },
+    {
+      "source": "../runs/code/provenance.json",
+      "execution_path": "baseline_provenance.json"
+    }
+  ],
+  "data_bindings": [
+    {
+      "source": "../runs/data_manifest.json",
+      "execution_path": "data_manifest.json"
+    }
+  ],
+  "resources": [
+    {
+      "id": "h200_gpu0",
+      "hardware_class": "replace_with_exact_gpu_and_interconnect_class",
+      "host_id": "replace_physical_host_id",
+      "backend": "ssh",
+      "ssh_argv": ["ssh", "-o", "BatchMode=yes", "replace_user@replace_host"],
+      "workdir": "/replace/ophis/gpu0",
+      "python": ".venv/bin/python",
+      "gpus": [0],
+      "max_concurrent_jobs": 8,
+      "reservation": {
+        "mode": "externally_reserved",
+        "id": "replace_with_real_scheduler_allocation_id"
+      },
+      "max_idle_memory_mb": 512,
+      "max_idle_utilization_percent": 5
+    },
+    {
+      "id": "h200_gpu1",
+      "hardware_class": "replace_with_exact_gpu_and_interconnect_class",
+      "host_id": "replace_physical_host_id",
+      "backend": "ssh",
+      "ssh_argv": ["ssh", "-o", "BatchMode=yes", "replace_user@replace_host"],
+      "workdir": "/replace/ophis/gpu1",
+      "python": ".venv/bin/python",
+      "gpus": [1],
+      "max_concurrent_jobs": 8,
+      "reservation": {
+        "mode": "externally_reserved",
+        "id": "replace_with_real_scheduler_allocation_id"
+      },
+      "max_idle_memory_mb": 512,
+      "max_idle_utilization_percent": 5
+    },
+    {
+      "id": "h200_gpu2",
+      "hardware_class": "replace_with_exact_gpu_and_interconnect_class",
+      "host_id": "replace_physical_host_id",
+      "backend": "ssh",
+      "ssh_argv": ["ssh", "-o", "BatchMode=yes", "replace_user@replace_host"],
+      "workdir": "/replace/ophis/gpu2",
+      "python": ".venv/bin/python",
+      "gpus": [2],
+      "max_concurrent_jobs": 8,
+      "reservation": {
+        "mode": "externally_reserved",
+        "id": "replace_with_real_scheduler_allocation_id"
+      },
+      "max_idle_memory_mb": 512,
+      "max_idle_utilization_percent": 5
+    },
+    {
+      "id": "h200_gpu3",
+      "hardware_class": "replace_with_exact_gpu_and_interconnect_class",
+      "host_id": "replace_physical_host_id",
+      "backend": "ssh",
+      "ssh_argv": ["ssh", "-o", "BatchMode=yes", "replace_user@replace_host"],
+      "workdir": "/replace/ophis/gpu3",
+      "python": ".venv/bin/python",
+      "gpus": [3],
+      "max_concurrent_jobs": 8,
+      "reservation": {
+        "mode": "externally_reserved",
+        "id": "replace_with_real_scheduler_allocation_id"
+      },
+      "max_idle_memory_mb": 512,
+      "max_idle_utilization_percent": 5
+    },
+    {
+      "id": "h200_gpu4",
+      "hardware_class": "replace_with_exact_gpu_and_interconnect_class",
+      "host_id": "replace_physical_host_id",
+      "backend": "ssh",
+      "ssh_argv": ["ssh", "-o", "BatchMode=yes", "replace_user@replace_host"],
+      "workdir": "/replace/ophis/gpu4",
+      "python": ".venv/bin/python",
+      "gpus": [4],
+      "max_concurrent_jobs": 8,
+      "reservation": {
+        "mode": "externally_reserved",
+        "id": "replace_with_real_scheduler_allocation_id"
+      },
+      "max_idle_memory_mb": 512,
+      "max_idle_utilization_percent": 5
+    },
+    {
+      "id": "h200_gpu5",
+      "hardware_class": "replace_with_exact_gpu_and_interconnect_class",
+      "host_id": "replace_physical_host_id",
+      "backend": "ssh",
+      "ssh_argv": ["ssh", "-o", "BatchMode=yes", "replace_user@replace_host"],
+      "workdir": "/replace/ophis/gpu5",
+      "python": ".venv/bin/python",
+      "gpus": [5],
+      "max_concurrent_jobs": 8,
+      "reservation": {
+        "mode": "externally_reserved",
+        "id": "replace_with_real_scheduler_allocation_id"
+      },
+      "max_idle_memory_mb": 512,
+      "max_idle_utilization_percent": 5
+    },
+    {
+      "id": "h200_gpu6",
+      "hardware_class": "replace_with_exact_gpu_and_interconnect_class",
+      "host_id": "replace_physical_host_id",
+      "backend": "ssh",
+      "ssh_argv": ["ssh", "-o", "BatchMode=yes", "replace_user@replace_host"],
+      "workdir": "/replace/ophis/gpu6",
+      "python": ".venv/bin/python",
+      "gpus": [6],
+      "max_concurrent_jobs": 8,
+      "reservation": {
+        "mode": "externally_reserved",
+        "id": "replace_with_real_scheduler_allocation_id"
+      },
+      "max_idle_memory_mb": 512,
+      "max_idle_utilization_percent": 5
+    },
+    {
+      "id": "h200_gpu7",
+      "hardware_class": "replace_with_exact_gpu_and_interconnect_class",
+      "host_id": "replace_physical_host_id",
+      "backend": "ssh",
+      "ssh_argv": ["ssh", "-o", "BatchMode=yes", "replace_user@replace_host"],
+      "workdir": "/replace/ophis/gpu7",
+      "python": ".venv/bin/python",
+      "gpus": [7],
+      "max_concurrent_jobs": 8,
+      "reservation": {
+        "mode": "externally_reserved",
+        "id": "replace_with_real_scheduler_allocation_id"
+      },
+      "max_idle_memory_mb": 512,
+      "max_idle_utilization_percent": 5
+    }
+  ],
+  "runtime": {
+    "timeout_seconds_per_arm": 1500,
+    "telemetry_interval_seconds": 20,
+    "resource_wait_seconds": 300
+  }
+}

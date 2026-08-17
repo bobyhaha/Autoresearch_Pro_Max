@@ -1,0 +1,48 @@
+{
+  "id": "claim_time_budget_makes_steps_the_currency",
+  "belief_key": "belief_fixed_time_budget_prices_flops_in_optimizer_steps",
+  "statement": "Under a fixed charged-training-seconds budget, any FLOP removed from the forward/backward pass is converted into additional optimizer steps, so a change is only worthwhile if the quality it costs per step is smaller than the quality the extra steps buy.",
+  "claim_type": "mechanistic",
+  "origin": "literature",
+  "stance": "supports",
+  "scope": {
+    "model": "decoder-only transformer, 8 layers, d_model 512, 4 heads of 128",
+    "budget": "300 charged training seconds on one H200"
+  },
+  "source_ids": [
+    "lit_karpathy_autoresearch_228791f"
+  ],
+  "evidence_ids": [],
+  "derived_from_claim_ids": [],
+  "topics": [
+    "topic_optimizer_short_horizon"
+  ],
+  "locators": [
+    {
+      "source_id": "lit_karpathy_autoresearch_228791f",
+      "location": "prepare.py line 31",
+      "excerpt": "TIME_BUDGET = 300        # training time budget in seconds (5 minutes)"
+    }
+  ],
+  "evidence": {
+    "study_design": "controlled_benchmark",
+    "artifact_status": "partial",
+    "reproduction_status": "not_attempted",
+    "directness": "indirect",
+    "scope_match": "partial",
+    "risk_of_bias": "medium",
+    "metrics": [
+      {
+        "name": "val_bpb",
+        "result": "Directly implied by the scope: budget.kind is training_seconds, not num_steps. Prior campaigns on this benchmark family measured roughly -0.0006 val_bpb per +1% steps, which sets the exchange rate a FLOP-saving change must beat."
+      }
+    ],
+    "content_depth": "fulltext_snapshot"
+  },
+  "assessment": {
+    "assessor": "claude-opus-5-1m/ophis-v2-2026-08-16",
+    "assessed_at": "2026-08-16T10:00:00Z",
+    "rationale": "Directly implied by the scope: budget.kind is training_seconds, not num_steps. Prior campaigns on this benchmark family measured roughly -0.0006 val_bpb per +1% steps, which sets the exchange rate a FLOP-saving change must beat.",
+    "confidence_policy_version": "confidence-v1"
+  }
+}

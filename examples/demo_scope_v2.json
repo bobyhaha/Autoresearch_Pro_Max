@@ -1,0 +1,17 @@
+{
+  "id": "demo_cpu_val_bpb_v2",
+  "hardware_class": "cpu-demo",
+  "dataset_split": "demo_manifest_revision_1",
+  "tokenizer": "none-demo-emitter",
+  "evaluator": "structured_metric_emitter_v1",
+  "precision": "python-float",
+  "metric": {
+    "name": "val_bpb",
+    "direction": "minimize"
+  },
+  "budget": {
+    "kind": "wall_seconds",
+    "value": 1
+  },
+  "notes": "Deterministic CPU smoke-test scope; never compare it with a training benchmark."
+}

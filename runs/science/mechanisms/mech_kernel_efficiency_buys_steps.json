@@ -1,0 +1,108 @@
+{
+  "id": "mech_kernel_efficiency_buys_steps",
+  "name": "Closing GPU gaps and memory-bound kernel time converts wall clock into optimizer steps",
+  "statement": "Under a fixed charged-training-seconds budget the metric is bought with optimizer steps. The profile shows step time is now dominated by two recoverable costs rather than by useful matmul: the GPU runs no kernel for ~43% of wall, and ~26.7% of the kernel time that does run is memory-bound RMSNorm and small elementwise work spread over ~572 launches per step. Removing either returns wall clock, which the fixed budget spends as additional steps, which lowers val_bpb along the same token law that already explained the v2b to v2c jump.",
+  "scope": {
+    "benchmark": "karpathy-autoresearch-corrected-bpb-v2c"
+  },
+  "nodes": [
+    {
+      "id": "intervention",
+      "label": "kernel-level change: CUDA graph capture, kernel fusion, or a cheaper cross-entropy"
+    },
+    {
+      "id": "mediator_gap",
+      "label": "GPU idle fraction within a step (launch/dispatch bubbles)"
+    },
+    {
+      "id": "mediator_kernel",
+      "label": "GPU kernel time spent on memory-bound norm and elementwise work"
+    },
+    {
+      "id": "mediator_steps",
+      "label": "optimizer steps completed within the 300s charged budget"
+    },
+    {
+      "id": "outcome",
+      "label": "validation bits per byte"
+    }
+  ],
+  "edges": [
+    {
+      "from": "intervention",
+      "to": "mediator_gap",
+      "relation": "decreases",
+      "claim_ids": [
+        "claim_gpu_is_idle_43_percent_of_wall"
+      ]
+    },
+    {
+      "from": "intervention",
+      "to": "mediator_kernel",
+      "relation": "decreases",
+      "claim_ids": [
+        "claim_memory_bound_ops_are_a_quarter_of_kernel_time"
+      ]
+    },
+    {
+      "from": "mediator_gap",
+      "to": "mediator_steps",
+      "relation": "increases",
+      "claim_ids": [
+        "claim_gpu_is_idle_43_percent_of_wall",
+        "claim_time_budget_makes_steps_the_currency"
+      ]
+    },
+    {
+      "from": "mediator_kernel",
+      "to": "mediator_steps",
+      "relation": "increases",
+      "claim_ids": [
+        "claim_memory_bound_ops_are_a_quarter_of_kernel_time",
+        "claim_time_budget_makes_steps_the_currency"
+      ]
+    },
+    {
+      "from": "mediator_steps",
+      "to": "outcome",
+      "relation": "causally improves",
+      "claim_ids": [
+        "claim_time_budget_makes_steps_the_currency"
+      ]
+    }
+  ],
+  "source_claim_ids": [
+    "claim_gpu_is_idle_43_percent_of_wall",
+    "claim_memory_bound_ops_are_a_quarter_of_kernel_time",
+    "claim_time_budget_makes_steps_the_currency"
+  ],
+  "assumptions": [
+    {
+      "statement": "A kernel-level change alters only how the same arithmetic is scheduled, not the arithmetic itself, so val_bpb at matched step count is unchanged and the entire effect flows through the step mediator.",
+      "claim_ids": [
+        "claim_time_budget_makes_steps_the_currency"
+      ]
+    },
+    {
+      "statement": "The measured idle fraction is a property of this workload rather than of the profiler or of co-tenancy.",
+      "claim_ids": [
+        "claim_gpu_is_idle_43_percent_of_wall"
+      ]
+    }
+  ],
+  "alternatives": [
+    "The 43% idle is mostly profiler overhead and foreign-tenant preemption, in which case no local kernel change recovers it and the correct lever is scheduling, not code.",
+    "The gaps are caused on the CPU by the best-fit packing loop in the consumer, in which case the fix is the packer and not the kernels.",
+    "torch.compile has already captured the available fusion, so the memory-bound share is irreducible at this model size."
+  ],
+  "predictions": [
+    "num_steps rises measurably before val_bpb improves.",
+    "mfu_percent rises together with num_steps; a change that lifts steps without lifting MFU was throughput bought elsewhere.",
+    "val_bpb at matched step count is unchanged, because no arithmetic changed."
+  ],
+  "falsifiers": [
+    "val_bpb improves with no increase in num_steps, refuting the step-exposure mediator.",
+    "num_steps rises but val_bpb does not fall, which would contradict the token law that held across v2b to v2c.",
+    "A profile taken after the intervention shows the idle fraction unchanged, refuting the gap mediator even if the metric moved."
+  ]
+}

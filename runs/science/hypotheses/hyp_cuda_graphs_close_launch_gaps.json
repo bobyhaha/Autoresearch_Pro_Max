@@ -1,0 +1,48 @@
+{
+  "id": "hyp_cuda_graphs_close_launch_gaps",
+  "belief_key": "belief_step_time_is_gap_bound_not_kernel_bound",
+  "statement": "Capturing the training step as a CUDA graph (torch.compile mode=\"reduce-overhead\") raises num_steps and lowers val_bpb in the frozen 300s H200 v2c scope, by removing per-launch CPU dispatch across the ~572 kernel launches each step issues.",
+  "rationale": "The profile shows the GPU idle ~43% of wall while issuing ~572 launches per optimizer step, most of them small: 32,071 elementwise launches account for only 8.1% of kernel time. That is the signature of a dispatch-bound loop, which is exactly what graph capture removes. It is the cheapest test of the gap mediator because it is a compile flag rather than a kernel rewrite, so a null result cleanly indicts the mediator rather than the implementation.",
+  "scope": {
+    "benchmark": "karpathy-autoresearch-corrected-bpb-v2c"
+  },
+  "topics": [
+    "topic_kernel_efficiency"
+  ],
+  "mechanism_ids": [
+    "mech_kernel_efficiency_buys_steps"
+  ],
+  "claim_ids": [
+    "claim_gpu_is_idle_43_percent_of_wall",
+    "claim_time_budget_makes_steps_the_currency"
+  ],
+  "prediction": {
+    "metric": "val_bpb",
+    "direction": "decrease",
+    "statement": "Candidate val_bpb is below its frozen same-GPU control by more than the gate, with num_steps and mfu_percent both strictly higher than the control's.",
+    "minimum_effect": 0.000426
+  },
+  "falsifiers": [
+    "The paired delta does not clear the gate.",
+    "num_steps does not rise, which refutes graph capture as a way to reach the gap mediator.",
+    "num_steps rises but val_bpb does not fall, contradicting the token law.",
+    "The arm dies or produces a graph-capture error, which is an implementation null and not evidence about the mechanism."
+  ],
+  "intervention": {
+    "summary": "Change the torch.compile call in train.py to mode=\"reduce-overhead\" so the step is captured as a CUDA graph. Note the prior-campaign warning that plain max-autotune segfaulted via CUDA graphs on a different stack; if capture fails, fall back to max-autotune-no-cudagraphs and record the failure as an implementation null.",
+    "subsystem": "compile",
+    "mutable_code_paths": [
+      "runs/code/train.py"
+    ],
+    "diagnostics": [
+      "num_steps",
+      "training_seconds",
+      "mfu_percent",
+      "total_tokens_M"
+    ]
+  },
+  "competing_hypothesis_ids": [
+    "hyp_fused_rmsnorm_cuts_memory_traffic"
+  ],
+  "proposed_by": "claude-opus-5-1m/ophis-v2-2026-08-16"
+}

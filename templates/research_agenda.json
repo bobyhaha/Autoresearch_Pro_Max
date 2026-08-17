@@ -1,0 +1,40 @@
+{
+  "id": "agenda_karpathy_short_budget",
+  "name": "Mechanisms for fixed-budget language-model improvement",
+  "objective": "Find interventions with a plausible mechanism that can improve validation BPB within Karpathy autoresearch's fixed training-time scope.",
+  "scope": {
+    "benchmark": "karpathy-autoresearch-corrected-bpb-v2",
+    "constraints": [
+      "edit train.py only",
+      "fixed training-seconds budget",
+      "measure token exposure and overhead"
+    ]
+  },
+  "confidence_policy_version": "confidence-v1",
+  "topics": [
+    {
+      "id": "topic_optimizer_short_horizon",
+      "question": "Which optimizer mechanisms improve short-horizon language-model training at matched compute?",
+      "queries": [
+        "language model optimizer short training horizon controlled ablation",
+        "compute matched neural language model optimizer convergence"
+      ],
+      "keywords": ["optimizer", "short horizon", "matched compute"],
+      "refresh_days": 14,
+      "minimum_sources": 12,
+      "minimum_claims": 6
+    },
+    {
+      "id": "topic_memory_efficiency",
+      "question": "When do memory or retrieval mechanisms improve language modeling without reducing useful token exposure?",
+      "queries": [
+        "language model memory mechanism ablation compute matched",
+        "recurrent memory transformer retrieval efficiency controlled"
+      ],
+      "keywords": ["memory", "retrieval", "token exposure"],
+      "refresh_days": 14,
+      "minimum_sources": 12,
+      "minimum_claims": 6
+    }
+  ]
+}

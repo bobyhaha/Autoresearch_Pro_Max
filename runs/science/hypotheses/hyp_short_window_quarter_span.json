@@ -1,0 +1,46 @@
+{
+  "id": "hyp_short_window_quarter_span",
+  "belief_key": "belief_short_attention_span_is_oversized_for_this_depth",
+  "statement": "Setting the S-layer attention span to sequence_len//4 instead of sequence_len//2 lowers val_bpb in the frozen 300s H200 scope.",
+  "rationale": "The S layers attend over a span whose distant portion is redundant with the interleaved full-context L layers. Under a training_seconds budget the removed attention work returns as optimizer steps, and at this operating point step exposure is the dominant term. The prior OPHIS lineage measured this as its strongest confirmed lever, but at a different operating point and with an auxiliary n-gram memory covering local recall, so this is a transfer test rather than a replication.",
+  "scope": {
+    "benchmark": "karpathy-autoresearch-corrected-bpb-v2"
+  },
+  "topics": [
+    "topic_optimizer_short_horizon",
+    "topic_memory_efficiency"
+  ],
+  "mechanism_ids": [
+    "mech_short_span_buys_steps"
+  ],
+  "claim_ids": [
+    "claim_short_window_layers_carry_redundant_distant_context",
+    "claim_time_budget_makes_steps_the_currency"
+  ],
+  "prediction": {
+    "metric": "val_bpb",
+    "direction": "decrease",
+    "statement": "Candidate val_bpb is below its frozen same-GPU control by more than the gate, and num_steps is strictly higher than the control's.",
+    "minimum_effect": 0.000426
+  },
+  "falsifiers": [
+    "The paired delta does not clear the gate.",
+    "val_bpb improves with no increase in num_steps, refuting the step-exposure mediator.",
+    "num_steps rises but val_bpb does not fall."
+  ],
+  "intervention": {
+    "summary": "In GPT._compute_window_sizes, set short_window = long_window // 4 instead of // 2.",
+    "subsystem": "attention_span",
+    "mutable_code_paths": [
+      "runs/code/train.py"
+    ],
+    "diagnostics": [
+      "num_steps",
+      "training_seconds",
+      "mfu_percent",
+      "total_tokens_M"
+    ]
+  },
+  "competing_hypothesis_ids": [],
+  "proposed_by": "claude-opus-5-1m/ophis-v2-2026-08-16"
+}

@@ -1,0 +1,59 @@
+{
+  "id": "mech_local_global_ratio",
+  "name": "The local:global attention layer ratio is an unmeasured structural degree of freedom",
+  "statement": "Raising the proportion of short-window layers (SSSL -> SSSSLL over the depth-8 stack) trades global mixing capacity for attention FLOPs. If global mixing is currently oversupplied at depth 8, the trade is favourable under a fixed time budget; if it is undersupplied, val_bpb degrades and the direction of the effect identifies which regime the baseline is in.",
+  "scope": {
+    "benchmark": "karpathy-autoresearch-corrected-bpb-v2"
+  },
+  "nodes": [
+    {
+      "id": "intervention",
+      "label": "window_pattern SSSL -> SSSSLL"
+    },
+    {
+      "id": "mediator",
+      "label": "attention FLOPs per step and the depth of first global mixing"
+    },
+    {
+      "id": "outcome",
+      "label": "validation bits per byte"
+    }
+  ],
+  "edges": [
+    {
+      "from": "intervention",
+      "to": "mediator",
+      "relation": "changes",
+      "claim_ids": [
+        "claim_local_global_layer_ratio_is_an_untuned_structural_choice"
+      ]
+    },
+    {
+      "from": "mediator",
+      "to": "outcome",
+      "relation": "causally improves",
+      "claim_ids": [
+        "claim_time_budget_makes_steps_the_currency"
+      ]
+    }
+  ],
+  "source_claim_ids": [
+    "claim_local_global_layer_ratio_is_an_untuned_structural_choice",
+    "claim_time_budget_makes_steps_the_currency"
+  ],
+  "assumptions": [
+    {
+      "statement": "The final layer remains full-context, so the change alters the interior mixing schedule rather than removing global attention entirely.",
+      "claim_ids": []
+    }
+  ],
+  "alternatives": [
+    "Any change is explained by step count alone and carries no structural information."
+  ],
+  "predictions": [
+    "The sign of the effect is informative in both directions: this experiment cannot return an uninformative null unless the delta is inside the noise band."
+  ],
+  "falsifiers": [
+    "The delta is inside the measured control noise band, which would say the local:global ratio is not a live degree of freedom at this scale."
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "cache_dir": "/replace/with/absolute/home/.cache/autoresearch",
+  "files": [
+    {"bytes": 92291918, "path": "data/shard_00000.parquet", "sha256": "054ddbd98abf30d773c54de578fc9d579bafeb6c14e04e97bd36aa90e825bf9b"},
+    {"bytes": 92124317, "path": "data/shard_00001.parquet", "sha256": "d4cfe1de19f4fd976022a9047458655968bc5583582ec5fa714801ec2be2c93c"},
+    {"bytes": 91803619, "path": "data/shard_00002.parquet", "sha256": "5e80d7596d53be648d841ea5811082747281c39f6851e10dd90375a84bc509a7"},
+    {"bytes": 91793972, "path": "data/shard_00003.parquet", "sha256": "b349c85d4b993d98e2328833ecfd3734692e0395a592d89858bae34a4ba73c59"},
+    {"bytes": 91428652, "path": "data/shard_00004.parquet", "sha256": "87dae96fe1a6116c54c7873aadb81832178a36755991befd1b3b641c76244474"},
+    {"bytes": 91845922, "path": "data/shard_00005.parquet", "sha256": "3d9aebf138ef69cff2585a686d7f21585b7ffc0de4655f8e7723590418583bd6"},
+    {"bytes": 91455616, "path": "data/shard_00006.parquet", "sha256": "6a3f2afde8f1a39f9283ea9d9e9ee6431634d6881b63798176bf64efc3f33576"},
+    {"bytes": 91202032, "path": "data/shard_00007.parquet", "sha256": "731eea337d941e5b18a9a4e2bbe73a517dac45d91bb93ae2e69346c68c5f37f6"},
+    {"bytes": 91155507, "path": "data/shard_00008.parquet", "sha256": "e78379132451838afabed9034b5483a2f3bc5a422bed8b55b99f2bbb9a128755"},
+    {"bytes": 92072356, "path": "data/shard_00009.parquet", "sha256": "f22410fe8f13b6976a2860a8a82ee71e838f4ee9b605d61584aaa963f966e120"},
+    {"bytes": 91699537, "path": "data/shard_06542.parquet", "sha256": "769fe59d108dfd2cfa186c63173b83fbfb90a7adb3519519ba6eaa6ca9889f94"},
+    {"bytes": 94590, "path": "tokenizer/tokenizer.pkl", "sha256": "888c9fa865c72c25f9c5e9467136a9cc8655253db459fb97481deb326681c629"},
+    {"bytes": "replace_after_running_sealed_prepare", "path": "tokenizer/token_bytes.pt", "sha256": "replace_after_running_sealed_prepare"},
+    {"bytes": 2, "path": "tokenizer/token_bytes.version", "sha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"}
+  ],
+  "schema_version": 2,
+  "split": {
+    "train": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "validation": [6542]
+  },
+  "token_bytes_version": 2
+}

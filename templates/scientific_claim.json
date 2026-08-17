@@ -1,0 +1,43 @@
+{
+  "id": "claim_replace_with_atomic_claim",
+  "belief_key": "belief_replace_with_stable_semantic_key",
+  "statement": "State one scoped claim that can be supported or opposed.",
+  "claim_type": "mechanistic",
+  "origin": "literature",
+  "stance": "supports",
+  "scope": {
+    "model": "decoder-only language model",
+    "budget": "short fixed training time"
+  },
+  "source_ids": ["lit_replace_with_source_snapshot"],
+  "evidence_ids": [],
+  "derived_from_claim_ids": [],
+  "topics": ["topic_optimizer_short_horizon"],
+  "locators": [
+    {
+      "source_id": "lit_replace_with_source_snapshot",
+      "location": "section/table/figure/page",
+      "excerpt": "Use a short attributable excerpt, not a paper-length quotation."
+    }
+  ],
+  "evidence": {
+    "study_design": "controlled_benchmark",
+    "artifact_status": "available",
+    "reproduction_status": "not_attempted",
+    "directness": "direct",
+    "scope_match": "close",
+    "risk_of_bias": "medium",
+    "metrics": [
+      {
+        "name": "validation loss",
+        "result": "Describe effect, uncertainty, seeds, and comparator."
+      }
+    ]
+  },
+  "assessment": {
+    "assessor": "replace-with-agent-and-version",
+    "assessed_at": "2026-08-16T00:00:00Z",
+    "rationale": "Explain why every evidence-grade field was selected.",
+    "confidence_policy_version": "confidence-v1"
+  }
+}

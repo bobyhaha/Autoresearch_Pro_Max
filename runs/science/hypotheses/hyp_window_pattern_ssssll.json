@@ -1,0 +1,45 @@
+{
+  "id": "hyp_window_pattern_ssssll",
+  "belief_key": "belief_window_pattern_ratio_is_unexplored_structure",
+  "statement": "Changing window_pattern from SSSL to SSSSLL lowers val_bpb in the frozen 300s H200 scope.",
+  "rationale": "The 3:1 local:global ratio is a convention, not a measurement at depth 8 and width 512. Raising the local share cuts attention FLOPs and defers global mixing. Both directions of the resulting delta are informative about whether global mixing is over- or under-supplied at this scale, which no record in this campaign currently answers.",
+  "scope": {
+    "benchmark": "karpathy-autoresearch-corrected-bpb-v2"
+  },
+  "topics": [
+    "topic_optimizer_short_horizon"
+  ],
+  "mechanism_ids": [
+    "mech_local_global_ratio"
+  ],
+  "claim_ids": [
+    "claim_local_global_layer_ratio_is_an_untuned_structural_choice",
+    "claim_time_budget_makes_steps_the_currency"
+  ],
+  "prediction": {
+    "metric": "val_bpb",
+    "direction": "decrease",
+    "statement": "Candidate val_bpb is below its frozen same-GPU control by more than the gate.",
+    "minimum_effect": 0.000426
+  },
+  "falsifiers": [
+    "The paired delta does not clear the gate.",
+    "The delta is inside the control noise band, which says the ratio is not a live degree of freedom here."
+  ],
+  "intervention": {
+    "summary": "Set WINDOW_PATTERN = 'SSSSLL'; the final layer stays full-context by construction.",
+    "subsystem": "window_pattern",
+    "mutable_code_paths": [
+      "runs/code/train.py"
+    ],
+    "diagnostics": [
+      "num_steps",
+      "training_seconds",
+      "mfu_percent"
+    ]
+  },
+  "competing_hypothesis_ids": [
+    "hyp_short_window_quarter_span"
+  ],
+  "proposed_by": "claude-opus-5-1m/ophis-v2-2026-08-16"
+}

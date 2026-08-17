@@ -1,0 +1,190 @@
+<title>OPHIS v2c — val_bpb progress</title>
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1:#fcfcfb; --plane:#f9f9f7;
+    --text-primary:#0b0b0b; --text-secondary:#52514e; --muted:#898781;
+    --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,0.10);
+    --series-1:#2a78d6; --good:#0ca30c; --critical:#b3261e; --success-text:#006300;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface-1:#1a1a19; --plane:#0d0d0d;
+      --text-primary:#ffffff; --text-secondary:#c3c2b7; --muted:#898781;
+      --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10);
+      --series-1:#3987e5; --good:#2aa82a; --critical:#e35c7a; --success-text:#2aa82a;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1:#1a1a19; --plane:#0d0d0d;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,0.10);
+    --series-1:#3987e5; --good:#2aa82a; --critical:#e35c7a; --success-text:#2aa82a;
+  }
+  body {
+    background: var(--plane); color: var(--text-primary); margin: 0;
+  }
+  .viz-root {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--plane); color: var(--text-primary);
+    padding: 28px 20px 48px; margin: 0 auto; max-width: 1080px;
+  }
+  a:focus-visible, .dot:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .tt { transition: none; } }
+  h1 { font-size: 20px; font-weight: 600; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .sub { color: var(--text-secondary); font-size: 13px; margin: 0 0 20px; max-width: 78ch; line-height: 1.55; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+  .tiles { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+  .tile { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
+           padding: 14px 18px; min-width: 140px; flex: 1 1 140px; }
+  .tile .k { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .tile .v { font-size: 26px; font-weight: 600; margin-top: 4px; line-height: 1.1;
+              font-variant-numeric: tabular-nums; }
+  .tile .d { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+  .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px;
+           padding: 16px 8px 8px; }
+  .wrap { overflow-x: auto; }
+  svg { display: block; min-width: 980px; }
+  .grid { stroke: var(--grid); stroke-width: 1; }
+  .axis { stroke: var(--axis); stroke-width: 1; }
+  .noise { fill: var(--muted); opacity: 0.13; }
+  .baserule { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 5 4; }
+  .baselab { fill: var(--muted); font-size: 11px; }
+  .tick { fill: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .alab { fill: var(--muted); font-size: 11px; }
+  .frontier { fill: none; stroke: var(--series-1); stroke-width: 2; stroke-linejoin: round; }
+  .pairlink { stroke: var(--muted); stroke-width: 1.5; opacity: 0.5; }
+  .dot { cursor: pointer; }
+  circle.dot, rect.dot { stroke: var(--surface-1); stroke-width: 2; }
+  circle.ctrl { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 2 2; }
+  .m-due { fill: var(--good); }
+  .m-measured { fill: var(--series-1); }
+  rect.m-control { fill: var(--muted); }
+  path.dot-failed { stroke: var(--critical); stroke-width: 2.5; fill: none; stroke-linecap: round; }
+  .best-label { fill: var(--text-secondary); font-size: 12px; font-weight: 600; }
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; padding: 12px 12px 4px;
+             font-size: 12px; color: var(--text-secondary); }
+  .legend span.sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+                     margin-right: 6px; vertical-align: -1px; }
+  .legend span.sq { display: inline-block; width: 9px; height: 9px; margin-right: 6px;
+                     vertical-align: -1px; background: var(--muted); }
+  .legend span.ring { display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+                       border: 1.5px dashed var(--muted); margin-right: 6px; vertical-align: -1px; }
+  .legend span.line { display: inline-block; width: 16px; height: 2px; margin-right: 6px;
+                       vertical-align: 4px; background: var(--series-1); }
+  .legend span.dash { display: inline-block; width: 16px; height: 0; margin-right: 6px;
+                       vertical-align: 4px; border-top: 1px dashed var(--muted); }
+  .legend span.x { display: inline-block; width: 10px; margin-right: 6px;
+                    color: var(--critical); font-weight: 700; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 26px; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase;
+        letter-spacing: 0.05em; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.strong { font-weight: 600; }
+  td.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--text-secondary); }
+  .m { color: var(--muted); font-size: 11.5px; }
+  .win { color: var(--success-text); }
+  .loss { color: var(--muted); }
+  .pill { font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 600; white-space: nowrap; }
+  .pill-promotion-due { color: var(--success-text); background: color-mix(in srgb, var(--good) 14%, transparent); }
+  .pill-measured { color: var(--text-secondary); background: color-mix(in srgb, var(--series-1) 14%, transparent); }
+  .pill-control { color: var(--text-secondary); background: color-mix(in srgb, var(--muted) 16%, transparent); }
+  .pill-failed { color: var(--critical); background: color-mix(in srgb, var(--critical) 14%, transparent); }
+  .tablewrap { overflow-x: auto; }
+  .tt { position: fixed; pointer-events: none; opacity: 0; transition: opacity .1s;
+         background: var(--surface-1); color: var(--text-primary); border: 1px solid var(--border);
+         border-radius: 8px; padding: 9px 11px; font-size: 12px; max-width: 340px;
+         box-shadow: 0 6px 24px rgba(0,0,0,0.18); z-index: 10; line-height: 1.5; }
+  .tt b { font-variant-numeric: tabular-nums; }
+</style>
+<div class="viz-root">
+  <h1>OPHIS v2c — val_bpb over experiments</h1>
+  <p class="sub">Every point is a val_bpb an actual run produced under one frozen scope
+  (<code>karpathy_228791f_corrected_bpb_h200_train300s_v2c</code>): one H200, a fixed 300&nbsp;s charged-training budget,
+  corrected byte-fallback BPB. Nothing is normalised, fitted, or inferred. <strong>Only runs
+  whose EvidenceDecision is <code>valid</code> are plotted</strong>, and 4 landed runs whose decision was not <code>valid</code> were excluded here — they remain in the immutable store, so nothing is deleted, only kept off a scale it does not belong on.
+  The host is shared, so a candidate is only ever read against the <strong>exact bank control
+  frozen into its spec before launch</strong> on the same physical GPU — both are plotted and
+  joined by a line. The grey band is ±2σ of the control replicates: anything inside it is an
+  unordered tie. <strong>Nothing on this chart is SOTA</strong> — <code>promotion-due</code>
+  is a work-allocation decision, and only a held-out-seed confirmation can move the record.</p>
+
+  <div class="tiles">
+    <div class="tile"><div class="k">Best measured</div><div class="v">1.0063</div>
+      <div class="d">exploratory · not SOTA</div></div>
+    <div class="tile"><div class="k">First control</div><div class="v">1.0063</div>
+      <div class="d">812 steps in 300&nbsp;s</div></div>
+    <div class="tile"><div class="k">Plotted runs</div><div class="v">10</div>
+      <div class="d">10 valid · 4 invalid excluded · 0 promotion-due</div></div>
+    <div class="tile"><div class="k">Control noise</div><div class="v">0.01045</div>
+      <div class="d">σ 0.01045 over 10 · gate 0.000426</div></div>
+  </div>
+
+  <div class="card">
+    <div class="wrap"><svg viewBox="0 0 980 430" width="100%" height="430" role="img"
+      aria-label="measured val_bpb by experiment number with frozen paired controls">
+      <rect class="noise" x="68" y="-61.5" width="886" height="419.4"/>
+      <line class="grid" x1="68" x2="954" y1="301.9" y2="301.9"/><text class="tick" x="58" y="305.9" text-anchor="end">1.010</text><line class="grid" x1="68" x2="954" y1="201.5" y2="201.5"/><text class="tick" x="58" y="205.5" text-anchor="end">1.020</text><line class="grid" x1="68" x2="954" y1="101.1" y2="101.1"/><text class="tick" x="58" y="105.1" text-anchor="end">1.030</text>
+      <line class="axis" x1="68" x2="68" y1="22" y2="384"/>
+      <line class="axis" x1="68" x2="954" y1="384" y2="384"/>
+      <line class="baserule" x1="68" x2="954" y1="339.4" y2="339.4"/><text class="baselab" x="954" y="332.4" text-anchor="end">first control 1.0063</text>
+      <path class="frontier" d="M 68.0 339.4 L 166.4 339.4 L 166.4 339.4 L 264.9 339.4 L 264.9 339.4 L 363.3 339.4 L 363.3 339.4 L 461.8 339.4 L 461.8 339.4 L 560.2 339.4 L 560.2 339.4 L 658.7 339.4 L 658.7 339.4 L 757.1 339.4 L 757.1 339.4 L 855.6 339.4 L 855.6 339.4 L 954.0 339.4 L 954.0 339.4"/>
+      <rect class="dot m-control" x="64.0" y="335.4" width="8" height="8" data-i="1" data-val="1.006256" data-kind="control" data-status="control" data-title="bank calibration v2c_cal001 on h200_gpu4/gpu_4" data-lane="bank" data-track="control" data-slot="h200_gpu4" data-seed="42.0" data-steps="812" data-mfu="33.859473939639756" data-overhead="13%" data-verdict="valid" data-failure=""/><rect class="dot m-control" x="162.4" y="328.9" width="8" height="8" data-i="2" data-val="1.006910" data-kind="control" data-status="control" data-title="bank calibration v2c_cal001 on h200_gpu7/gpu_7" data-lane="bank" data-track="control" data-slot="h200_gpu7" data-seed="42.0" data-steps="806" data-mfu="33.580917116849534" data-overhead="13%" data-verdict="valid" data-failure=""/><rect class="dot m-control" x="260.9" y="156.0" width="8" height="8" data-i="3" data-val="1.024132" data-kind="control" data-status="control" data-title="bank calibration v2c_cal002 on h200_gpu4/gpu_4" data-lane="bank" data-track="control" data-slot="h200_gpu4" data-seed="42.0" data-steps="645" data-mfu="26.769736148137238" data-overhead="15%" data-verdict="valid" data-failure=""/><rect class="dot m-control" x="359.3" y="159.3" width="8" height="8" data-i="4" data-val="1.023810" data-kind="control" data-status="control" data-title="bank calibration v2c_cal002 on h200_gpu7/gpu_7" data-lane="bank" data-track="control" data-slot="h200_gpu7" data-seed="42.0" data-steps="650" data-mfu="27.001525678601766" data-overhead="15%" data-verdict="valid" data-failure=""/><rect class="dot m-control" x="457.8" y="86.4" width="8" height="8" data-i="5" data-val="1.031070" data-kind="control" data-status="control" data-title="bank calibration v2c_cal_0219 on h200_gpu7/gpu_7" data-lane="bank" data-track="control" data-slot="h200_gpu7" data-seed="42.0" data-steps="591" data-mfu="24.496863785447026" data-overhead="16%" data-verdict="valid" data-failure=""/><rect class="dot m-control" x="556.2" y="87.3" width="8" height="8" data-i="6" data-val="1.030981" data-kind="control" data-status="control" data-title="bank calibration v2c_cal_0219 on h200_gpu4/gpu_4" data-lane="bank" data-track="control" data-slot="h200_gpu4" data-seed="42.0" data-steps="593" data-mfu="24.598439904308506" data-overhead="17%" data-verdict="valid" data-failure=""/><rect class="dot m-control" x="654.7" y="84.9" width="8" height="8" data-i="7" data-val="1.031223" data-kind="control" data-status="control" data-title="bank calibration v2c_cal_0219 on h200_gpu3/gpu_3" data-lane="bank" data-track="control" data-slot="h200_gpu3" data-seed="42.0" data-steps="595" data-mfu="24.698277130905844" data-overhead="26%" data-verdict="valid" data-failure=""/><rect class="dot m-control" x="753.1" y="65.7" width="8" height="8" data-i="8" data-val="1.033136" data-kind="control" data-status="control" data-title="bank calibration v2c_cal_0242 on h200_gpu7/gpu_7" data-lane="bank" data-track="control" data-slot="h200_gpu7" data-seed="42.0" data-steps="579" data-mfu="24.00855617401314" data-overhead="15%" data-verdict="valid" data-failure=""/><rect class="dot m-control" x="851.6" y="57.0" width="8" height="8" data-i="9" data-val="1.034001" data-kind="control" data-status="control" data-title="bank calibration v2c_cal_0242 on h200_gpu4/gpu_4" data-lane="bank" data-track="control" data-slot="h200_gpu4" data-seed="42.0" data-steps="575" data-mfu="23.83810601660896" data-overhead="16%" data-verdict="valid" data-failure=""/><rect class="dot m-control" x="950.0" y="80.9" width="8" height="8" data-i="10" data-val="1.031619" data-kind="control" data-status="control" data-title="bank calibration v2c_cal_0242 on h200_gpu3/gpu_3" data-lane="bank" data-track="control" data-slot="h200_gpu3" data-seed="42.0" data-steps="596" data-mfu="24.722542100307578" data-overhead="15%" data-verdict="valid" data-failure=""/>
+      <text class="best-label" x="80.0" y="355.4" text-anchor="start">best 1.0063</text>
+      <text class="tick" x="68.0" y="404" text-anchor="middle">1</text><text class="tick" x="166.4" y="404" text-anchor="middle">2</text><text class="tick" x="264.9" y="404" text-anchor="middle">3</text><text class="tick" x="363.3" y="404" text-anchor="middle">4</text><text class="tick" x="461.8" y="404" text-anchor="middle">5</text><text class="tick" x="560.2" y="404" text-anchor="middle">6</text><text class="tick" x="658.7" y="404" text-anchor="middle">7</text><text class="tick" x="757.1" y="404" text-anchor="middle">8</text><text class="tick" x="855.6" y="404" text-anchor="middle">9</text><text class="tick" x="954.0" y="404" text-anchor="middle">10</text>
+      <text class="alab" x="68" y="424">experiment #</text>
+      <text class="alab" x="16" y="14">val_bpb</text>
+    </svg></div>
+    <div class="legend">
+      <span><span class="sq"></span>bank control</span>
+      <span><span class="sw" style="background:var(--series-1)"></span>candidate, below gate</span>
+      <span><span class="sw" style="background:var(--good)"></span>candidate, promotion-due</span>
+      <span><span class="ring"></span>frozen paired control</span>
+      <span><span class="line"></span>best so far</span>
+      <span><span class="dash"></span>first control</span>
+      <span><span class="x">✕</span>invalid / failed</span>
+    </div>
+  </div>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>lane</th><th>track</th><th>slot</th><th>val_bpb</th><th>steps</th>
+      <th>overhead</th><th>frozen control (Δ)</th><th>status</th><th>what ran</th></tr></thead>
+    <tbody><tr><td>10</td><td class="mono">bank</td><td class="mono">control</td><td class="mono">h200_gpu3</td><td class="num strong">1.031619</td><td class="num">596</td><td class="num">15%</td><td class="num">—</td><td><span class="pill pill-control">control</span></td><td>bank calibration v2c_cal_0242 on h200_gpu3/gpu_3</td></tr><tr><td>9</td><td class="mono">bank</td><td class="mono">control</td><td class="mono">h200_gpu4</td><td class="num strong">1.034001</td><td class="num">575</td><td class="num">16%</td><td class="num">—</td><td><span class="pill pill-control">control</span></td><td>bank calibration v2c_cal_0242 on h200_gpu4/gpu_4</td></tr><tr><td>8</td><td class="mono">bank</td><td class="mono">control</td><td class="mono">h200_gpu7</td><td class="num strong">1.033136</td><td class="num">579</td><td class="num">15%</td><td class="num">—</td><td><span class="pill pill-control">control</span></td><td>bank calibration v2c_cal_0242 on h200_gpu7/gpu_7</td></tr><tr><td>7</td><td class="mono">bank</td><td class="mono">control</td><td class="mono">h200_gpu3</td><td class="num strong">1.031223</td><td class="num">595</td><td class="num">26%</td><td class="num">—</td><td><span class="pill pill-control">control</span></td><td>bank calibration v2c_cal_0219 on h200_gpu3/gpu_3</td></tr><tr><td>6</td><td class="mono">bank</td><td class="mono">control</td><td class="mono">h200_gpu4</td><td class="num strong">1.030981</td><td class="num">593</td><td class="num">17%</td><td class="num">—</td><td><span class="pill pill-control">control</span></td><td>bank calibration v2c_cal_0219 on h200_gpu4/gpu_4</td></tr><tr><td>5</td><td class="mono">bank</td><td class="mono">control</td><td class="mono">h200_gpu7</td><td class="num strong">1.031070</td><td class="num">591</td><td class="num">16%</td><td class="num">—</td><td><span class="pill pill-control">control</span></td><td>bank calibration v2c_cal_0219 on h200_gpu7/gpu_7</td></tr><tr><td>4</td><td class="mono">bank</td><td class="mono">control</td><td class="mono">h200_gpu7</td><td class="num strong">1.023810</td><td class="num">650</td><td class="num">15%</td><td class="num">—</td><td><span class="pill pill-control">control</span></td><td>bank calibration v2c_cal002 on h200_gpu7/gpu_7</td></tr><tr><td>3</td><td class="mono">bank</td><td class="mono">control</td><td class="mono">h200_gpu4</td><td class="num strong">1.024132</td><td class="num">645</td><td class="num">15%</td><td class="num">—</td><td><span class="pill pill-control">control</span></td><td>bank calibration v2c_cal002 on h200_gpu4/gpu_4</td></tr><tr><td>2</td><td class="mono">bank</td><td class="mono">control</td><td class="mono">h200_gpu7</td><td class="num strong">1.006910</td><td class="num">806</td><td class="num">13%</td><td class="num">—</td><td><span class="pill pill-control">control</span></td><td>bank calibration v2c_cal001 on h200_gpu7/gpu_7</td></tr><tr><td>1</td><td class="mono">bank</td><td class="mono">control</td><td class="mono">h200_gpu4</td><td class="num strong">1.006256</td><td class="num">812</td><td class="num">13%</td><td class="num">—</td><td><span class="pill pill-control">control</span></td><td>bank calibration v2c_cal001 on h200_gpu4/gpu_4</td></tr></tbody>
+  </table>
+  </div>
+  <div class="tt" id="tt"></div>
+</div>
+<script>
+(function () {
+  var tt = document.getElementById('tt');
+  document.querySelectorAll('.dot').forEach(function (el) {
+    el.addEventListener('mouseenter', function () {
+      var d = el.dataset;
+      var head = d.kind === 'failed'
+        ? '<b>' + d.verdict + '</b>'
+        : (d.kind === 'frozen-control'
+            ? 'frozen control <b>' + Number(d.val).toFixed(6) + '</b>'
+            : 'val_bpb <b>' + Number(d.val).toFixed(6) + '</b>');
+      tt.innerHTML = '<div>#' + d.i + ' \u00b7 ' + head + '</div>' +
+        '<div class="m">' + (d.title || '') + '</div>' +
+        '<div class="m">' + d.lane + ' \u00b7 track ' + d.track + ' \u00b7 ' + d.slot + ' \u00b7 seed ' + d.seed + '</div>' +
+        (Number(d.steps) > 0
+          ? '<div class="m">' + d.steps + ' steps \u00b7 ' + d.mfu + '% mfu \u00b7 ' + d.overhead + ' overhead</div>'
+          : '') +
+        (d.failure ? '<div class="m">' + d.failure + '</div>' : '');
+      tt.style.opacity = 1;
+    });
+    el.addEventListener('mousemove', function (e) {
+      var x = e.clientX + 14, y = e.clientY + 14;
+      if (x + 350 > window.innerWidth) x = e.clientX - 350;
+      if (y + 150 > window.innerHeight) y = e.clientY - 150;
+      tt.style.left = x + 'px'; tt.style.top = y + 'px';
+    });
+    el.addEventListener('mouseleave', function () { tt.style.opacity = 0; });
+  });
+})();
+</script>

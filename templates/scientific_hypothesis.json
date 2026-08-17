@@ -1,0 +1,31 @@
+{
+  "id": "hyp_replace_with_testable_hypothesis",
+  "belief_key": "belief_replace_with_stable_semantic_key",
+  "statement": "State the exact fixed-scope hypothesis.",
+  "rationale": "Derive the hypothesis from the cited claims and mechanism, including why it should transfer to this benchmark.",
+  "scope": {
+    "benchmark": "karpathy-autoresearch-corrected-bpb-v2"
+  },
+  "topics": ["topic_optimizer_short_horizon"],
+  "mechanism_ids": ["mech_replace_with_mechanism"],
+  "claim_ids": ["claim_replace_with_atomic_claim"],
+  "prediction": {
+    "metric": "val_bpb",
+    "direction": "decrease",
+    "statement": "Candidate-control val_bpb is below the preregistered gate while step exposure remains healthy.",
+    "minimum_effect": 0.000426
+  },
+  "falsifiers": [
+    "The paired effect does not clear the gate.",
+    "The result depends on reduced steps, scope drift, or invalid telemetry.",
+    "The predicted mediator does not change."
+  ],
+  "intervention": {
+    "summary": "Describe one minimal train.py change.",
+    "subsystem": "replace.with.subsystem",
+    "mutable_code_paths": ["runs/code/train.py"],
+    "diagnostics": ["steps completed", "training throughput", "predicted mediator"]
+  },
+  "competing_hypothesis_ids": [],
+  "proposed_by": "replace-with-agent-and-version"
+}

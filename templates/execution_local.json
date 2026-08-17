@@ -1,0 +1,28 @@
+{
+  "code_bindings": [
+    {
+      "source": "../examples/metric_emitter.py",
+      "execution_path": "examples/metric_emitter.py"
+    }
+  ],
+  "data_bindings": [
+    {
+      "source": "../examples/demo_data_manifest.json",
+      "execution_path": "examples/demo_data_manifest.json"
+    }
+  ],
+  "resources": [
+    {
+      "id": "local_cpu",
+      "hardware_class": "cpu-demo",
+      "backend": "local",
+      "workdir": "..",
+      "gpus": []
+    }
+  ],
+  "runtime": {
+    "timeout_seconds_per_arm": 30,
+    "telemetry_interval_seconds": 1,
+    "resource_wait_seconds": 5
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "id": "mech_short_span_buys_steps",
+  "name": "Shrinking the short-window span converts redundant attention FLOPs into optimizer steps",
+  "statement": "Halving the S-layer attention span again (sequence_len//2 -> sequence_len//4) removes attention work whose information the interleaved L layers already provide. Under a fixed training-seconds budget the saved time reappears as additional optimizer steps, and the extra token exposure lowers val_bpb by more than the reduced local receptive field costs.",
+  "scope": {
+    "benchmark": "karpathy-autoresearch-corrected-bpb-v2"
+  },
+  "nodes": [
+    {
+      "id": "intervention",
+      "label": "short_window divisor 2 -> 4 in _compute_window_sizes"
+    },
+    {
+      "id": "mediator",
+      "label": "optimizer steps completed within the 300s charged budget"
+    },
+    {
+      "id": "outcome",
+      "label": "validation bits per byte"
+    }
+  ],
+  "edges": [
+    {
+      "from": "intervention",
+      "to": "mediator",
+      "relation": "increases",
+      "claim_ids": [
+        "claim_short_window_layers_carry_redundant_distant_context",
+        "claim_time_budget_makes_steps_the_currency"
+      ]
+    },
+    {
+      "from": "mediator",
+      "to": "outcome",
+      "relation": "causally improves",
+      "claim_ids": [
+        "claim_time_budget_makes_steps_the_currency"
+      ]
+    }
+  ],
+  "source_claim_ids": [
+    "claim_short_window_layers_carry_redundant_distant_context",
+    "claim_time_budget_makes_steps_the_currency"
+  ],
+  "assumptions": [
+    {
+      "statement": "The L layers and the residual stream retain enough distant context that halving the S span does not remove information the model needs.",
+      "claim_ids": [
+        "claim_short_window_layers_carry_redundant_distant_context"
+      ]
+    }
+  ],
+  "alternatives": [
+    "The gain is pure throughput and would vanish at matched step count.",
+    "The measured delta is a contended-window artifact rather than the intervention."
+  ],
+  "predictions": [
+    "num_steps rises measurably before val_bpb improves.",
+    "If num_steps does not rise, val_bpb does not improve either."
+  ],
+  "falsifiers": [
+    "val_bpb improves with no increase in num_steps, which would refute the step-exposure mediator.",
+    "num_steps rises but val_bpb does not fall, which prices the lost receptive field above the extra exposure."
+  ]
+}

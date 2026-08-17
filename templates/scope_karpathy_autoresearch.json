@@ -1,0 +1,47 @@
+{
+  "budget": {
+    "kind": "training_seconds",
+    "value": 300
+  },
+  "data_details": {
+    "manifest_sha256": "replace_with_generated_runs_data_manifest_sha256",
+    "sampler": "upstream sorted shard order, row-group order, best-fit BOS packing",
+    "train_shards": [
+      "shard_00000.parquet",
+      "shard_00001.parquet",
+      "shard_00002.parquet",
+      "shard_00003.parquet",
+      "shard_00004.parquet",
+      "shard_00005.parquet",
+      "shard_00006.parquet",
+      "shard_00007.parquet",
+      "shard_00008.parquet",
+      "shard_00009.parquet"
+    ],
+    "validation_shards": [
+      "shard_06542.parquet"
+    ]
+  },
+  "dataset_split": "climbmix-400b-shuffle_train_00000-00009_val_06542",
+  "evaluator": "sha256:2ef2c56d7a484b677fcb6c2e54208e9df2b292c4bf2efd5c9ba1b70819b84cfd",
+  "hardware_class": "replace_with_exact_hopper_gpu_and_runtime_image_class",
+  "id": "replace_with_unique_karpathy_228791f_corrected_bpb_scope_v2",
+  "metric": {
+    "direction": "minimize",
+    "name": "val_bpb"
+  },
+  "notes": "Corrected-BPB Karpathy baseline. It is not numerically interchangeable with historical upstream scores that used decode(...).encode('utf-8') byte lengths. Replace every placeholder before calibration.",
+  "precision": "bfloat16 autocast; float32 logits and cross-entropy",
+  "runtime_details": {
+    "attention_backend": "replace_with_pinned_flash_attention_3_kernel_or_image_digest",
+    "baseline": "karpathy/autoresearch@228791fb499afffb54b46200aca536f79142f117 plus OPHIS protocol adapter",
+    "compile_mode": "torch.compile dynamic=false; fullgraph optimizer kernels",
+    "framework": "torch 2.9.1+cu128; triton 3.5.1; kernels 0.12.1",
+    "runtime_image": "replace_with_immutable_runtime_image_digest"
+  },
+  "tokenizer": "sha256:888c9fa865c72c25f9c5e9467136a9cc8655253db459fb97481deb326681c629",
+  "tokenizer_details": {
+    "artifact_sha256": "888c9fa865c72c25f9c5e9467136a9cc8655253db459fb97481deb326681c629",
+    "byte_accounting": "token_bytes format 2: decode_single_token_bytes; special tokens count zero bytes"
+  }
+}

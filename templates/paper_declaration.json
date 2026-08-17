@@ -1,0 +1,8 @@
+{
+  "id": "paper_replace_block_001",
+  "title": "Replace with the paper title",
+  "path": "../replace_with_paper.pdf",
+  "content_sha256": "",
+  "spec_ids": ["exp_replace_1"],
+  "evidence_ids": ["evidence_replace_1"]
+}

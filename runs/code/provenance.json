@@ -1,0 +1,25 @@
+{
+  "active_adapter": {
+    "adapter_changes": [
+      "train.py: AUTORESEARCH_SEED is executable and emitted; total clock starts before torch import; one AUTORESEARCH_METRICS endpoint",
+      "prepare.py: corrected byte-fallback token_bytes v2 (decode_single_token_bytes)",
+      "prepare.py: CACHE_DIR pinned to ~/.cache/autoresearch_v2 so the directory listing that defines dataset_split cannot be changed by another campaign sharing ~/.cache/autoresearch",
+      "prepare.py: make_dataloader tokenizes on a bounded-FIFO producer thread instead of inline in the training loop. Verified byte-identical token stream, document order and epoch boundaries against the pre-fix dataloader (sha256 of 12 batches of int64 inputs+targets: f4ab4f330294964c6a070fb6f400e06758822a4fa43f35ab672324e8546550ef). Throughput fix only; evaluate_bpb is untouched.",
+      "prepare.py: pre-tokenized flat token cache (uint16 tokens + document offsets + per-batch document counts, memory-mapped). The training loop no longer reads parquet or runs the BPE encoder; it replays the identical (token_lists, epoch) sequence from the cache, including the per-batch document grouping, which the best-fit packer is sensitive to. Falls back to inline tokenization when no current cache exists. Throughput change only; verified byte-identical against the inline path by tools/verify_token_cache.py (sha256 of 12 batches of int64 inputs+targets+epoch, both paths: 15fcca1c6bd1502397c287415c722c2c8d8171a604790f62a33f6bf2529a5a1d). evaluate_bpb is untouched."
+    ],
+    "prepare_py_sha256": "2ef2c56d7a484b677fcb6c2e54208e9df2b292c4bf2efd5c9ba1b70819b84cfd",
+    "train_py_sha256": "705ba544698f8cf2eab36f3dbaf7db72a85904404b184cf81c82847fa6567660"
+  },
+  "adapter_id": "ophis-evidence-v3-seed-corrected-bpb-pinned-cache-prefetch-and-token-cache-v4",
+  "upstream": {
+    "commit": "228791fb499afffb54b46200aca536f79142f117",
+    "commit_date": "2026-03-25T17:07:37-07:00",
+    "prepare_py_git_blob": "06bea9165abd3ae94ea82dd733997aec7928f40c",
+    "prepare_py_sha256": "4f2ba9cbb8ba8c4a3d35be405a913e2f3be3af9aea103ed52ef7b2a662058150",
+    "pyproject_toml_sha256": "675c150a9e0769f0e39a43eb7d836934266fa348d6e2403521f1ff99f9b9f1af",
+    "repository": "https://github.com/karpathy/autoresearch.git",
+    "train_py_git_blob": "2e743974c7f06b54311643b314712303fbb26e65",
+    "train_py_sha256": "2954175f4ac42ad65164aef40910ef953789abcd05a5cc886ac9ba5a00814414",
+    "uv_lock_sha256": "03174c5cce6387418c5b6cc9bbe8f71ad0ae1e1d6fedeaecae5cdcf7321da0a3"
+  }
+}

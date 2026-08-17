@@ -1,0 +1,53 @@
+{
+  "code_bindings": [
+    {
+      "source": "../runs/code/train.py",
+      "execution_path": "train.py"
+    },
+    {
+      "source": "../runs/code/prepare.py",
+      "execution_path": "prepare.py"
+    },
+    {
+      "source": "../runs/code/pyproject.toml",
+      "execution_path": "pyproject.toml"
+    },
+    {
+      "source": "../runs/code/uv.lock",
+      "execution_path": "uv.lock"
+    },
+    {
+      "source": "../runs/code/provenance.json",
+      "execution_path": "baseline_provenance.json"
+    }
+  ],
+  "data_bindings": [
+    {
+      "source": "../runs/data_manifest.json",
+      "execution_path": "data_manifest.json"
+    }
+  ],
+  "resources": [
+    {
+      "id": "h200_shared_host",
+      "hardware_class": "replace_with_exact_gpu_and_interconnect_class",
+      "host_id": "replace_physical_host_id",
+      "backend": "ssh",
+      "ssh_argv": ["ssh", "-o", "BatchMode=yes", "replace_user@replace_host"],
+      "workdir": "/replace/ophis/shared_single",
+      "python": ".venv/bin/python",
+      "gpus": [0, 1, 2, 3, 4, 5, 6, 7],
+      "max_concurrent_jobs": 1,
+      "reservation": {
+        "mode": "shared"
+      },
+      "max_idle_memory_mb": 512,
+      "max_idle_utilization_percent": 5
+    }
+  ],
+  "runtime": {
+    "timeout_seconds_per_arm": 1500,
+    "telemetry_interval_seconds": 20,
+    "resource_wait_seconds": 300
+  }
+}

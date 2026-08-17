@@ -1,0 +1,29 @@
+{
+  "id": "lit_replace_with_source_snapshot",
+  "work_key": "work_replace_with_stable_work_key",
+  "title": "Replace with the paper title",
+  "authors": ["Replace with authors"],
+  "year": 2025,
+  "venue": {
+    "name": "Replace with the venue",
+    "tier": "unknown",
+    "peer_reviewed": "unknown"
+  },
+  "publication_type": "article",
+  "identifiers": {
+    "doi": "replace-with-doi"
+  },
+  "urls": ["https://replace-with-canonical-url"],
+  "abstract": "Replace with the abstract snapshot.",
+  "topics": ["topic_optimizer_short_horizon"],
+  "retrieval": {
+    "provider": "manual",
+    "query": "replace with the query that found it",
+    "retrieved_at": "2026-08-16T00:00:00Z"
+  },
+  "content": {
+    "status": "fulltext_snapshot",
+    "path": "../papers/replace-with-paper.pdf"
+  },
+  "citation_count": 0
+}

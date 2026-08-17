@@ -1,0 +1,48 @@
+{
+  "id": "hyp_fused_rmsnorm_cuts_memory_traffic",
+  "belief_key": "belief_norm_and_elementwise_traffic_is_a_large_recoverable_share",
+  "statement": "Replacing the RMSNorm and adjacent elementwise sequence with a single fused kernel raises num_steps and lowers val_bpb in the frozen 300s H200 v2c scope, by removing redundant round trips to HBM.",
+  "rationale": "RMSNorm is 18.6% of GPU kernel time over 10,653 launches and other elementwise Triton work is a further 8.1% over 32,071 launches, together 26.7% of kernel time for operations that move memory rather than do arithmetic. At d_model 512 these are bandwidth-bound, so fusing the norm with its neighbouring scale/add/cast removes whole HBM traversals. This competes with the CUDA-graph hypothesis on purpose: one attributes the loss to gaps between kernels and the other to the kernels themselves, and they predict different diagnostics.",
+  "scope": {
+    "benchmark": "karpathy-autoresearch-corrected-bpb-v2c"
+  },
+  "topics": [
+    "topic_kernel_efficiency"
+  ],
+  "mechanism_ids": [
+    "mech_kernel_efficiency_buys_steps"
+  ],
+  "claim_ids": [
+    "claim_memory_bound_ops_are_a_quarter_of_kernel_time",
+    "claim_time_budget_makes_steps_the_currency"
+  ],
+  "prediction": {
+    "metric": "val_bpb",
+    "direction": "decrease",
+    "statement": "Candidate val_bpb is below its frozen same-GPU control by more than the gate, with num_steps higher and the post-run profile showing a reduced RMSNorm kernel-time share.",
+    "minimum_effect": 0.000426
+  },
+  "falsifiers": [
+    "The paired delta does not clear the gate.",
+    "num_steps does not rise, indicating torch.compile had already captured this fusion and the share was not recoverable.",
+    "A post-intervention profile shows the RMSNorm share unchanged, refuting the memory-traffic mediator regardless of the metric.",
+    "val_bpb changes at matched step count, which would mean the fused kernel is not numerically equivalent and the arm is invalid rather than informative."
+  ],
+  "intervention": {
+    "summary": "In train.py, fuse the RMSNorm with its adjacent cast/scale/add operations into one Triton kernel (or a single torch op the inductor will fuse), keeping the arithmetic numerically equivalent in float32 accumulation. Verify equality of the forward output against the current implementation before staging.",
+    "subsystem": "kernel",
+    "mutable_code_paths": [
+      "runs/code/train.py"
+    ],
+    "diagnostics": [
+      "num_steps",
+      "training_seconds",
+      "mfu_percent",
+      "total_tokens_M"
+    ]
+  },
+  "competing_hypothesis_ids": [
+    "hyp_cuda_graphs_close_launch_gaps"
+  ],
+  "proposed_by": "claude-opus-5-1m/ophis-v2-2026-08-16"
+}

@@ -1,0 +1,37 @@
+{
+  "id": "mech_replace_with_mechanism",
+  "name": "Replace with mechanism name",
+  "statement": "State the complete proposed causal mechanism.",
+  "scope": {
+    "benchmark": "karpathy-autoresearch-corrected-bpb-v2"
+  },
+  "nodes": [
+    {"id": "intervention", "label": "concrete train.py intervention"},
+    {"id": "mediator", "label": "measured intermediate process"},
+    {"id": "outcome", "label": "validation BPB"}
+  ],
+  "edges": [
+    {
+      "from": "intervention",
+      "to": "mediator",
+      "relation": "changes",
+      "claim_ids": ["claim_replace_with_atomic_claim"]
+    },
+    {
+      "from": "mediator",
+      "to": "outcome",
+      "relation": "causally improves",
+      "claim_ids": ["claim_replace_with_atomic_claim"]
+    }
+  ],
+  "source_claim_ids": ["claim_replace_with_atomic_claim"],
+  "assumptions": [
+    {
+      "statement": "The intervention does not win merely by receiving more compute.",
+      "claim_ids": []
+    }
+  ],
+  "alternatives": ["The observed gain is only token-exposure or throughput confounding."],
+  "predictions": ["The mediator changes before validation BPB improves."],
+  "falsifiers": ["BPB improves without the predicted mediator change."]
+}

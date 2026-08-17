@@ -1,0 +1,34 @@
+{
+  "abstract": "A first-party nsys capture of the v2c baseline in steady state, taken after the pre-tokenized token cache removed the dataloader bottleneck, so it measures what limits the run now rather than what limited it before. Command: nsys profile -t cuda,osrt -s none --delay 75 --duration 45 on an unmodified sealed run (/bin/bash launch.sh) on GPU 4. Totals over the window: 25.83s of GPU kernel time against 45s of wall, i.e. 57.4% busy; 102,337 kernel launches over ~179 optimizer steps, about 572 launches per step; 144.3ms of kernel time per step. Kernel time by class: GEMM (nvjet) 45.4% over 30,363 launches; FlashAttention 19.6% over 5,728; RMSNorm (Triton) 18.6% over 10,653; other elementwise Triton 8.1% over 32,071; softmax and cross-entropy 7.7% over 2,327. The two log_softmax/nll_loss kernels are the largest single kernels in the profile at 4.79ms and 4.28ms average, together about 9.1ms per optimizer step. Caveats that belong with the numbers: the host is shared and was at load ~325 with foreign tenants resident on other GPUs, and nsys itself inflates gaps -- observed step time rose from ~385ms unprofiled to ~480ms under the profiler with much higher variance (339-750ms). The idle fraction is therefore an upper bound on recoverable time, while the kernel-time shares are internally normalised and robust to both effects.",
+  "authors": [
+    "OPHIS v2 campaign"
+  ],
+  "citation_count": 0,
+  "content": {
+    "path": "../../profiles/v2c_prof_steady_cuda_gpu_kern_sum.csv",
+    "status": "fulltext_snapshot"
+  },
+  "id": "lit_nsys_v2c_steady_state_profile",
+  "identifiers": {
+    "artifact_sha256": "d2da179061ea6734dc86499f9c982e34559a5e1b2069408edadbaed7298f7e17",
+    "scope": "karpathy_228791f_corrected_bpb_h200_train300s_v2c"
+  },
+  "publication_type": "dataset",
+  "retrieval": {
+    "provider": "manual",
+    "query": "first-party nsys capture of the sealed v2c baseline in steady state",
+    "retrieved_at": "2026-08-16T14:05:00Z"
+  },
+  "title": "Nsight Systems steady-state GPU profile of the v2c baseline (45s window, H200, GPU 4)",
+  "topics": [
+    "topic_kernel_efficiency"
+  ],
+  "urls": [],
+  "venue": {
+    "name": "internal measurement",
+    "peer_reviewed": "no",
+    "tier": "unknown"
+  },
+  "work_key": "work_ophis_v2c_nsys_steady_profile",
+  "year": 2026
+}

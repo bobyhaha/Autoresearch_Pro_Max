@@ -1,0 +1,36 @@
+{
+  "abstract": "The benchmark artifact this campaign optimizes. A single-GPU decoder-only transformer trained under a fixed charged-training-seconds budget and scored in validation bits per byte. The architectural facts cited by this campaign's claims are read directly from the pinned source rather than from a description of it: GPTConfig.window_pattern defaults to 'SSSL'; GPT._compute_window_sizes sets short_window = long_window // 2 and forces the final layer to full context; attention is flash-attention-3 with an explicit window_size; and prepare.py fixes TIME_BUDGET = 300 seconds, which is what makes optimizer steps rather than epochs the currency of the benchmark. Sealed locally as runs/code/upstream/train.py with digests in runs/code/provenance.json.",
+  "authors": [
+    "Andrej Karpathy"
+  ],
+  "citation_count": 0,
+  "content": {
+    "path": "../../code/upstream/train.py",
+    "status": "fulltext_snapshot"
+  },
+  "id": "lit_karpathy_autoresearch_228791f",
+  "identifiers": {
+    "commit": "228791fb499afffb54b46200aca536f79142f117"
+  },
+  "publication_type": "software",
+  "retrieval": {
+    "provider": "manual",
+    "query": "pinned baseline artifact under audit, read from the sealed local snapshot",
+    "retrieved_at": "2026-08-16T10:00:00Z"
+  },
+  "title": "karpathy/autoresearch \u2014 reference nanochat-style pretraining benchmark (train.py, prepare.py)",
+  "topics": [
+    "topic_optimizer_short_horizon",
+    "topic_memory_efficiency"
+  ],
+  "urls": [
+    "https://github.com/karpathy/autoresearch/blob/228791fb499afffb54b46200aca536f79142f117/train.py"
+  ],
+  "venue": {
+    "name": "GitHub",
+    "peer_reviewed": "no",
+    "tier": "unknown"
+  },
+  "work_key": "work_github_karpathy_autoresearch",
+  "year": 2026
+}

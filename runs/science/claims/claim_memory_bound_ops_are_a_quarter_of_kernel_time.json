@@ -1,0 +1,48 @@
+{
+  "assessment": {
+    "assessed_at": "2026-08-16T14:10:00Z",
+    "assessor": "claude-opus-5-1m/ophis-v2-2026-08-16",
+    "confidence_policy_version": "confidence-v1",
+    "rationale": "Kernel-time shares are read straight from the profiler's own summation and are robust to the co-tenancy that makes the idle-fraction claim shakier, since shares are internally normalised. Risk of bias low for that reason. What the shares do NOT establish is how much is recoverable: torch.compile has already fused some of these, so the headroom is an open measurement rather than a deduction."
+  },
+  "belief_key": "belief_norm_and_elementwise_traffic_is_a_large_recoverable_share",
+  "claim_type": "empirical",
+  "derived_from_claim_ids": [],
+  "evidence": {
+    "artifact_status": "verified",
+    "content_depth": "fulltext_snapshot",
+    "directness": "direct",
+    "metrics": [
+      {
+        "name": "kernel_time_share",
+        "result": "RMSNorm 18.6% + other elementwise 8.1% = 26.7% of kernel time in memory-bound work; 45.4% is already cuBLAS/nvjet GEMM and is the hardest share to improve."
+      }
+    ],
+    "reproduction_status": "not_attempted",
+    "risk_of_bias": "low",
+    "scope_match": "exact",
+    "study_design": "controlled_benchmark"
+  },
+  "evidence_ids": [],
+  "id": "claim_memory_bound_ops_are_a_quarter_of_kernel_time",
+  "locators": [
+    {
+      "excerpt": "GEMM (nvjet) 45.4% / 30,363 launches; FlashAttention 19.6% / 5,728; RMSNorm (triton) 18.6% / 10,653; other triton elementwise 8.1% / 32,071; softmax+cross-entropy 7.7% / 2,327. The two log_softmax/nll_loss kernels are the largest per-instance in the profile at 4.79ms and 4.28ms, together 9.1ms per optimizer step.",
+      "location": "nsys stats --report cuda_gpu_kern_sum on prof_steady.nsys-rep",
+      "source_id": "lit_nsys_v2c_steady_state_profile"
+    }
+  ],
+  "origin": "literature",
+  "scope": {
+    "budget": "300 charged training seconds on one H200, scope karpathy_228791f_corrected_bpb_h200_train300s_v2c",
+    "model": "decoder-only transformer, 8 layers, d_model 512, 4 heads of 128, SSSL window pattern"
+  },
+  "source_ids": [
+    "lit_nsys_v2c_steady_state_profile"
+  ],
+  "stance": "supports",
+  "statement": "RMSNorm and small elementwise Triton kernels together account for about 26.7% of GPU kernel time and about 42,000 of the ~102,000 kernel launches per profiling window, which is a memory-traffic and launch-count cost rather than useful matmul work.",
+  "topics": [
+    "topic_kernel_efficiency"
+  ]
+}

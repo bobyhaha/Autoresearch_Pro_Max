@@ -1,0 +1,54 @@
+{
+  "id": "agenda_v2c_throughput_and_kernels",
+  "name": "Throughput-limited language-model training under a fixed wall-clock budget",
+  "objective": "Under a fixed 300s charged-training-seconds budget the metric is bought with optimizer steps, so the campaign's live question is where wall clock is lost and which mechanisms return it without changing the arithmetic. The nsys profile of the v2c baseline puts ~43% of wall in GPU gaps and ~26.7% of kernel time in memory-bound norm and elementwise work, so this agenda reads the literature that bears on those two mediators, plus the token-law exchange rate that prices any recovered time in val_bpb.",
+  "scope": {
+    "benchmark": "karpathy-autoresearch-corrected-bpb-v2c",
+    "constraints": [
+      "edit train.py only",
+      "fixed training-seconds budget, so a change is worthwhile only if quality lost per step is smaller than quality the extra steps buy",
+      "single H200 on a shared 20-tenant host; contention is the dominant noise source",
+      "measure num_steps, mfu_percent and total_tokens_M as diagnostics beside every val_bpb"
+    ]
+  },
+  "confidence_policy_version": "confidence-v1",
+  "topics": [
+    {
+      "id": "topic_kernel_efficiency",
+      "question": "Which kernel-level mechanisms (graph capture, fusion, reduced launch counts) recover wall clock in small-model training without changing the computed function?",
+      "queries": [
+        "CUDA graph capture training throughput launch overhead deep learning",
+        "kernel fusion transformer training memory bound elementwise normalization",
+        "GPU kernel launch overhead small batch deep learning training bottleneck"
+      ],
+      "keywords": ["CUDA graphs", "kernel fusion", "launch overhead", "memory bound", "RMSNorm"],
+      "refresh_days": 14,
+      "minimum_sources": 12,
+      "minimum_claims": 6
+    },
+    {
+      "id": "topic_token_exposure_exchange_rate",
+      "question": "What is the empirical exchange rate between additional optimizer steps or tokens and validation loss at fixed model size, and where does it break down?",
+      "queries": [
+        "scaling law tokens loss exchange rate compute optimal language model",
+        "training steps versus validation loss power law small language model"
+      ],
+      "keywords": ["scaling law", "token exposure", "compute optimal", "loss curve"],
+      "refresh_days": 14,
+      "minimum_sources": 12,
+      "minimum_claims": 6
+    },
+    {
+      "id": "topic_dataloader_and_input_pipeline",
+      "question": "How much of measured GPU underutilization in language-model training is attributable to the input pipeline, and which remedies preserve the exact token stream?",
+      "queries": [
+        "input pipeline bottleneck GPU utilization deep learning training data loading",
+        "pre-tokenized dataset throughput language model training pipeline"
+      ],
+      "keywords": ["dataloader", "GPU utilization", "tokenization", "prefetch"],
+      "refresh_days": 14,
+      "minimum_sources": 8,
+      "minimum_claims": 4
+    }
+  ]
+}

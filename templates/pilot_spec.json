@@ -1,0 +1,65 @@
+{
+  "id": "exp_demo_optimizer_pilot",
+  "stage": "pilot",
+  "title": "Demo optimizer intervention pilot",
+  "question": "Does the candidate execute and move the primary metric in the expected direction?",
+  "mechanism": {
+    "cause": "the candidate changes the optimizer update",
+    "effect": "the measured score decreases",
+    "chain": [
+      "change the update rule",
+      "change parameter movement",
+      "change the fixed-budget endpoint score"
+    ]
+  },
+  "hypothesis": {
+    "statement": "The candidate produces a lower score than control in this bounded pilot.",
+    "prediction": "candidate - control will be below -0.01"
+  },
+  "falsifier": {
+    "statement": "The mechanism is not promising if candidate - control is non-negative."
+  },
+  "metric": {
+    "name": "score",
+    "direction": "minimize"
+  },
+  "plan": [
+    {
+      "replicate_id": "seed_1",
+      "arms": [
+        {
+          "name": "control",
+          "argv": ["python", "examples/metric_emitter.py", "--value", "1.0", "--steps", "1000"],
+          "env": {}
+        },
+        {
+          "name": "candidate",
+          "argv": ["python", "examples/metric_emitter.py", "--value", "0.95", "--steps", "1000"],
+          "env": {}
+        }
+      ]
+    }
+  ],
+  "analysis": {
+    "effect": "difference",
+    "primary_arm": "candidate",
+    "reference_arm": "control",
+    "minimum_valid_replicates": 1,
+    "success_rule": {"op": "lt", "value": -0.01},
+    "falsifier_rule": {"op": "gte", "value": 0.0},
+    "sota_eligible": false
+  },
+  "requirements": {
+    "required_metrics": ["score", "num_steps"],
+    "minimum_steps": 900,
+    "require_gpu": false,
+    "isolation": "none"
+  },
+  "knowledge": {
+    "source_ids": ["demo_observation_001"],
+    "direction": "optimizer",
+    "subsystem": "update_rule"
+  },
+  "comparison_group": "demo_fixed_budget_v1"
+}
+

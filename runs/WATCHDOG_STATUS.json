@@ -1,0 +1,37 @@
+{
+  "checked_at": "2026-08-17T02:50:19+00:00",
+  "pool_pids": [
+    52977,
+    52979
+  ],
+  "queue": {
+    "states": {
+      "blocked": 1,
+      "complete": 22,
+      "pending": 0,
+      "running": 2,
+      "waiting": 0
+    },
+    "depth": 0,
+    "paused": true,
+    "health": "paused"
+  },
+  "gpus": {
+    "busy": [
+      "h200_gpu0"
+    ],
+    "idle": [
+      "h200_gpu3",
+      "h200_gpu4",
+      "h200_gpu7"
+    ],
+    "load1": "273.09",
+    "reachable": true
+  },
+  "alerts": [
+    "HEALTH_CIRCUIT_PAUSED"
+  ],
+  "action": "",
+  "chart": "chart=ok (10 plotted, 10 valid, 4 invalid excluded, 8 from earlier scopes excluded, best measured 1.006256 (exploratory, not SOTA))",
+  "ok": false
+}

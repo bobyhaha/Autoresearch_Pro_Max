@@ -1,0 +1,32 @@
+{
+  "id": "replace_with_scope_id_v2",
+  "hardware_class": "replace_with_exact_gpu_and_interconnect_class",
+  "dataset_split": "replace_with_exact_train_and_validation_split_id",
+  "tokenizer": "replace_with_tokenizer_artifact_sha256",
+  "evaluator": "replace_with_evaluator_code_and_config_sha256",
+  "precision": "replace_with_training_and_evaluation_precision",
+  "metric": {
+    "name": "val_bpb",
+    "direction": "minimize"
+  },
+  "budget": {
+    "kind": "wall_seconds",
+    "value": 300
+  },
+  "data_details": {
+    "manifest_sha256": "replace_with_data_manifest_sha256",
+    "train_shards": ["replace_with_exact_train_shard_selection"],
+    "validation_shards": ["replace_with_exact_validation_shard_selection"],
+    "sampler": "replace_with_sampler_and_ordering_contract"
+  },
+  "tokenizer_details": {
+    "artifact_sha256": "replace_with_tokenizer_artifact_sha256",
+    "byte_accounting": "replace_with_exact_val_bpb_byte_accounting_contract"
+  },
+  "runtime_details": {
+    "attention_backend": "replace_with_attention_backend",
+    "framework": "replace_with_framework_and_version",
+    "compile_mode": "replace_with_compile_mode_or_none"
+  },
+  "notes": "Replace every placeholder before creating a protocol-v2 ExperimentSpec. Extra fields are scope-bound but not semantically interpreted by the core validator."
+}

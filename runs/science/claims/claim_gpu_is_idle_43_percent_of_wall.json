@@ -1,0 +1,48 @@
+{
+  "assessment": {
+    "assessed_at": "2026-08-16T14:10:00Z",
+    "assessor": "claude-opus-5-1m/ophis-v2-2026-08-16",
+    "confidence_policy_version": "confidence-v1",
+    "rationale": "Directly measured on this exact configuration rather than inferred, which is why directness is direct and scope_match exact. Risk of bias is medium and reproduction not_attempted deliberately: this is a single nsys capture on a contended host, and profiler overhead and co-tenancy both inflate the idle fraction. The claim is therefore that gaps dominate, not that the number is 43.0%. A second capture on a quiet window is the cheapest way to tighten it."
+  },
+  "belief_key": "belief_step_time_is_gap_bound_not_kernel_bound",
+  "claim_type": "empirical",
+  "derived_from_claim_ids": [],
+  "evidence": {
+    "artifact_status": "verified",
+    "content_depth": "fulltext_snapshot",
+    "directness": "direct",
+    "metrics": [
+      {
+        "name": "gpu_busy_fraction",
+        "result": "57.4% of the profiled window had a kernel resident. Measured once, under nsys, on a shared host; the profiler inflates gaps and other tenants were active, so the true idle fraction on a quiet box is bounded above by 43% rather than equal to it."
+      }
+    ],
+    "reproduction_status": "not_attempted",
+    "risk_of_bias": "medium",
+    "scope_match": "exact",
+    "study_design": "controlled_benchmark"
+  },
+  "evidence_ids": [],
+  "id": "claim_gpu_is_idle_43_percent_of_wall",
+  "locators": [
+    {
+      "excerpt": "total GPU kernel time 25.83s across a 45s window => 57.4% busy; 102,337 kernel launches over ~179 optimizer steps = ~572 launches/step; 144.3ms of kernel time per step against ~480ms observed step time under the profiler",
+      "location": "nsys profile prof_steady.nsys-rep, 45s steady-state window captured after a 75s delay, GPU 4",
+      "source_id": "lit_nsys_v2c_steady_state_profile"
+    }
+  ],
+  "origin": "literature",
+  "scope": {
+    "budget": "300 charged training seconds on one H200, scope karpathy_228791f_corrected_bpb_h200_train300s_v2c",
+    "model": "decoder-only transformer, 8 layers, d_model 512, 4 heads of 128, SSSL window pattern"
+  },
+  "source_ids": [
+    "lit_nsys_v2c_steady_state_profile"
+  ],
+  "stance": "supports",
+  "statement": "After the pre-tokenized cache removed the dataloader bottleneck, the H200 still runs no kernel at all for roughly 43% of wall time in the steady-state training window, so the dominant remaining cost is gaps between kernels rather than the speed of any individual kernel.",
+  "topics": [
+    "topic_kernel_efficiency"
+  ]
+}
