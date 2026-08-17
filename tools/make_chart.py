@@ -479,6 +479,11 @@ def render(rows: list[dict[str, Any]], scope_id: str, excluded: int = 0) -> str:
   (<code>{html.escape(scope_id)}</code>): one H200, a fixed 300&nbsp;s charged-training budget,
   corrected byte-fallback BPB. Nothing is normalised, fitted, or inferred. <strong>Only runs
   whose EvidenceDecision is <code>valid</code> are plotted</strong>{excluded_note}
+  <strong>Experiment&nbsp;1 is the baseline itself</strong>: every bank control sits at x&nbsp;=&nbsp;1,
+  so their vertical spread <em>is</em> the noise floor, and only a candidate advances the
+  counter. Controls are re-measurements of one frozen baseline, not separate experiments,
+  and the 1200&nbsp;s bank TTL forces a steady supply of them — counting each as an experiment
+  would make the campaign look busier than it is.
   The host is shared, so a candidate is only ever read against the <strong>exact bank control
   frozen into its spec before launch</strong> on the same physical GPU — both are plotted and
   joined by a line. The grey band is ±2σ of the control replicates: anything inside it is an
@@ -490,8 +495,9 @@ def render(rows: list[dict[str, Any]], scope_id: str, excluded: int = 0) -> str:
       <div class="d">exploratory · not SOTA</div></div>
     <div class="tile"><div class="k">First control</div><div class="v">{baseline:.4f}</div>
       <div class="d">{(controls[0]["steps"] if controls else 0):.0f} steps in 300&nbsp;s</div></div>
-    <div class="tile"><div class="k">Plotted runs</div><div class="v">{len(rows)}</div>
-      <div class="d">{len(measured)} valid · {excluded} invalid excluded · {n_due} promotion-due</div></div>
+    <div class="tile"><div class="k">Experiments</div><div class="v">{max((r["i"] for r in rows), default=1)}</div>
+      <div class="d">#1 is the baseline ({sum(1 for r in rows if r["status"] == "control")} control runs) ·
+      {max((r["i"] for r in rows), default=1) - 1} idea(s) tested · {excluded} invalid excluded</div></div>
     <div class="tile"><div class="k">Control noise</div><div class="v">{control_sd:.5f}</div>
       <div class="d">{sd_text} · gate 0.000426</div></div>
   </div>
@@ -621,9 +627,22 @@ def main() -> None:
             )
         rows = kept
 
-    # Number after both filters: experiment #1 is the first plotted run of the
-    # current scope, so the axis never implies experiments that are not on it.
-    for index, row in enumerate(rows, start=1):
+    # Experiment #1 IS the baseline, and only candidates advance the counter.
+    #
+    # Numbering every landed run made the axis mostly bookkeeping: 15 of the first 17
+    # points were bank controls, so "experiment 17" described a campaign that had
+    # tested two ideas. Controls are re-measurements of one frozen baseline, not
+    # separate experiments, and the bank TTL (1200s) forces a steady supply of them --
+    # counting each as an experiment makes the campaign look busier than it is.
+    #
+    # So every control sits at x=1, where their vertical spread shows the noise floor
+    # directly, and each candidate takes the next integer in time order. The axis now
+    # answers "how many ideas have been tested", which is the question worth asking.
+    controls = [r for r in rows if r["status"] == "control"]
+    candidates = [r for r in rows if r["status"] != "control"]
+    for row in controls:
+        row["i"] = 1
+    for index, row in enumerate(candidates, start=2):
         row["i"] = index
 
     output = Path(args.output)
