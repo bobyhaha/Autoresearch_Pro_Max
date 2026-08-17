@@ -4,6 +4,7 @@
     "value": 300
   },
   "data_details": {
+    "corpus_root": "~/.cache/autoresearch_v2 (PINNED by prepare.py, not a shared listing)",
     "manifest_sha256": "611c4c1f8823cc4dbf834ab5c8680e8247150d9e8d294b2fb341a546746d0680",
     "sampler": "upstream sorted shard order, row-group order, best-fit BOS packing",
     "train_shards": [
@@ -22,19 +23,19 @@
       "shard_06542.parquet"
     ]
   },
-  "dataset_split": "climbmix-400b-shuffle_train_00000-00009_val_06542",
+  "dataset_split": "climbmix-400b-shuffle_train_00000-00009_val_06542_PINNED",
   "evaluator": "sha256:2ef2c56d7a484b677fcb6c2e54208e9df2b292c4bf2efd5c9ba1b70819b84cfd",
   "hardware_class": "nvidia-h200-141gb-sxm_driver-580.95.05_torch-2.9.1+cu128_triton-3.5.1_kernels-0.12.1",
-  "id": "karpathy_228791f_corrected_bpb_h200_train300s_v2c",
+  "id": "karpathy_228791f_pinned10_correctedbpb_tokencache_h200_train300s_v3b",
   "metric": {
     "direction": "minimize",
     "name": "val_bpb"
   },
-  "notes": "Corrected-BPB Karpathy baseline, pinned corpus, pre-tokenized flat token cache. New scope ID because prepare.py's digest changed. The token stream is provably identical to v2b and evaluate_bpb is byte-identical, so the only intended difference is steps completed in the 300s frame: v2b was pinned at ~277 steps / 11.3% MFU by a single producer thread re-tokenizing the corpus every run. Not interchangeable with upstream scores, with v2a/v2b, or with the plain_v2 campaign.",
+  "notes": "Deep fix on top of the verified pristine baseline. train.py is Karpathy's bytes plus 38 adapter lines that emit but do not compute. prepare.py fixes the three defects the restart exposed: an unpinned corpus defined by a shared directory listing, silent reuse of an unversioned token_bytes table, and inline BPE that starves the GPU (86% of the measured 4.67x step deficit was this dataloader, recovered 3.76x when cached). The token cache is verified byte-identical to inline tokenization, so it changes throughput and nothing else. NOT comparable to the pristine 1.140787 reference: that ran against the shared 41-shard cache, this pins 10 shards.",
   "precision": "bfloat16 autocast; float32 logits and cross-entropy",
   "runtime_details": {
     "attention_backend": "kernels 0.12.1 dynamic flash-attention lookup, pinned by lockfile digest not by image digest",
-    "baseline": "karpathy/autoresearch@228791fb499afffb54b46200aca536f79142f117 plus OPHIS protocol adapter ophis-evidence-v3-seed-corrected-bpb-pinned-cache-prefetch-and-token-cache-v4",
+    "baseline": "karpathy/autoresearch@228791fb499afffb54b46200aca536f79142f117; train.py is upstream plus the protocol adapter only; prepare.py adds a pinned corpus, corrected+versioned byte accounting, and a pre-tokenized token cache",
     "compile_mode": "torch.compile dynamic=false; fullgraph optimizer kernels",
     "framework": "torch 2.9.1+cu128; triton 3.5.1; kernels 0.12.1",
     "host_note": "shared multi-tenant host; observed load average >280 with 16 users. Contention is the dominant noise source and is controlled by same-GPU 20-minute banked controls, not by this field.",
@@ -43,7 +44,7 @@
   "tokenizer": "sha256:b41ae182bdc6201c8130b3f1274fc710a4b2e6af79d6d97d041a5a069f401118",
   "tokenizer_details": {
     "artifact_sha256": "b41ae182bdc6201c8130b3f1274fc710a4b2e6af79d6d97d041a5a069f401118",
-    "byte_accounting": "token_bytes format 2: decode_single_token_bytes; special tokens count zero bytes",
+    "byte_accounting": "token_bytes format 2 (decode_single_token_bytes) -- CORRECTED, despite prepare.py being upstream. Upstream never checks the version file, so it reuses whatever token_bytes.pt already sits in the cache; this one was written 2026-07-30 by an earlier campaign and is the corrected table.",
     "token_bytes_sha256": "d66ac4efb63037cf580f4630836fa1bcc873c580ab76639617a87fa88bfad385"
   }
 }

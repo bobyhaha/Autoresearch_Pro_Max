@@ -1,35 +1,37 @@
 {
-  "checked_at": "2026-08-17T03:01:03+00:00",
-  "pool_pids": [],
+  "checked_at": "2026-08-17T03:33:19+00:00",
+  "pool_pids": [
+    97936,
+    97937,
+    97976,
+    97978
+  ],
   "queue": {
     "states": {
-      "blocked": 1,
-      "complete": 22,
+      "blocked": 0,
+      "complete": 0,
       "pending": 0,
-      "running": 7,
+      "running": 4,
       "waiting": 0
     },
     "depth": 0,
-    "paused": true,
-    "health": "paused"
+    "paused": false,
+    "health": "healthy"
   },
   "gpus": {
     "busy": [
-      "h200_gpu0",
-      "h200_gpu4"
+      "h200_gpu0"
     ],
     "idle": [
       "h200_gpu3",
+      "h200_gpu4",
       "h200_gpu7"
     ],
-    "load1": "258.69",
+    "load1": "245.26",
     "reachable": true
   },
-  "alerts": [
-    "POOL_DEAD",
-    "HEALTH_CIRCUIT_PAUSED"
-  ],
-  "action": "RESTARTED pool pid=78293",
-  "chart": "chart=ok (10 plotted, 10 valid, 4 invalid excluded, 8 from earlier scopes excluded, best measured 1.006256 (exploratory, not SOTA))",
-  "ok": false
+  "alerts": [],
+  "action": "RESTARTED pool pid=97936",
+  "chart": "chart=draw_failed",
+  "ok": true
 }

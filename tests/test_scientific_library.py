@@ -1,16 +1,15 @@
 from __future__ import annotations
 
-from copy import deepcopy
 import json
+from copy import deepcopy
 
 import pytest
 
-from autoresearch.records import RecordError
 from autoresearch.cli import main
+from autoresearch.records import RecordError
 from autoresearch.science import ScientificLibrary
 from autoresearch.store import Store
 from autoresearch.workflow import V2Workflow
-
 
 NOW = "2026-08-16T12:00:00Z"
 

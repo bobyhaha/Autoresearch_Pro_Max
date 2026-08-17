@@ -404,7 +404,26 @@ class ScientificLibrary:
                 "retrieved_at": searched_at,
                 "search_id": search_id,
             },
-            "content": {"status": "abstract_only" if abstract else "metadata_only"},
+            # A retrieved abstract is NOT read text. On 2026-08-17 this provider
+            # returned correct titles, authors, years and DOIs while attaching the
+            # abstract of an entirely different paper: "Scaling Laws for Neural
+            # Language Models" (DOI 2001.08361) came back with an abstract about
+            # "transport-validity theory for agentic AI interventions", and
+            # FlashAttention (2205.14135) with one about a "Fused Memory-Compute
+            # Tile". Verified against arXiv; the inverted-index decode is correct,
+            # so the corruption is upstream of us.
+            #
+            # A claim extracted from that text would carry a real DOI and real
+            # authors attached to a fabricated statement -- provenance that looks
+            # impeccable and is worthless. So search results are scored as
+            # metadata_only regardless of whether an abstract came back: discovery
+            # is trustworthy here, content is not. To earn abstract or fulltext
+            # credit, fetch the canonical source and register it explicitly with
+            # `literature-source`, which is what "reading a paper" means.
+            "content": {
+                "status": "metadata_only",
+                "retrieved_abstract_unverified": bool(abstract),
+            },
             "citation_count": int(result.get("cited_by_count") or 0),
         }
 

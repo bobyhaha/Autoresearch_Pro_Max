@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import difflib
 import hashlib
 import json
 from pathlib import Path
@@ -45,9 +46,40 @@ def test_active_baseline_is_auditable_and_satisfies_the_v2_contract() -> None:
     assert "torch.cuda.manual_seed(AUTORESEARCH_SEED)" in train_source
     assert '"AUTORESEARCH_METRICS "' in train_source
     assert '"seed": AUTORESEARCH_SEED' in train_source
+
+    # prepare.py carries three deliberate fixes, each for a defect that was MEASURED
+    # rather than suspected. Assert each one by name so it cannot be dropped in
+    # silence -- every one of these was, at some point, absent and cost real time:
+    #
+    #  * pinned corpus: upstream reads a SHARED cache whose directory listing defines
+    #    dataset_split. On 2026-08-17 that cache held 41 shards and a corrected
+    #    token_bytes.pt from another campaign, so pristine code produced a
+    #    non-pristine measurement and nothing in the code would have shown it.
+    #  * versioned byte accounting: upstream never version-checks token_bytes.pt and
+    #    will silently reuse whatever is on disk. Loading must fail loudly instead.
+    #  * pre-tokenized cache: inline BPE starved the GPU; 86% of the measured 4.67x
+    #    step deficit was this, and caching recovered 3.76x with a token stream
+    #    verified byte-identical to the inline path.
+    assert 'CACHE_DIR = os.path.join(os.path.expanduser("~"), ".cache", "autoresearch_v2")' in prepare_source
     assert "decode_single_token_bytes(token_id)" in prepare_source
     assert "TOKEN_BYTES_VERSION = 2" in prepare_source
     assert "token_bytes is stale or unversioned" in prepare_source
+    assert "def build_token_cache" in prepare_source
+    assert "def load_token_cache" in prepare_source
+    assert "_cached_document_token_batches" in prepare_source
+    # The evaluator digest in the scope template IS prepare.py's digest, so a change
+    # here without a scope bump would silently redefine the metric.
+    assert _sha256(CODE / "prepare.py") == active["prepare_py_sha256"]
+
+    # train.py may differ from upstream ONLY by the protocol adapter. Guard the
+    # size of that difference so an unrelated change cannot ride along unnoticed.
+    upstream_train = (CODE / "upstream" / "train.py").read_text().splitlines()
+    added = [
+        line
+        for line in difflib.unified_diff(upstream_train, train_source.splitlines(), lineterm="")
+        if line.startswith("-") and not line.startswith("---")
+    ]
+    assert len(added) <= 5, f"adapter removes more upstream lines than expected: {added}"
 
 
 def test_karpathy_scope_and_execution_templates_bind_the_baseline() -> None:

@@ -1,16 +1,16 @@
 {
   "active_adapter": {
     "adapter_changes": [
-      "train.py: AUTORESEARCH_SEED is executable and emitted; total clock starts before torch import; one AUTORESEARCH_METRICS endpoint",
-      "prepare.py: corrected byte-fallback token_bytes v2 (decode_single_token_bytes)",
-      "prepare.py: CACHE_DIR pinned to ~/.cache/autoresearch_v2 so the directory listing that defines dataset_split cannot be changed by another campaign sharing ~/.cache/autoresearch",
-      "prepare.py: make_dataloader tokenizes on a bounded-FIFO producer thread instead of inline in the training loop. Verified byte-identical token stream, document order and epoch boundaries against the pre-fix dataloader (sha256 of 12 batches of int64 inputs+targets: f4ab4f330294964c6a070fb6f400e06758822a4fa43f35ab672324e8546550ef). Throughput fix only; evaluate_bpb is untouched.",
-      "prepare.py: pre-tokenized flat token cache (uint16 tokens + document offsets + per-batch document counts, memory-mapped). The training loop no longer reads parquet or runs the BPE encoder; it replays the identical (token_lists, epoch) sequence from the cache, including the per-batch document grouping, which the best-fit packer is sensitive to. Falls back to inline tokenization when no current cache exists. Throughput change only; verified byte-identical against the inline path by tools/verify_token_cache.py (sha256 of 12 batches of int64 inputs+targets+epoch, both paths: 15fcca1c6bd1502397c287415c722c2c8d8171a604790f62a33f6bf2529a5a1d). evaluate_bpb is untouched."
+      "train.py: upstream + protocol adapter ONLY (38 lines added, 3 replaced) -- executable seed, total clock started before the torch import, one AUTORESEARCH_METRICS line. Model, optimizer, schedules, dataloader call sites and evaluator are upstream bytes.",
+      "prepare.py: CACHE_DIR pinned to ~/.cache/autoresearch_v2. REASON, measured on 2026-08-17: upstream reads the shared ~/.cache/autoresearch, whose directory listing silently defines dataset_split. That cache held 41 shards (00001-00040, no 00000) and a CORRECTED token_bytes.pt written by an earlier campaign on 2026-07-30, which upstream reuses because it never version-checks the file. So pristine CODE did not give pristine MEASUREMENT, and the split could change with no code change at all.",
+      "prepare.py: corrected byte-fallback BPB denominator via decode_single_token_bytes, versioned as token_bytes format 2 and version-checked at load, so a stale or unversioned table now fails loudly instead of being reused in silence.",
+      "prepare.py: pre-tokenized flat token cache (uint16 tokens + document offsets + per-batch document counts, memory-mapped), replacing inline BPE in the training loop. Throughput only: verified byte-identical to the inline path over 12 batches of inputs+targets+epoch, both hashing 15fcca1c6bd1502397c287415c722c2c8d8171a604790f62a33f6bf2529a5a1d. Falls back to inline tokenization when no current cache exists.",
+      "Reference: pristine upstream measured 1.140787 +/- 0.000614 (n=3) at 215.3 steps on this box, against the SHARED 41-shard cache. This scope pins a different 10-shard corpus, so it needs its own baseline and is NOT comparable to that number."
     ],
     "prepare_py_sha256": "2ef2c56d7a484b677fcb6c2e54208e9df2b292c4bf2efd5c9ba1b70819b84cfd",
-    "train_py_sha256": "705ba544698f8cf2eab36f3dbaf7db72a85904404b184cf81c82847fa6567660"
+    "train_py_sha256": "0c41f8da066c45330789604d2e7800b28e34bb12905f1ef81012c6c2b7e3d9d2"
   },
-  "adapter_id": "ophis-evidence-v3-seed-corrected-bpb-pinned-cache-prefetch-and-token-cache-v4",
+  "adapter_id": "ophis-pinned-corpus-corrected-bytes-token-cache-v6",
   "upstream": {
     "commit": "228791fb499afffb54b46200aca536f79142f117",
     "commit_date": "2026-03-25T17:07:37-07:00",

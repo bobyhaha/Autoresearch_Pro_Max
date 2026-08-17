@@ -9,15 +9,9 @@ os.environ["PYTORCH_ALLOC_CONF"] = "expandable_segments:True"
 os.environ["HF_HUB_DISABLE_PROGRESS_BARS"] = "1"
 
 import gc
-import json
 import math
 import time
 from dataclasses import dataclass, asdict
-
-# OPHIS protocol adapter: start the emitted total clock before Torch and the
-# runtime kernel are imported so it reconciles with the independent process wall
-# clock. Karpathy's charged training clock below is untouched.
-AUTORESEARCH_PROCESS_START = time.time()
 
 import torch
 import torch.nn as nn
@@ -460,18 +454,9 @@ DEVICE_BATCH_SIZE = 128  # per-device batch size (reduce if OOM)
 # Setup: tokenizer, model, optimizer, dataloader
 # ---------------------------------------------------------------------------
 
-# OPHIS protocol adapter: upstream hard-codes 42. Keep 42 for a standalone run,
-# while making the campaign seed an executable, emitted contract.
-try:
-    AUTORESEARCH_SEED = int(os.environ.get("AUTORESEARCH_SEED", "42"))
-except ValueError as exc:
-    raise SystemExit("AUTORESEARCH_SEED must be a non-negative integer") from exc
-if AUTORESEARCH_SEED < 0:
-    raise SystemExit("AUTORESEARCH_SEED must be a non-negative integer")
-
-t_start = AUTORESEARCH_PROCESS_START
-torch.manual_seed(AUTORESEARCH_SEED)
-torch.cuda.manual_seed(AUTORESEARCH_SEED)
+t_start = time.time()
+torch.manual_seed(42)
+torch.cuda.manual_seed(42)
 torch.set_float32_matmul_precision("high")
 device = torch.device("cuda")
 autocast_ctx = torch.amp.autocast(device_type="cuda", dtype=torch.bfloat16)
@@ -643,26 +628,3 @@ print(f"total_tokens_M:   {total_tokens / 1e6:.1f}")
 print(f"num_steps:        {step}")
 print(f"num_params_M:     {num_params / 1e6:.1f}")
 print(f"depth:            {DEPTH}")
-
-# OPHIS protocol adapter: retain Karpathy's human-readable summary above, then add
-# the single machine-readable endpoint the evidence harness parses. Emitting a
-# number is not computing one -- nothing above this line changed.
-print(
-    "AUTORESEARCH_METRICS "
-    + json.dumps(
-        {
-            "val_bpb": val_bpb,
-            "training_seconds": total_training_time,
-            "total_seconds": t_end - t_start,
-            "peak_vram_mb": peak_vram_mb,
-            "mfu_percent": steady_state_mfu,
-            "total_tokens_M": total_tokens / 1e6,
-            "num_steps": step,
-            "num_params_M": num_params / 1e6,
-            "depth": DEPTH,
-            "seed": AUTORESEARCH_SEED,
-        },
-        sort_keys=True,
-    ),
-    flush=True,
-)
