@@ -164,25 +164,61 @@ the fleet warm for show. Writes `runs/gpu_guard.log` and `runs/GPU_GUARD_STATE.j
 
 ## 2. Analysis and critique run in parallel with the GPUs, never in series
 
-GPU time is the scarce resource; analysis is nearly free. Nothing in the analysis
-path may sit between one experiment finishing and the next starting — that is what
-the durable queue and `run --follow` exist to prevent.
+GPU time is the scarce resource; analysis is nearly free. Nothing in the analysis path
+may sit between one experiment finishing and the next starting — that is what the
+durable queue and `run --follow` exist to prevent.
 
-**Use multiple agents for analysis and critique.** A single reader of one's own
-results is the failure mode that produced a withdrawn result and a retracted
-knowledge card in the predecessor campaigns. Every heartbeat that has results to
-interpret dispatches, concurrently:
+### 2.1 Dispatch agents concurrently, every heartbeat that has results
 
-- an **analyst** — what do the landed results say, in numbers, against the frozen
-  control and the measured noise floor;
-- a **critic** — what confound, selection effect, or contended window explains
-  this result *as well as* the proposed mechanism does;
-- a **scout** — one new primary source from outside the repo, with its scope
-  compared to this frame in numbers, converted into a concrete candidate.
+**One reader of one's own results is the failure mode that produced a withdrawn result
+and a retracted knowledge card in predecessor campaigns.** It nearly did so again here:
+two normalization arms landed +0.158 from the step law and the first explanation
+reached for was a real mechanism, when the honest possibilities also included a broken
+implementation. A critic asks that; an author does not.
 
-They run while experiments run. Their disagreement is the useful output; where the
-analyst and the critic agree, the result is probably real, and where they do not,
-that is the next measurement.
+Every heartbeat with results to interpret dispatches these **concurrently, while the
+GPUs run**, never after:
+
+- **analyst** — what do the landed results say, in numbers, against the frozen same-GPU
+  control and the measured noise floor. Must quote replicate counts and the full scope
+  ID, and must state the step-law residual, not just the raw delta.
+- **critic** — what confound, selection effect, contended window, or *implementation
+  bug* explains this result as well as the proposed mechanism does. The critic's job is
+  to make the author's story compete, not to agree with it.
+- **scout** — one new primary source from outside the repo, full text where it exists,
+  with its scope compared to this frame in numbers and converted into a concrete
+  candidate or a concrete reason not to run one.
+
+Their **disagreement is the useful output**. Where analyst and critic agree, the result
+is probably real; where they do not, that gap is the next measurement.
+
+### 2.2 Every hour, Fable critiques the whole project
+
+**Once per hour**, independently of the per-heartbeat agents, Fable performs a standing
+adversarial pass over the campaign as a whole and writes it to `AI_papers/`. It reads
+the immutable records and derived views — **not this session's narration of them**,
+which is the point: the narration is exactly what needs checking.
+
+It must answer, in this order:
+
+1. **What is the strongest claim currently being made, and would it survive a hostile
+   reviewer?** Name the single result most likely to be withdrawn and why.
+2. **What is labelled wrongly?** This project has already mislabelled its baseline as
+   "Karpathy's", carried an unsourced target number (`0.9912`) through several
+   arguments, and reported a contaminated measurement as a verification. Assume more
+   of this exists and go looking.
+3. **What do the failures have in common?** The common cause is the finding; each
+   individual null is not. Eleven of the first thirty-four runs were invalid and every
+   one was environmental — that ratio is itself a result about the apparatus.
+4. **What was assumed and never measured?** Ranked by cheapness to measure. Prefer the
+   ones answerable without a GPU; the dtype question behind two failed arms was settled
+   with a ten-second tensor probe.
+5. **What should run next, as concrete stageable candidates** — with family, track, and
+   the falsifier that would kill each one.
+
+Point 5 is not optional. **A critique that produces no next experiment is commentary.**
+If Fable's conclusion contradicts a registered belief, that contradiction gets
+registered as an `opposes` claim rather than argued away in prose.
 
 ## 3. Read papers first, and keep reading
 
@@ -264,6 +300,41 @@ than three times venue, and content depth scores `fulltext_snapshot` 0.95 agains
 good the paper is. **To move a belief past ~0.75 you must read the full text**, and
 `RESEARCH_TASKS.json` will keep emitting `read_fulltext_and_extract_claims` at
 priority 85 until you do. Deep analysis is what raises confidence; volume is not.
+
+### 3.0c What "read in detail" means
+
+Not skim the abstract, not read the intro and the conclusion. For any paper that
+reaches the claim-extraction stage, these must be in your notes or you have not read it:
+
+- **The exact intervention**, at implementation granularity. Which layers, which
+  tensors, what initialisation, what optimizer group, what learning rate, what weight
+  decay. "Add scale vectors" is not an intervention; "a learnable per-channel vector
+  initialised to 1 on every RMSNorm immediately followed by a linear map, with weight
+  decay ON and the vector excluded from the orthogonalized update" is.
+- **The number**, with its units and its measurement. Not "improves loss" but "0.028
+  terminal loss in nats at matched LR, 0.015 after retuning, Figure 1, 0.12B". A claim
+  without a magnitude cannot be checked against our noise floor and is therefore not
+  yet usable.
+- **The cost.** Wall clock, memory, parameters. Under a 300-charged-second budget every
+  gain is priced in the steps it destroys, and a paper that reports only the gain has
+  told you half of what you need. arXiv 2605.26895's Table 3 (1.04× wall clock) was
+  more decision-relevant than its headline.
+- **The regime.** Model size, token budget, optimizer, precision, horizon. Then state
+  explicitly which of those differ from 50.33M / 300 s / MuonAdamW / bf16 / ~600 steps,
+  and which of those differences could flip the sign. This is the `scope_match` field
+  and it should be argued, not guessed.
+- **The taxonomy the paper introduces**, if any, mapped onto our code. The
+  Input-Norm/Output-Norm distinction was the single most actionable thing in that
+  paper, it appears nowhere in the abstract, and it told us our own arm was
+  misconfigured before it finished running.
+- **What the paper does NOT establish.** Write this down. It becomes the assumption
+  list on the mechanism and the alternatives on the hypothesis.
+
+**Then read the figures and tables, not just the prose.** Every number cited above came
+from a figure caption or a table, none from the abstract.
+
+**A paper read in detail yields several claims and at least one falsifier we can run.**
+If it yields one vague claim, it was skimmed — go back.
 
 ### 3.0b Read the FULL TEXT, and take several claims from each paper
 
@@ -521,35 +592,56 @@ becomes structurally impossible, not when it becomes discouraged. Overrides are
 available and are recorded in the immutable spec with a written reason — if you
 find yourself writing three overrides in a row, the budget is not the problem.
 
-### 7.1 The mix changes with the regime: knobs first, then 6:4 forever
+### 7.1 Knobs first. Explore when they saturate.
 
-**Exploration versus exploitation is not a fixed ratio, and the early answer is not
-the late one.**
+**The default opening move is knob turning, not exploration.** On a fresh frame the
+cheap settings are genuinely uncalibrated, the gradient is steep, and a knob can move
+the metric by multiples of the noise floor. Turn them until they stop paying. Only
+when a family saturates does exploration become the better use of a GPU slot.
 
-**Before saturation, tune the knobs.** On a fresh frame the cheap settings are
-genuinely uncalibrated and the gradient is steep — the v2b→v2c jump came from a
-throughput lever nobody had pulled, worth **0.1035 bpb**, roughly a hundred times
-the 0.000426 gate. While a knob still moves the metric by multiples of the noise
-floor, turning it is the highest-value thing available and calling that
-"unambitious" is a mistake. Exploit hard here.
+**Saturated means measured, not felt:** a family's last two candidates both land inside
+the control band — an unordered tie, not a small win. Until that happens, keep turning.
 
-**After saturation, hold exploration:exploitation at 6:4.** A family is saturated
-when its last two candidates land inside the control band — an unordered tie, not a
-small win. From then on, of every ten staged candidates roughly **six explore a
-mechanism the campaign has not tested** and **four exploit a direction that has
-already flashed a signal above the noise band**. Not 10:0: a direction that has
-shown real signal deserves follow-up, and abandoning it to chase novelty is how a
-campaign ends with many interesting nulls and no record. Not 3:7 either — that is
-the drift the exploration budget exists to prevent, and every predecessor found it
-by accident.
+**After saturation, hold exploration:exploitation at 6:4.** Of every ten staged
+candidates, roughly six explore a mechanism the campaign has not tested and four
+exploit a direction that has already flashed signal beyond ±2σ of its own same-GPU
+controls. Not 10:0 — abandoning a real signal to chase novelty is how a campaign ends
+with interesting nulls and no record. Not 3:7 — that is the drift the budget exists to
+prevent. Count over the trailing ten *staged* candidates, not the ones that landed or
+won; counting outcomes lets one lucky exploit justify the next four.
 
-Count the ratio over the trailing ten *staged* candidates, not over the ones that
-happened to land or happened to win — counting outcomes lets a lucky exploit
-justify the next four.
+#### The conflict you will hit immediately, and how to resolve it
 
-**A signal, for the 4:** a delta beyond ±2σ of that GPU's control replicates, from a
-candidate read against its own frozen same-GPU control. A bank delta inside the band
-is not a direction; it is a tie, and exploiting it is how the winner's curse enters.
+`exploration.py` **refuses a knob whose family has never cleared the bank gate**, on
+the grounds that its constants are being tuned inside the noise band. On 2026-08-17 it
+refused a warmdown knob for exactly this reason while control σ was 0.00443 against a
+0.000426 gate — a 10× band — and it was right to.
+
+So "knobs first" and the budget only conflict when **σ is larger than the knob's
+effect**. Resolve it in this order:
+
+1. **Shrink σ before turning anything.** Controls are cheap and `gpu_guard` stages them
+   automatically. σ fell 0.00556 → 0.00112 in one session simply because contention
+   evened out. A knob unreadable at σ=0.0056 is readable at σ=0.0011.
+2. **Use the step law as a control variate.** Fitting controls against their own step
+   count gave residual σ 0.000206 against raw 0.004430 — a 21× reduction that puts the
+   residual *below* the gate. Valid only for model-preserving changes; never apply it
+   to a throughput candidate, where it would subtract the effect being measured.
+3. **Only then override**, with a written reason ≥20 chars, recorded immutably. An
+   override is defensible when the knob has a literature-predicted *value* rather than
+   a direction to search — testing a prediction is not tuning. It is not defensible as
+   a way to keep a number moving, and three overrides in a row means the budget is not
+   the problem.
+
+#### And when a knob family fails, the budget will push you out of it
+
+It also refuses a third consecutive candidate in one uncleared family: *"a mechanism
+that fails is a result — record why and open a family no prior candidate has touched."*
+This fired after two failed normalization arms and it was correct — the third would
+have been debugging an implementation, not searching. **Record the failure and its
+mechanism, then change family.** Diagnostics that answer "was my implementation
+broken" usually do not need a GPU at all: the dtype question behind those two arms was
+settled with a ten-second tensor probe on the box.
 
 ## 8. End-of-block checklist
 

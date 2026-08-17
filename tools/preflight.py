@@ -256,9 +256,11 @@ def check_gpus(rep: Report) -> None:
             rep.add(False, f"gpu{idx} MIG disabled", mig)
         used = float(mem.split()[0])
         (free if used < 512 else busy).append(idx)
-    rep.add(len(free) > 0, "at least one of our GPUs is free",
-            f"free={free} busy(foreign or ours)={busy}")
-    rep.add(None if busy else True, "all four of our GPUs free", f"busy={busy}" if busy else "")
+    # "No free GPU" is not a fault -- four GPUs busy with OUR arms is the goal state,
+    # and failing preflight on full utilisation would block the campaign at exactly the
+    # moment it is working. Report occupancy; never fail on it.
+    rep.add(None if not free else True, "our GPU occupancy",
+            f"free={free} busy={busy}" + ("  (fully utilised)" if not free else ""))
 
 
 def check_local(rep: Report) -> None:
