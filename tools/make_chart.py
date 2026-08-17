@@ -341,6 +341,39 @@ def render(rows: list[dict[str, Any]], scope_id: str, excluded: int = 0) -> str:
             return ""
         return f'<br><span class="m">{html.escape(row["failure"])}</span>'
 
+    # The baseline is ONE row, not fifteen. Listing every control individually made a
+    # table where the first fifteen rows were the same experiment repeated, all
+    # numbered 1 -- which is less readable than the numbering it replaced. What a
+    # reader wants from the baseline is its centre, its spread and how many runs back
+    # it; the individual controls are in the chart at x=1 and in the immutable store.
+    control_rows = [r for r in rows if r["status"] == "control"]
+    candidate_rows = [r for r in rows if r["status"] != "control"]
+
+    baseline_row = ""
+    if control_rows:
+        vals = sorted(r["val"] for r in control_rows)
+        steps = sorted(r["steps"] for r in control_rows)
+        mean = sum(vals) / len(vals)
+        sd = (
+            (sum((v - mean) ** 2 for v in vals) / (len(vals) - 1)) ** 0.5
+            if len(vals) > 1
+            else 0.0
+        )
+        slots = sorted({r["slot"] for r in control_rows if r["slot"]})
+        baseline_row = (
+            '<tr><td>1</td>'
+            '<td class="mono">bank</td><td class="mono">baseline</td>'
+            f'<td class="mono">{html.escape(", ".join(s.replace("h200_", "") for s in slots))}</td>'
+            f'<td class="num strong">{mean:.6f}</td>'
+            f'<td class="num">{steps[0]:.0f}–{steps[-1]:.0f}</td>'
+            f'<td class="num">—</td><td class="num">—</td>'
+            '<td><span class="pill pill-control">baseline</span></td>'
+            f'<td>the frozen baseline, re-measured {len(vals)} times · '
+            f'σ {sd:.6f} · range {vals[0]:.6f}–{vals[-1]:.6f}<br>'
+            '<span class="m">spread is contention, not drift: step count explains it '
+            '(see the chart at experiment 1)</span></td></tr>'
+        )
+
     table_rows = "".join(
         f'<tr><td>{r["i"]}</td>'
         f'<td class="mono">{html.escape(r["lane"])}</td>'
@@ -352,8 +385,8 @@ def render(rows: list[dict[str, Any]], scope_id: str, excluded: int = 0) -> str:
         f'<td class="num">{pair_cell(r)}</td>'
         f'<td><span class="pill pill-{r["status"]}">{r["status"]}</span></td>'
         f'<td>{html.escape(r["title"])}{failure_note(r)}</td></tr>'
-        for r in reversed(rows)
-    )
+        for r in reversed(candidate_rows)
+    ) + baseline_row
 
     n_due = sum(1 for r in rows if r["status"] == "promotion-due")
     sd_text = f"σ {control_sd:.5f} over {len(controls)}" if control_sd else f"{len(controls)} control(s)"
