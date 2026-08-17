@@ -548,6 +548,31 @@ uv run autoresearch --root .autoresearch bank | \
 11 PAPER      on every 10th landed experiment: Fable writes to AI_papers/ (3.3)
 ```
 
+### 4.1 Score against the FROZEN control, never a control you chose afterwards
+
+The metric is **val_bpb under 300 charged seconds. Nothing else.** Not val_bpb at
+matched step count, not val_bpb adjusted for throughput. If a candidate converts saved
+compute into more optimizer steps, that *is* the intervention working, and the budget is
+time precisely so that conversion counts.
+
+**Never pick the comparison control after seeing the result.** On 2026-08-17 two
+attention candidates were reported at −0.046 and −0.082 by comparing them to the
+*nearest-step* control. Their actual frozen controls put them at **+0.0249 and
++0.0004** — one a loss, one a tie. The nearest-step rule had silently selected the two
+most degraded controls in the bank, because those were the ones that happened to run at
+similar step counts. Same data, opposite conclusion, and the error was invisible without
+checking `PROMOTION_QUEUE.json`.
+
+The protocol already answers this: the control frozen into the spec **before launch**,
+on the same physical GPU. Read `views/PROMOTION_QUEUE.json` for `delta` and
+`clears_gate` rather than computing a comparison by hand. A hand-rolled comparison is
+allowed only as a *diagnostic* — to understand a mechanism — and must never be reported
+as the candidate's delta.
+
+**The step law is a variance-reduction diagnostic, not a scoring rule.** It is useful for
+seeing whether a result is explained by throughput, and it is valid only below ~760
+steps. It never replaces the frozen-control delta.
+
 ## 5. What may be called a result
 
 The boundary is asymmetric on purpose and the record model enforces it:
