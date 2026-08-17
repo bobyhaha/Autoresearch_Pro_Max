@@ -1,0 +1,78 @@
+{
+  "alternatives": [
+    "The scale-parameter learning rate (scalar_lr*0.01 = 0.005) is simply too high, and the mechanism would help at a smaller rate. This is a tuning explanation, not an optimizer-conflict one, and the two make different predictions.",
+    "resid_lambdas and x0_lambdas already supply per-layer scaling, so the per-channel version is redundant regardless of optimizer.",
+    "Absence of weight decay let the scale vectors drift, which the paper's IWD result predicts for Input-Norms. The IWD arm now running discriminates this directly.",
+    "bf16 activations times an fp32 scale changes the dtype entering attention and the MLP, and the regression is numerical rather than optimization-theoretic."
+  ],
+  "assumptions": [
+    {
+      "claim_ids": [],
+      "statement": "The transformer matrices in this baseline are governed by Muon rather than AdamW, so the orthogonalization applies to exactly the linear maps the scale vectors precondition."
+    }
+  ],
+  "edges": [
+    {
+      "claim_ids": [
+        "claim_prenorm_scale_vectors_improve_optimization"
+      ],
+      "from": "intervention",
+      "relation": "increases",
+      "to": "mediator"
+    },
+    {
+      "claim_ids": [
+        "claim_muon_gains_are_schedule_sensitive_and_not_uniform"
+      ],
+      "from": "mediator",
+      "relation": "is discarded by",
+      "to": "conflict"
+    },
+    {
+      "claim_ids": [
+        "claim_muon_gains_are_schedule_sensitive_and_not_uniform"
+      ],
+      "from": "conflict",
+      "relation": "causally degrades",
+      "to": "outcome"
+    }
+  ],
+  "falsifiers": [
+    "The IWD arm (weight decay 0.1) recovers baseline loss, which would make this a weight-decay story rather than an optimizer-conflict story.",
+    "A scale vector applied only to AdamW-governed maps also degrades loss, which would refute the Muon-conflict mediator.",
+    "A much smaller scale-parameter learning rate recovers the baseline, indicating tuning rather than conflict."
+  ],
+  "id": "mech_scale_vectors_fight_muon_orthogonalization",
+  "name": "A learnable input scale reintroduces the per-channel anisotropy Muon exists to remove",
+  "nodes": [
+    {
+      "id": "intervention",
+      "label": "learnable per-channel scale on Input-Norms feeding Muon-governed matrices"
+    },
+    {
+      "id": "mediator",
+      "label": "per-channel anisotropy of the input basis of the following linear map"
+    },
+    {
+      "id": "conflict",
+      "label": "Muon's orthogonalized update, which is invariant to that anisotropy"
+    },
+    {
+      "id": "outcome",
+      "label": "training loss at matched step count, and val_bpb"
+    }
+  ],
+  "predictions": [
+    "Scale vectors should be harmless or helpful on AdamW-governed maps (lm_head, embeddings) and harmful on Muon-governed ones.",
+    "Reducing the scale-parameter learning rate toward zero should recover the baseline continuously; if it does not, tuning is not the explanation.",
+    "The damage should appear in TRAINING loss at matched steps, not only in val_bpb -- confirmed here from step 20 onward."
+  ],
+  "scope": {
+    "benchmark": "ophis-v3b-karpathy228791f-correctedbpb-pinned10-tokencache"
+  },
+  "source_claim_ids": [
+    "claim_prenorm_scale_vectors_improve_optimization",
+    "claim_muon_gains_are_schedule_sensitive_and_not_uniform"
+  ],
+  "statement": "Muon updates a weight matrix by orthogonalizing its gradient, which is a spectral normalization: it deliberately discards per-channel scale information so every direction is stepped comparably. A learnable scale vector on the norm feeding that matrix does the opposite -- it rescales the input basis per channel, which is precisely the anisotropy Muon just removed. The two mechanisms therefore act against each other on Muon-governed matrices. The literature benefit was established for optimizers that do NOT orthogonalize, where per-channel preconditioning is real information the optimizer can exploit; under Muon it is at best redundant and at worst a moving target the orthogonalized update cannot track, which is what a divergence beginning by step 20 and widening monotonically looks like."
+}
