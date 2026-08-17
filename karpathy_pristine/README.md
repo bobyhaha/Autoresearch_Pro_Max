@@ -12,10 +12,33 @@ Verified against the digests recorded in `../runs/code/provenance.json`:
 | train.py | `2954175f4ac42ad65164aef40910ef953789abcd05a5cc886ac9ba5a00814414` | `2e743974c7f06b54311643b314712303fbb26e65` |
 | prepare.py | `4f2ba9cbb8ba8c4a3d35be405a913e2f3be3af9aea103ed52ef7b2a662058150` | `06bea9165abd3ae94ea82dd733997aec7928f40c` |
 
-Run it standalone; it takes no arguments and needs no harness:
+## Pristine CODE does not give a pristine MEASUREMENT — this is the trap
 
-    uv run python prepare.py      # once, populates ~/.cache/autoresearch
+Upstream `prepare.py` reads `~/.cache/autoresearch` and defines the training split
+by **listing that directory**. It also loads `token_bytes.pt` **without checking any
+version**, so it silently reuses whatever byte table is already on disk.
+
+On 2026-08-17 that shared cache held **41 training shards** (00001–00040, no 00000)
+and a **corrected** `token_bytes.pt` written by an unrelated campaign in July. A run
+of this exact pristine code therefore measured someone else's corpus with someone
+else's byte accounting, and nothing in the code or its output revealed it. The
+measurement it produced — `val_bpb 1.140787 ± 0.000614, n=3` — **is withdrawn**: it
+is neither Karpathy's clean default nor comparable to any OPHIS scope.
+
+**A clean reference requires a freshly prepared, uncontaminated cache root**, not
+just this code:
+
+    # 1. Verify the cache is empty or absent FIRST. If it exists, inspect it:
+    ls ~/.cache/autoresearch/data | wc -l                  # expect the shards you intend
+    cat ~/.cache/autoresearch/tokenizer/token_bytes.version 2>/dev/null || echo "unversioned (upstream-native)"
+    # A token_bytes.version file means a NON-upstream campaign wrote that table.
+
+    # 2. Prepare into a clean root, then train.
+    uv run python prepare.py      # populates ~/.cache/autoresearch
     uv run python train.py        # 300s budget, prints val_bpb at the end
+
+Record the shard count and the token_bytes digest **with** any number you report
+from here. Without them the number is not interpretable.
 
 ## Two things to know before comparing its number to anything
 

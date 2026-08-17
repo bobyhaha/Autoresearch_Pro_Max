@@ -152,8 +152,13 @@ uv run prepare.py
 cd ../..
 
 # Run this on the machine whose absolute cache path the workers will use.
+# NOTE: the active prepare.py pins CACHE_DIR to ~/.cache/autoresearch_v2, so the
+# manifest MUST be built from that root. Building it from the shared
+# ~/.cache/autoresearch describes a different corpus than the one runs consume --
+# on 2026-08-17 that shared cache held 41 shards and a byte table written by an
+# unrelated campaign.
 python3 tools/build_karpathy_manifest.py \
-  --cache-dir "$HOME/.cache/autoresearch" \
+  --cache-dir "$HOME/.cache/autoresearch_v2" \
   --output runs/data_manifest.json
 ```
 

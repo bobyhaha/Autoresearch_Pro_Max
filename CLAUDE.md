@@ -36,19 +36,75 @@ campaign the pool drained and exited mid-analysis and four H200s sat at 0%.
 Adding a candidate to the queue is a *scientific* decision — the watchdog will
 never do it for you. If it reports `IDLE_GPUS_EMPTY_QUEUE`, that is your job.
 
+## 0.5 What the active baseline actually is — read before quoting any number
+
+**The active baseline is Karpathy-derived. It is NOT Karpathy's benchmark baseline.**
+
+The accurate label is: *OPHIS v3b baseline using Karpathy's model/optimizer at
+`228791f`, with an OPHIS protocol adapter, corrected BPB, pinned corpus, and
+accelerated token pipeline.* Use that phrasing; "the Karpathy baseline" is wrong.
+
+The executables are not pristine. Upstream `train.py` hashes `2954175f…`, active
+hashes `0c41f8da…`; upstream `prepare.py` hashes `4f2ba9cb…`, active `2ef2c56d…`.
+
+Three departures, each of which independently breaks comparability upstream:
+
+1. **We modify `prepare.py`, which the pinned protocol declares immutable.**
+   `program.md` §1: *"Keep `prepare.py`, `pyproject.toml`, `uv.lock`, and baseline
+   provenance sealed and stable; only `train.py` is the normal mutable path."*
+   `prepare.py` defines the ground-truth data loader and evaluator. Changing it is
+   a protocol violation, recorded deliberately rather than quietly.
+
+2. **The token cache is not neutral, and earlier notes here were wrong to say so.**
+   The token stream is byte-identical — that was verified and it is true. But the
+   budget is **300 charged training seconds**, so a faster input pipeline buys
+   ~3.76× more optimizer steps and therefore a better model. Under a wall-clock
+   budget, input-pipeline speed *is part of the benchmark*. Byte-identity shows the
+   **data** is unchanged; it does not show the **result** is comparable.
+
+3. **The metric denominator differs.** Upstream computes byte lengths via
+   `decode([id]).encode("utf-8")`; OPHIS uses `decode_single_token_bytes()`. These
+   are **different metrics**, not a better and worse estimate of one metric.
+
+### Two numbers previously quoted here are withdrawn
+
+**`val_bpb` 0.9912 at 1006 steps / 42% MFU — WITHDRAWN, unsourced.** No upstream log
+in this repository supports it. It was used as a reproduction target and as the
+denominator of several throughput arguments; none of those inferences carry. The
+official pinned program instead shows a baseline example of **0.997900, 953 steps,
+39.8% MFU** — and Karpathy states results are **platform-specific and not comparable
+across hardware**, so no upstream figure is a target for this box at all.
+
+**The local "pristine" reference 1.140787 ± 0.000614 — WITHDRAWN, contaminated.**
+The code was pristine; the measurement was not. Upstream `prepare.py` reads the
+shared `~/.cache/autoresearch`, which held **41 training shards** and a **corrected
+`token_bytes.pt`** left by another campaign, and upstream never version-checks that
+file. So it measured someone else's corpus with someone else's byte accounting. It
+is neither Karpathy's clean default nor comparable with v3b.
+
+A genuinely pristine reference requires the code in `karpathy_pristine/` run against
+a **freshly prepared, uncontaminated** `~/.cache/autoresearch`. Until that exists,
+this repository has **no** upstream reference measurement, and v3b numbers stand on
+their own or not at all.
+
 ## 1. Where things stand
 
 The campaign was reset to zero on 2026-08-16 after a deep throughput fix. **There
 are no results.** The first thing that will land is a fresh baseline calibration.
 
-The immediate objective the operator set: **reproduce Karpathy's reported
-`val_bpb` ≈ 0.9912** on the pristine baseline, then begin mechanism search.
+~~The immediate objective the operator set: reproduce Karpathy's reported `val_bpb`
+≈ 0.9912 on the pristine baseline.~~ **WITHDRAWN — see §0.5.** That figure is not
+backed by any upstream log in this repository, and Karpathy states results are
+platform-specific and not comparable across hardware. There is no upstream target
+for this box. The objective is to improve v3b against its own frozen controls.
 
 ### What went wrong before the reset, and what was fixed
 
 Four valid controls scored `val_bpb` ≈ 1.169 at **192 steps and 7.6% MFU**.
-Karpathy's own log records the same commit and the same 50.33M-parameter model at
-**1006 steps, 42% MFU, val_bpb 0.9912**. Nothing was broken in the model — the
+An earlier note here claimed Karpathy's own log recorded **1006 steps, 42% MFU,
+val_bpb 0.9912** for this commit. **That claim is withdrawn: no such log is
+vendored here.** The comparison below is retained only to show how the reasoning
+ran, and its upstream anchor should be treated as unverified. Nothing was broken in the model — the
 number sat exactly on Karpathy's own token law (~0.09–0.13 bpb per e-fold of
 tokens), 5.2× short on throughput.
 
@@ -76,7 +132,7 @@ because it is the first time this campaign measured *why* it was slow instead of
 guessing.
 
 **v2b baseline, 4 valid controls:** `val_bpb` 1.1098–1.1142, mean **277 steps**,
-**11.3% MFU**, σ = 0.00226. Against Karpathy's 1006 steps / 42% / 0.9912 that is a
+**11.3% MFU**, σ = 0.00226. Against the (withdrawn, unsourced) 1006 steps / 42% / 0.9912 anchor that is a
 3.7× step deficit, and his own token law (0.09–0.13 bpb per e-fold) predicts a
 0.118–0.170 penalty for it. Observed gap: **0.123**. The whole difference was
 throughput; nothing was wrong with the model. `train.py` was diffed against the
