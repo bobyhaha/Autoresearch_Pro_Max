@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-08-17T07:44:08+00:00",
+  "checked_at": "2026-08-17T08:04:11+00:00",
   "pool_pids": [
     24800,
     24802
@@ -7,9 +7,9 @@
   "queue": {
     "states": {
       "blocked": 0,
-      "complete": 23,
+      "complete": 32,
       "pending": 0,
-      "running": 7,
+      "running": 4,
       "waiting": 0
     },
     "depth": 0,
@@ -19,16 +19,17 @@
   "gpus": {
     "busy": [
       "h200_gpu0",
-      "h200_gpu3",
-      "h200_gpu4",
       "h200_gpu7"
     ],
-    "idle": [],
-    "load1": "333.46",
+    "idle": [
+      "h200_gpu3",
+      "h200_gpu4"
+    ],
+    "load1": "118.35",
     "reachable": true
   },
   "alerts": [],
   "action": "",
-  "chart": "chart=ok (17 plotted, 17 valid, 3 invalid excluded, 3 from earlier scopes excluded, best measured 1.017555 (exploratory, not SOTA))",
+  "chart": "chart=ok (24 plotted, 24 valid, 5 invalid excluded, 3 from earlier scopes excluded, best measured 1.014023 (exploratory, not SOTA))",
   "ok": true
 }

@@ -24,3 +24,5 @@
 2026-08-17T07:39:55+00:00 STAGE FAILED guard_0817_073955: 
 2026-08-17T07:39:55+00:00 STAGED calibration wave guard_0817_073955 on GPUs [0, 3, 4, 7] (free=[])
 2026-08-17T07:49:55+00:00 ok procs=3 running=4 depth=0
+2026-08-17T07:59:56+00:00 ok procs=3 running=6 depth=0
+2026-08-17T08:09:56+00:00 ok procs=3 running=8 depth=0

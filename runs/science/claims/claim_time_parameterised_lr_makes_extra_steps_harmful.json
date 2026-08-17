@@ -1,0 +1,55 @@
+{
+  "assessment": {
+    "assessed_at": "2026-08-17T08:15:00Z",
+    "assessor": "claude-opus-5-1m/ophis-v3b-2026-08-17",
+    "confidence_policy_version": "confidence-v1",
+    "rationale": "Directness direct and scope exact: this is our own frozen baseline, same seed, same code, measured on our own box. Risk of bias is HIGH and that is the honest label, for one reason that matters more than the rest: the high-step runs happened because the host went quiet, so 'more steps' and 'less contention' are perfectly confounded in n=2. A quiet box could plausibly change something else. The mechanism is nonetheless specific and checkable from the source -- line 570 parameterises the schedule by time, not steps -- and it predicts a sharp test: rerun at ~1000 steps with the LR schedule made step-aware, or throttle a quiet box to ~650 steps and see whether the penalty follows the steps or the contention. Until one of those runs this is a strong lead, not a result, and the step law must be treated as valid only below ~760 steps."
+  },
+  "belief_key": "belief_step_response_is_non_monotone_because_the_lr_schedule_is_time_parameterised",
+  "claim_type": "empirical",
+  "derived_from_claim_ids": [
+    "claim_time_budget_makes_steps_the_currency"
+  ],
+  "evidence": {
+    "artifact_status": "verified",
+    "content_depth": "fulltext_snapshot",
+    "directness": "direct",
+    "metrics": [
+      {
+        "name": "val_bpb_discontinuity_above_750_steps",
+        "result": "+0.1013 against the extrapolated low-step law, on n=2 high-step controls. Both agree to 0.012, and both arose when host load fell from ~350 to ~113, so step count and contention moved together and are not separated by this evidence."
+      }
+    ],
+    "reproduction_status": "not_attempted",
+    "risk_of_bias": "high",
+    "scope_match": "exact",
+    "study_design": "controlled_benchmark"
+  },
+  "evidence_ids": [
+    "evidence_2c77a1620832_evidence_v3",
+    "evidence_a47de1e89a14_evidence_v3",
+    "evidence_e6266bc1d72d_evidence_v3",
+    "evidence_38034ff5a2fd_evidence_v3"
+  ],
+  "id": "claim_time_parameterised_lr_makes_extra_steps_harmful",
+  "locators": [
+    {
+      "excerpt": "579->739 steps traces a clean monotone curve, val_bpb 1.033380 -> 1.014023, fitted by bpb = 1.5299 - 0.0782*ln(steps) with residual sigma 0.000262. Extrapolating that law to 1000 steps predicts 0.990015. Observed at 984 and 1010 steps: 1.085339 and 1.097238, mean 1.091289, a +0.1013 discontinuity. Not an epoch boundary: 984 steps is 0.82 epochs of the pinned 631.2M-token corpus. train.py line 570 sets progress = min(total_training_time / TIME_BUDGET, 1.0), so the LR decays over wall clock and is blind to step count.",
+      "location": "train.py line 570 in the pinned baseline, plus 23 bank controls of this scope",
+      "source_id": "lit_karpathy_autoresearch_228791f"
+    }
+  ],
+  "origin": "experiment",
+  "scope": {
+    "budget": "300 charged training seconds, scope ophis_v3b_karpathy228791f_model_correctedbpb_pinned10_tokencache_h200_train300s",
+    "model": "decoder-only transformer, 50.33M parameters, MuonAdamW, bf16"
+  },
+  "source_ids": [
+    "lit_karpathy_autoresearch_228791f"
+  ],
+  "stance": "supports",
+  "statement": "In this 300-charged-second frame the learning-rate schedule is parameterised by elapsed training time rather than by optimizer step, so a faster box takes more steps under the same LR curve; beyond roughly 750 steps the extra parameter movement overshoots and val_bpb rises sharply instead of continuing to fall.",
+  "topics": [
+    "topic_optimizer_short_horizon"
+  ]
+}
