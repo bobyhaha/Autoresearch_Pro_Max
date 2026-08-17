@@ -65,7 +65,15 @@ def _load_dotenv() -> None:
 _load_dotenv()
 SSH = [
     "ssh", "-i", os.environ.get("OPHIS_SSH_KEY", ""),
-    "-o", "IdentitiesOnly=yes", "-o", "BatchMode=yes", "-o", "ConnectTimeout=20",
+    "-o", "IdentitiesOnly=yes", "-o", "BatchMode=yes",
+    # Share one TCP connection across every tool and tick. Without this the
+    # watchdog, wake, guard, preflight and eight worker threads each open their
+    # own session; the host started refusing them, and the harness reported the
+    # refusal as "code or data did not match the sealed manifest" on every
+    # binding at once -- an environmental fault wearing a scientific fault's
+    # clothes.
+    "-o", "ControlMaster=auto", "-o", "ControlPath=~/.ssh/cm/%r@%h:%p",
+    "-o", "ControlPersist=600", "-o", "ConnectTimeout=20",
     "-p", os.environ.get("OPHIS_SSH_PORT", "22"), os.environ.get("OPHIS_SSH_TARGET", ""),
 ]
 REMOTE_ROOT = os.environ.get("OPHIS_REMOTE_ROOT", "")

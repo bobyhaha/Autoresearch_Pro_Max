@@ -105,7 +105,7 @@
   <p class="sub">Every point is a val_bpb an actual run produced under one frozen scope
   (<code>ophis_v3b_karpathy228791f_model_correctedbpb_pinned10_tokencache_h200_train300s</code>): one H200, a fixed 300&nbsp;s charged-training budget,
   corrected byte-fallback BPB. Nothing is normalised, fitted, or inferred. <strong>Only runs
-  whose EvidenceDecision is <code>valid</code> are plotted</strong>. No landed run has been excluded.
+  whose EvidenceDecision is <code>valid</code> are plotted</strong>, and 3 landed runs whose decision was not <code>valid</code> were excluded here — they remain in the immutable store, so nothing is deleted, only kept off a scale it does not belong on.
   The host is shared, so a candidate is only ever read against the <strong>exact bank control
   frozen into its spec before launch</strong> on the same physical GPU — both are plotted and
   joined by a line. The grey band is ±2σ of the control replicates: anything inside it is an
@@ -118,7 +118,7 @@
     <div class="tile"><div class="k">First control</div><div class="v">1.0298</div>
       <div class="d">603 steps in 300&nbsp;s</div></div>
     <div class="tile"><div class="k">Plotted runs</div><div class="v">3</div>
-      <div class="d">3 valid · 0 invalid excluded · 0 promotion-due</div></div>
+      <div class="d">3 valid · 3 invalid excluded · 0 promotion-due</div></div>
     <div class="tile"><div class="k">Control noise</div><div class="v">0.00060</div>
       <div class="d">σ 0.00060 over 3 · gate 0.000426</div></div>
   </div>

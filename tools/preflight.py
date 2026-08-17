@@ -36,6 +36,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -58,7 +59,15 @@ def _load_dotenv() -> None:
 _load_dotenv()
 SSH = [
     "ssh", "-i", os.environ.get("OPHIS_SSH_KEY", ""),
-    "-o", "IdentitiesOnly=yes", "-o", "BatchMode=yes", "-o", "ConnectTimeout=20",
+    "-o", "IdentitiesOnly=yes", "-o", "BatchMode=yes",
+    # Share one TCP connection across every tool and tick. Without this the
+    # watchdog, wake, guard, preflight and eight worker threads each open their
+    # own session; the host started refusing them, and the harness reported the
+    # refusal as "code or data did not match the sealed manifest" on every
+    # binding at once -- an environmental fault wearing a scientific fault's
+    # clothes.
+    "-o", "ControlMaster=auto", "-o", "ControlPath=~/.ssh/cm/%r@%h:%p",
+    "-o", "ControlPersist=600", "-o", "ConnectTimeout=20",
     "-p", os.environ.get("OPHIS_SSH_PORT", "22"), os.environ.get("OPHIS_SSH_TARGET", ""),
 ]
 REMOTE_ROOT = os.environ.get("OPHIS_REMOTE_ROOT", "")
@@ -89,13 +98,29 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def run(argv: list[str], timeout: int = 90) -> tuple[int, str]:
-    try:
-        done = subprocess.run(argv, capture_output=True, text=True, timeout=timeout,
-                              cwd=REPO, check=False)
-        return done.returncode, done.stdout.strip()
-    except (subprocess.TimeoutExpired, OSError) as exc:
-        return 124, f"{type(exc).__name__}: {exc}"
+def run(argv: list[str], timeout: int = 90, retries: int = 1) -> tuple[int, str]:
+    """Run a command, returning (code, stdout-or-stderr).
+
+    Two things learned the hard way on this box. Failures reported STDERR while this
+    only returned stdout, so a failed check printed an empty reason and told the
+    reader nothing. And the host is shared at load ~250 with three of our own tools
+    SSHing every ten minutes, so a single connection refusal is routine noise, not a
+    reason to block a run -- HEARTBEAT's own rule is to retry rather than conclude.
+    """
+    last = (124, "not attempted")
+    for attempt in range(retries + 1):
+        try:
+            done = subprocess.run(argv, capture_output=True, text=True, timeout=timeout,
+                                  cwd=REPO, check=False)
+            if done.returncode == 0:
+                return 0, done.stdout.strip()
+            detail = (done.stderr or done.stdout or "").strip() or f"exit {done.returncode}"
+            last = (done.returncode, detail)
+        except (subprocess.TimeoutExpired, OSError) as exc:
+            last = (124, f"{type(exc).__name__}: {exc}")
+        if attempt < retries:
+            time.sleep(3 * (attempt + 1))
+    return last
 
 
 def check_code(rep: Report) -> None:
@@ -152,7 +177,7 @@ def check_remote(rep: Report) -> None:
         f'{REMOTE_ROOT}/gpu{g}/baseline_provenance.json 2>/dev/null | cut -d\\  -f1 | tr \\\\n \\ )"'
         for g in GPUS
     )
-    code, out = run([*SSH, cmd])
+    code, out = run([*SSH, cmd], retries=2)
     if code != 0:
         rep.add(False, "remote reachable", out[:120])
         return
@@ -180,7 +205,8 @@ def check_corpus_and_cache(rep: Report) -> None:
         'ls ~/.cache/autoresearch_v2/data/*.parquet 2>/dev/null | wc -l; echo "---VER---"; '
         'cat ~/.cache/autoresearch_v2/tokenizer/token_bytes.version 2>/dev/null; '
         'echo; echo "---MANIFEST---"; '
-        'cat ~/.cache/autoresearch_v2/token_cache/train.manifest.json 2>/dev/null'])
+        'cat ~/.cache/autoresearch_v2/token_cache/train.manifest.json 2>/dev/null'],
+        retries=2)
     if code != 0:
         rep.add(None, "corpus inspectable", out[:100]); return
     shards = out.split("---VER---")[0].strip()
@@ -204,7 +230,7 @@ def check_corpus_and_cache(rep: Report) -> None:
 def check_gpus(rep: Report) -> None:
     code, out = run([*SSH,
         "nvidia-smi --query-gpu=index,mig.mode.current,power.limit,clocks.max.sm,memory.used "
-        "--format=csv,noheader"])
+        "--format=csv,noheader"], retries=2)
     if code != 0:
         rep.add(False, "GPUs queryable", out[:100]); return
     free, busy = [], []
