@@ -17,3 +17,9 @@
 2026-08-17T07:28:41+00:00 TOPPING UP: 1 running but only 0 job(s) queued against capacity 4 (free=['3', '4', '7']) — staging so the fleet does not drain
 2026-08-17T07:28:41+00:00 STAGED calibration wave guard_0817_072841 on GPUs [3, 4, 7] (free=['3', '4', '7'])
 2026-08-17T07:28:42+00:00 ok procs=1 running=0 depth=3
+2026-08-17T07:38:42+00:00 RESTARTED pool
+2026-08-17T07:38:43+00:00 ok procs=1 running=0 depth=3 (pool restarted)
+2026-08-17T07:39:55+00:00 TOPPING UP: 6 running but only 3 job(s) queued against capacity 6 (free=[]) — staging so the fleet does not drain
+2026-08-17T07:39:55+00:00 TOPPING UP: 4 running but only 3 job(s) queued against capacity 4 (free=[]) — staging so the fleet does not drain
+2026-08-17T07:39:55+00:00 STAGE FAILED guard_0817_073955: 
+2026-08-17T07:39:55+00:00 STAGED calibration wave guard_0817_073955 on GPUs [0, 3, 4, 7] (free=[])

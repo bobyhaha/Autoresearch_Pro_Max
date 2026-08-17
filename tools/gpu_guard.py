@@ -47,6 +47,18 @@ STATE = REPO / "runs" / "GPU_GUARD_STATE.json"
 # burning controls that never land, something is broken that staging cannot fix and
 # the honest move is to stop and say so rather than keep the GPUs warm for show.
 MAX_CONSECUTIVE_STAGES = 4
+
+# Controls are a means, not an end. Once the bank has enough fresh eligible controls to
+# read a candidate against, more of them are not evidence -- they are GPU time not spent
+# testing an idea. On 2026-08-17 this guard had produced 15 controls against 2
+# candidates because "stage controls when idle" is the only thing it is allowed to do,
+# and nobody turned it off after the noise floor was established (step law stable at
+# n=6/15/18, residual sigma 0.000194 against a 0.000426 gate).
+#
+# Above this many eligible controls the guard stages NOTHING and escalates instead: an
+# idle fleet with a healthy bank is a research decision -- which candidate to run -- and
+# a monitor must not answer it by manufacturing more baseline.
+ENOUGH_ELIGIBLE_CONTROLS = 3
 POOL_PATTERN = "autoresearch --root .autoresearch run --workers"
 
 
@@ -144,6 +156,17 @@ def our_training_processes() -> int | None:
         return int(out.strip().splitlines()[-1])
     except (ValueError, IndexError):
         return None
+
+
+def eligible_controls() -> int:
+    """Fresh, unexpired controls the bank can pair a candidate against."""
+    code, out = run(["uv", "run", "autoresearch", "--root", ".autoresearch", "bank"], 180)
+    if code != 0:
+        return 0
+    try:
+        return int(json.loads(out).get("eligible_controls", 0))
+    except (ValueError, TypeError):
+        return 0
 
 
 def free_gpus() -> list[str]:
@@ -274,7 +297,8 @@ def check(dry_run: bool) -> int:
         log(f"TOPPING UP: {procs} running but only {queued} job(s) queued against "
             f"capacity {capacity} (free={free}) — staging so the fleet does not drain")
         can_stage = (state["consecutive_stages"] < MAX_CONSECUTIVE_STAGES
-                     and not queue["paused"])
+                     and not queue["paused"]
+                     and eligible_controls() < ENOUGH_ELIGIBLE_CONTROLS)
         if can_stage and stage_controls(free, dry_run):
             state["consecutive_stages"] = state.get("consecutive_stages", 0) + 1
         write_state(state)
@@ -306,7 +330,15 @@ def check(dry_run: bool) -> int:
         write_state(state)
         return 3
 
-    log("IDLE GPUS, EMPTY QUEUE — staging calibration controls (never candidates)")
+    have = eligible_controls()
+    if have >= ENOUGH_ELIGIBLE_CONTROLS:
+        log(f"ESCALATE idle fleet with {have} eligible controls already banked — staging "
+            f"more baseline would be GPU time not spent testing an idea. A CANDIDATE is "
+            f"needed and only a research agent may choose one.")
+        write_state(state)
+        return 3
+    log(f"IDLE GPUS, EMPTY QUEUE, only {have} eligible controls — staging calibration "
+        f"(controls only, never candidates)")
     if stage_controls(free, dry_run):
         state["consecutive_stages"] = state.get("consecutive_stages", 0) + 1
     write_state(state)
