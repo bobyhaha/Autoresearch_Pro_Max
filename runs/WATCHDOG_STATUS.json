@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-08-17T08:04:11+00:00",
+  "checked_at": "2026-08-17T08:14:11+00:00",
   "pool_pids": [
     24800,
     24802
@@ -9,7 +9,7 @@
       "blocked": 0,
       "complete": 32,
       "pending": 0,
-      "running": 4,
+      "running": 8,
       "waiting": 0
     },
     "depth": 0,
@@ -19,13 +19,12 @@
   "gpus": {
     "busy": [
       "h200_gpu0",
+      "h200_gpu3",
+      "h200_gpu4",
       "h200_gpu7"
     ],
-    "idle": [
-      "h200_gpu3",
-      "h200_gpu4"
-    ],
-    "load1": "118.35",
+    "idle": [],
+    "load1": "158.77",
     "reachable": true
   },
   "alerts": [],

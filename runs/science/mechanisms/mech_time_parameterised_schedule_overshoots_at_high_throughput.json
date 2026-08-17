@@ -1,0 +1,40 @@
+{
+  "id": "mech_time_parameterised_schedule_overshoots_at_high_throughput",
+  "name": "A time-parameterised LR schedule with a fixed rate overshoots when throughput rises",
+  "statement": "Under a wall-clock budget the LR schedule is a function of elapsed time, so its shape is invariant to throughput. The number of updates taken along that shape is not: a faster host completes more steps, and total parameter movement scales as N * mean_lr. With no term adapting the rate to N -- the AdamW groups are rescaled by model width, the Muon matrix LR by nothing -- extra throughput becomes extra movement, and past a threshold the run overshoots and val_bpb rises even though more tokens were seen.",
+  "scope": {"benchmark": "ophis-v3b-karpathy228791f-correctedbpb-pinned10-tokencache"},
+  "nodes": [
+    {"id": "intervention", "label": "host throughput, or any change that buys steps"},
+    {"id": "mediator_steps", "label": "optimizer steps N completed in the 300s budget"},
+    {"id": "mediator_movement", "label": "total parameter movement, ~ N * mean_lr"},
+    {"id": "outcome", "label": "validation bits per byte"}
+  ],
+  "edges": [
+    {"from": "intervention", "to": "mediator_steps", "relation": "increases",
+     "claim_ids": ["claim_time_budget_makes_steps_the_currency"]},
+    {"from": "mediator_steps", "to": "mediator_movement", "relation": "increases",
+     "claim_ids": ["claim_time_parameterised_lr_makes_extra_steps_harmful"]},
+    {"from": "mediator_movement", "to": "outcome", "relation": "causally degrades beyond a threshold",
+     "claim_ids": ["claim_time_parameterised_lr_makes_extra_steps_harmful"]}
+  ],
+  "source_claim_ids": ["claim_time_parameterised_lr_makes_extra_steps_harmful", "claim_time_budget_makes_steps_the_currency"],
+  "assumptions": [
+    {"statement": "The threshold is a property of the LR magnitude and N, not of the quiet host that produced the high-step runs. Step count and contention were perfectly confounded in the n=2 evidence, and this is the weakest link.",
+     "claim_ids": ["claim_time_parameterised_lr_makes_extra_steps_harmful"]}
+  ],
+  "alternatives": [
+    "A quiet host changes something else -- clocks, cache residency, neighbour interference -- and step count is a bystander.",
+    "The degradation is a data-order effect at 0.82 epochs rather than an optimization effect.",
+    "Muon specifically mis-behaves at higher update counts, independent of the LR magnitude."
+  ],
+  "predictions": [
+    "Damping the LR by 1/sqrt(N) removes the penalty at >750 steps and leaves <750 steps unchanged.",
+    "Throttling a quiet host to ~650 steps WITHOUT the damping should also remove the penalty, which separates steps from contention.",
+    "Any candidate that buys steps -- attention span, window pattern, kernel work -- inherits this penalty and will read worse than it is."
+  ],
+  "falsifiers": [
+    "Damping does not recover the penalty at >750 steps.",
+    "A throttled quiet host still shows the penalty at ~650 steps, indicting contention rather than steps.",
+    "Damping changes val_bpb below 750 steps, where the clamp makes it a no-op."
+  ]
+}

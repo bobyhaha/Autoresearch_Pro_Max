@@ -1,0 +1,29 @@
+{
+  "id": "hyp_horizon_aware_lr_damping",
+  "belief_key": "belief_step_response_is_non_monotone_because_the_lr_schedule_is_time_parameterised",
+  "statement": "Damping the learning rate by sqrt(650/estimated_total_steps), with the horizon estimated online as step/progress and the factor clamped at 1.0, removes the val_bpb penalty observed above ~750 steps and restores a monotone step response in the OPHIS v3b 300s scope.",
+  "rationale": "Measured, not assumed: 21 controls from 579-739 steps trace a monotone curve with residual sigma 0.000262, while two controls that reached 984 and 1010 steps on a quiet host scored 1.0853 and 1.0972 -- a +0.101 discontinuity against the extrapolated law, on identical code and seed at 0.82 epochs. The schedule is time-parameterised and steps are near-uniform in time, so the LR shape is unchanged by throughput; what changes is the NUMBER of updates along it, and total parameter movement scales as N*mean_lr. The AdamW groups are already rescaled by 1/sqrt(d_model/768) while the Muon matrix LR is a bare constant, so nothing currently adapts to N. 1/sqrt(N) damping is the standard correction. It is clamped so it can only reduce the rate, keeping the well-behaved low-step regime untouched.",
+  "scope": {"benchmark": "ophis-v3b-karpathy228791f-correctedbpb-pinned10-tokencache"},
+  "topics": ["topic_optimizer_short_horizon"],
+  "mechanism_ids": ["mech_time_parameterised_schedule_overshoots_at_high_throughput"],
+  "claim_ids": ["claim_time_parameterised_lr_makes_extra_steps_harmful", "claim_time_budget_makes_steps_the_currency"],
+  "prediction": {
+    "metric": "val_bpb",
+    "direction": "decrease",
+    "statement": "At a step count above 750 the candidate scores materially below the ~1.09 the baseline produces there, and ideally below the baseline's own best of 1.014023. Below 750 steps the clamp makes it a no-op and it must match the control within the band.",
+    "minimum_effect": 0.000426
+  },
+  "falsifiers": [
+    "At >750 steps the candidate still scores ~1.09, refuting the LR-magnitude mediator and pointing instead at contention, which was perfectly confounded with step count in the n=2 evidence.",
+    "The candidate lands below 750 steps and differs from its control by more than the band, which would mean the clamp is not a no-op and the implementation is wrong.",
+    "val_bpb improves but num_steps collapses, meaning the damping cost throughput rather than fixing overshoot."
+  ],
+  "intervention": {
+    "summary": "Estimate the horizon online as step/progress once progress > 0.1, and multiply the LR multiplier by min(1.0, sqrt(650/estimated_total_steps)). 25 lines, no change to model, data, or evaluator.",
+    "subsystem": "optimizer_schedule",
+    "mutable_code_paths": ["runs/code/train.py"],
+    "diagnostics": ["num_steps", "training_seconds", "mfu_percent", "total_tokens_M"]
+  },
+  "competing_hypothesis_ids": ["hyp_warmdown_one_third"],
+  "proposed_by": "claude-opus-5-1m/ophis-v3b-2026-08-17"
+}
