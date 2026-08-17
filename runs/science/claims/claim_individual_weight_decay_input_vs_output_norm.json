@@ -1,0 +1,48 @@
+{
+  "assessment": {
+    "assessed_at": "2026-08-17T06:40:00Z",
+    "assessor": "claude-opus-5-1m/ophis-v3b-2026-08-17",
+    "confidence_policy_version": "confidence-v1",
+    "rationale": "Read from the full text, not the abstract, which is why content_depth is fulltext_snapshot. Directness direct: the paper derives and tests this distinction explicitly. Scope close rather than exact: derived at 0.12B-2B under industrial token budgets, while we run 50.33M under 300 charged seconds, and the Hessian-sharpness argument is asymptotic in a way 600 steps may not reach. The immediate value is diagnostic -- it says our staged arm is misconfigured -- which is a cheap correction regardless of whether the magnitude transfers."
+  },
+  "belief_key": "belief_weight_decay_on_norm_scale_depends_on_whether_a_linear_follows",
+  "claim_type": "empirical",
+  "derived_from_claim_ids": [],
+  "evidence": {
+    "artifact_status": "unknown",
+    "content_depth": "fulltext_snapshot",
+    "directness": "direct",
+    "metrics": [
+      {
+        "name": "weight_decay_prescription",
+        "result": "A per-layer rule, not a global one. Our two candidate scale vectors sit on norms feeding c_q/c_k/c_v and c_fc, so both are Input-Norm and both should carry weight decay; the staged arm sets weight_decay=0.0, contrary to this."
+      }
+    ],
+    "reproduction_status": "not_attempted",
+    "risk_of_bias": "medium",
+    "scope_match": "close",
+    "study_design": "theoretical"
+  },
+  "evidence_ids": [],
+  "id": "claim_individual_weight_decay_input_vs_output_norm",
+  "locators": [
+    {
+      "excerpt": "Input-Norm layers are 'the RMSNorm layer immediately followed by a linear transformation'... Output-Norm layers are 'the RMSNorm layer not immediately followed by a linear transformation', including Q/K-Norm and attention/FFN output normalization. For Input-Norm, weight decay keeps the parameterization balanced and 'controls Hessian sharpness', preventing divergence of lambda_max of the loss Hessian. For Output-Norm, weight decay would 'undesirably restrict expressivity'.",
+      "location": "full text, Individual Weight Decay (IWD) section",
+      "source_id": "lit_negligible_in_size_significant_in_effect_on_scale_vectors_in_large_lan"
+    }
+  ],
+  "origin": "literature",
+  "scope": {
+    "budget": "industrial-scale token budgets; no wall-clock constraint",
+    "model": "dense and MoE decoder LLMs, 0.12B-2B, Pre-Norm with RMSNorm scale vectors"
+  },
+  "source_ids": [
+    "lit_negligible_in_size_significant_in_effect_on_scale_vectors_in_large_lan"
+  ],
+  "stance": "supports",
+  "statement": "Weight decay applied to a normalization scale vector is beneficial when the norm is immediately followed by a linear transformation (Input-Norm) and harmful when it is not (Output-Norm), because the former controls Hessian sharpness while the latter directly parameterizes a submodule's output and so constrains expressivity.",
+  "topics": [
+    "topic_architecture_small_budget"
+  ]
+}

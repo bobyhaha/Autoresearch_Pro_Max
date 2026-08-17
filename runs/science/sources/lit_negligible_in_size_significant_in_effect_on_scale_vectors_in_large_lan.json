@@ -10,8 +10,9 @@
   ],
   "citation_count": 0,
   "content": {
-    "source": "arxiv_atom_api_verbatim",
-    "status": "abstract_only"
+    "note": "Full text read via arxiv.org/html/2605.26895v1. Sections used: Input-Norm/Output-Norm definitions and the IWD principle; Figure 1 ablation (0.12B); Figure 5 variant ablations; Table 3 overhead.",
+    "source": "arxiv_html_fulltext_read_2026-08-17",
+    "status": "fulltext_snapshot"
   },
   "id": "lit_negligible_in_size_significant_in_effect_on_scale_vectors_in_large_lan",
   "identifiers": {

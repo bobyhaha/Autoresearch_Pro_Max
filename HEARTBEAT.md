@@ -265,6 +265,38 @@ good the paper is. **To move a belief past ~0.75 you must read the full text**, 
 `RESEARCH_TASKS.json` will keep emitting `read_fulltext_and_extract_claims` at
 priority 85 until you do. Deep analysis is what raises confidence; volume is not.
 
+### 3.0b Read the FULL TEXT, and take several claims from each paper
+
+An abstract is an advertisement. Reading one and registering a claim from it is not
+reading a paper, and the scoring says so: `content_depth` scores `abstract_only` 0.55
+against `fulltext_snapshot` 0.95.
+
+**One paper is worth several claims.** A paper that only yields one claim was skimmed.
+Reading arXiv 2605.26895 in full turned a single vague claim into four sharp ones:
+
+| from the abstract | from the full text |
+|---|---|
+| "removing scale vectors substantially degrades pre-training" | **0.028** terminal loss at matched LR, **0.015** after retuning (Fig. 1, 0.12B) |
+| "we investigate the role of weight decay" | **Input-Norm** (a linear follows) → weight decay **helps**; **Output-Norm** (none follows) → **harmful**. Called IWD |
+| — | overhead **1.04× wall clock**, 1.01× memory (Table 3, 1B) |
+| — | three composable variants: branch-specific γ_Q/K/V, dual placement DP/DNP, magnitude-direction OR/ER |
+
+Each became its own claim with its own locator, because they have different scopes,
+different risks of bias, and different consequences.
+
+**Why it mattered here, concretely.** The abstract gave a direction and no magnitude, so
+the hypothesis could not be checked against our noise floor at all. The full text gave
+both the effect size (0.015–0.028) and the cost (1.04× → about 0.0031 bpb at our
+measured 0.0792 per e-fold), which turns "probably good" into arithmetic. It also
+revealed that **the arm already running was misconfigured**: both our scale vectors sit
+on Input-Norms, so IWD says weight decay should be ON, and we had set it to 0.
+
+**Know what full text can and cannot buy.** It moved that belief only 0.705 → 0.714,
+because `reproduction` (0.42, weighted more than three times venue) still dominates.
+**Literature confidence saturates around 0.71–0.75 no matter how well you read.** Only
+running the experiment moves it — a decisive confirmation contributes reliability up to
+0.98. Reading tells you *what to run*; it cannot substitute for running it.
+
 ### 3.1 Break every paper into claims and mechanisms — the protocol chain
 
 `docs/SCIENTIFIC_METHOD.md` defines the chain, and every arrow is an immutable

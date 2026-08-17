@@ -1,0 +1,48 @@
+{
+  "assessment": {
+    "assessed_at": "2026-08-17T06:40:00Z",
+    "assessor": "claude-opus-5-1m/ophis-v3b-2026-08-17",
+    "confidence_policy_version": "confidence-v1",
+    "rationale": "The single most important number for OUR frame, and one only a fixed-time budget cares about. It converts the mechanism from 'probably good' into an arithmetic question: the optimization gain must exceed 0.0031 bpb to be worth the steps it destroys. Scope partial because the overhead was measured at 1B where the norm is a smaller share of total work; at 50.33M with d_model 512 the relative cost of two extra elementwise multiplies per block could be higher, so 1.04x is a lower bound for us, not an estimate."
+  },
+  "belief_key": "belief_learnable_norm_scale_improves_prenorm_optimization",
+  "claim_type": "empirical",
+  "derived_from_claim_ids": [],
+  "evidence": {
+    "artifact_status": "unknown",
+    "content_depth": "fulltext_snapshot",
+    "directness": "direct",
+    "metrics": [
+      {
+        "name": "wallclock_overhead",
+        "result": "1.04x wall clock. Under our fixed 300s budget that is not free: at our measured 0.0792 bpb per e-fold of steps, a 1.04x slowdown costs about 0.0031 bpb, which must be subtracted from any optimization gain."
+      }
+    ],
+    "reproduction_status": "not_attempted",
+    "risk_of_bias": "low",
+    "scope_match": "partial",
+    "study_design": "controlled_benchmark"
+  },
+  "evidence_ids": [],
+  "id": "claim_scale_vector_overhead_is_four_percent_wallclock_ft",
+  "locators": [
+    {
+      "excerpt": "Wall-clock time increases 1.04x; memory increases 1.01x.",
+      "location": "full text, Table 3 (overhead, 1B model)",
+      "source_id": "lit_scale_vectors_in_llms_fulltext"
+    }
+  ],
+  "origin": "literature",
+  "scope": {
+    "budget": "industrial-scale token budgets; no wall-clock constraint",
+    "model": "dense and MoE decoder LLMs, 0.12B-2B, Pre-Norm with RMSNorm scale vectors"
+  },
+  "source_ids": [
+    "lit_scale_vectors_in_llms_fulltext"
+  ],
+  "stance": "supports",
+  "statement": "Adding scale vectors and the proposed scale-vector strategy costs about 1.04x wall-clock time and 1.01x memory on a 1B model.",
+  "topics": [
+    "topic_architecture_small_budget"
+  ]
+}

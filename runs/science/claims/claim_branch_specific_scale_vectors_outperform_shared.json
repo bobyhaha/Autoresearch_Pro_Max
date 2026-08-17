@@ -1,0 +1,48 @@
+{
+  "assessment": {
+    "assessed_at": "2026-08-17T06:40:00Z",
+    "assessor": "claude-opus-5-1m/ophis-v3b-2026-08-17",
+    "confidence_policy_version": "confidence-v1",
+    "rationale": "Recorded because it turns one hypothesis into a family with a pre-specified order, which is exactly what the exploration budget wants before it will allow knob tuning inside a family. Directness direct; scope close. The caution is that each increment is smaller than the base effect while each adds per-step cost, and under a 300s budget the later rungs of this ladder are the most likely to be net-negative. Test the plain scale vector first and only climb if it clears."
+  },
+  "belief_key": "belief_scale_vector_structure_can_be_improved_beyond_a_single_shared_gamma",
+  "claim_type": "empirical",
+  "derived_from_claim_ids": [],
+  "evidence": {
+    "artifact_status": "unknown",
+    "content_depth": "fulltext_snapshot",
+    "directness": "direct",
+    "metrics": [
+      {
+        "name": "terminal_loss_by_variant",
+        "result": "A ladder of three composable variants, each ablated separately in Figure 5, best combination DNP+OR with IWD. Gives four follow-up candidates beyond the plain scale vector, ordered by the paper's own evidence."
+      }
+    ],
+    "reproduction_status": "not_attempted",
+    "risk_of_bias": "medium",
+    "scope_match": "close",
+    "study_design": "ablation"
+  },
+  "evidence_ids": [],
+  "id": "claim_branch_specific_scale_vectors_outperform_shared",
+  "locators": [
+    {
+      "excerpt": "Branch-Specific Heterogeneity: distinct gamma_Q, gamma_K, gamma_V instead of one shared gamma, O(d) extra parameters. Improved Placement: standard W(gamma . Norm(x)); dual-placement DP gamma^a . (W(gamma^b . Norm(x))); dual normalized-placement DNP gamma^a . Norm(W(gamma^b . Norm(x))). Magnitude-direction reparameterization OR: beta * Norm(alpha); ER: e^beta * e^(alpha - mean(alpha)). Figure 5: heterogeneity consistent gains; DP improves over standard; DNP+OR performs best; OR+IWD achieves lowest terminal loss.",
+      "location": "full text, Sections on HG / DP / DNP / OR / ER and Figure 5",
+      "source_id": "lit_negligible_in_size_significant_in_effect_on_scale_vectors_in_large_lan"
+    }
+  ],
+  "origin": "literature",
+  "scope": {
+    "budget": "industrial-scale token budgets; no wall-clock constraint",
+    "model": "dense and MoE decoder LLMs, 0.12B-2B, Pre-Norm with RMSNorm scale vectors"
+  },
+  "source_ids": [
+    "lit_negligible_in_size_significant_in_effect_on_scale_vectors_in_large_lan"
+  ],
+  "stance": "supports",
+  "statement": "Replacing one shared scale vector per norm with branch-specific vectors (separate gamma for Q, K, V), improved placement around the linear map (dual placement, optionally with intermediate normalization), and magnitude-direction reparameterization each independently lower terminal loss, and combine additively.",
+  "topics": [
+    "topic_architecture_small_budget"
+  ]
+}

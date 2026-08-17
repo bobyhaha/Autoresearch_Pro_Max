@@ -1,0 +1,48 @@
+{
+  "assessment": {
+    "assessed_at": "2026-08-17T06:40:00Z",
+    "assessor": "claude-opus-5-1m/ophis-v3b-2026-08-17",
+    "confidence_policy_version": "confidence-v1",
+    "rationale": "This is the number the abstract did not give and the reason reading the full text mattered: the hypothesis previously had a direction and no magnitude, so it could not be checked against our noise floor. Two cautions. The measurement is terminal loss in nats at 0.12B under a large token budget, and ours is val_bpb at 50.33M under 300 seconds -- not the same quantity and not the same regime. And the retuned figure (0.015) is the honest one to carry, since the 0.028 partly measures a mistuned baseline rather than a missing component."
+  },
+  "belief_key": "belief_learnable_norm_scale_improves_prenorm_optimization",
+  "claim_type": "empirical",
+  "derived_from_claim_ids": [],
+  "evidence": {
+    "artifact_status": "unknown",
+    "content_depth": "fulltext_snapshot",
+    "directness": "direct",
+    "metrics": [
+      {
+        "name": "terminal_loss_delta",
+        "result": "0.015-0.028 nats at 0.12B. Retuning recovers roughly half, so about half the effect is a learning-rate interaction rather than the scale vector itself. Our gate is 0.000426 bpb and control sigma 0.004430, so even a fifth of this effect would be legible here."
+      }
+    ],
+    "reproduction_status": "not_attempted",
+    "risk_of_bias": "medium",
+    "scope_match": "close",
+    "study_design": "ablation"
+  },
+  "evidence_ids": [],
+  "id": "claim_removing_scale_vectors_costs_0015_to_0028_terminal_loss",
+  "locators": [
+    {
+      "excerpt": "Removing scale vectors reduces terminal loss by ~0.028 under same learning rate; even after retuning, models without scale vectors remain ~0.015 worse.",
+      "location": "full text, Figure 1 (scale vector ablation, 0.12B Llama)",
+      "source_id": "lit_negligible_in_size_significant_in_effect_on_scale_vectors_in_large_lan"
+    }
+  ],
+  "origin": "literature",
+  "scope": {
+    "budget": "industrial-scale token budgets; no wall-clock constraint",
+    "model": "dense and MoE decoder LLMs, 0.12B-2B, Pre-Norm with RMSNorm scale vectors"
+  },
+  "source_ids": [
+    "lit_negligible_in_size_significant_in_effect_on_scale_vectors_in_large_lan"
+  ],
+  "stance": "supports",
+  "statement": "On a 0.12B Llama-style Pre-Norm model, removing scale vectors raises terminal loss by about 0.028 nats at matched learning rate, and by about 0.015 nats even after the no-scale-vector model is retuned.",
+  "topics": [
+    "topic_architecture_small_budget"
+  ]
+}
